@@ -26,10 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'SSO',
-    # apps para google SSO
-    'django_google_sso',
-
-    #apps para django Allauth
+    'allauth.socialaccount.providers.google',
     'django.contrib.sites',
 
     'allauth',
@@ -54,8 +51,7 @@ ROOT_URLCONF = 'is2_gestordeproyectos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,7 +82,6 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
 

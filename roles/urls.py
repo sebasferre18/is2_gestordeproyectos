@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
 
+"""
+Definicion de URLs para la gestion de roles. Es posible visualizar, crear, modificar y eliminar roles.
+"""
+
 app_name = 'roles'
 urlpatterns = [
     path('', views.index, name='index'),

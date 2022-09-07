@@ -1,8 +1,12 @@
 from .models import Rol
 from django import forms
 
+"""
+Definicion de los formularios para la gestion de roles.
+"""
 
 class RolForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Rol"""
     class Meta:
         model = Rol
         fields = [

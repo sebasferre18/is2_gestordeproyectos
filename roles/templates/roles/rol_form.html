@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if rol %}
+            Modificar rol: {{ rol.name }}
+        {% else %}
+            Crear rol
+        {% endif %}
+    </title>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" name="OK">
+        <a href="{% url 'roles:index' %}">Cancelar</a>
+    </form>
+</body>
+</html>

@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'SSO',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
-
+    'usuarios',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

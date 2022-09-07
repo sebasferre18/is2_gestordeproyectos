@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <a href="http://localhost:8000/">Home</a><br>
+    {% if usuarios %}
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.apellido }}</td>
+            <td>{{ usuario.nombreUsuario }}</td>
+            <td>{{ usuario.capacidadTrabajo }}</td>
+            <br>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <h1>No hay usuarios</h1>
+    {% endif %}
+</body>
+</html>

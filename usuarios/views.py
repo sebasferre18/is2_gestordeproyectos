@@ -31,8 +31,12 @@ def modificar_usuario(request, id_usuario):
     contexto = {'formulario': formulario}
     return render(request, 'usuarios/modificar_usuario.html', contexto)
 
-
 def usuario_list(request):
     usuario = Usuario.objects.all()
     contexto = {'usuarios': usuario}
     return render(request, 'usuarios/usuarios_list.html', contexto)
+
+def eliminar_usuario(request, id_usuario):
+    usuario = get_object_or_404(Usuario, id=id_usuario)
+    usuario.delete()
+    return redirect('usuarios:listar_usuarios')

@@ -9,4 +9,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('roles/', include('roles.urls')),
     path('usuarios/', include('usuarios.urls')),
+    path('accounts/profile/', views.home, name='home'),
 ]

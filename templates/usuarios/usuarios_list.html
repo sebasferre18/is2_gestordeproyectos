@@ -5,7 +5,8 @@
     <title>Lista de Usuarios</title>
 </head>
 <body>
-    <a href="http://localhost:8000/">Home</a><br>
+    <h1>Usuarios</h1>
+    <a href="http://localhost:8000/usuarios/nuevo_usuario/">Crear Usuario</a><br><br>
     {% if usuarios %}
         {% for usuario in usuarios %}
         <tr>
@@ -14,11 +15,15 @@
             <td>{{ usuario.apellido }}</td>
             <td>{{ usuario.nombreUsuario }}</td>
             <td>{{ usuario.capacidadTrabajo }}</td>
+            <a href="{% url 'usuarios:modificar_usuario' usuario.id %}">Modificar</a>
+            <a href="{% url 'usuarios:eliminar_usuario' usuario.id %}">Eliminar</a>
             <br>
         </tr>
         {% endfor %}
     {% else %}
         <h1>No hay usuarios</h1>
     {% endif %}
+    <br><br>
+    <a href="http://localhost:8000/">Home</a><br>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% if permiso %}
+            Modificar permiso: {{ permiso.name }}
+        {% else %}
+            Crear permiso
+        {% endif %}
+    </title>
+</head>
+<body>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" name="OK">
+        <a href="{% url 'roles:permiso_index' %}">Cancelar</a>
+    </form>
+</body>
+</html>

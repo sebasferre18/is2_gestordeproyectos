@@ -1,9 +1,10 @@
-from .models import Rol
+from .models import Rol, Permiso
 from django import forms
 
 """
 Definicion de los formularios para la gestion de roles.
 """
+
 
 class RolForm(forms.ModelForm):
     """Formulario generico con los campos del modelo Rol"""
@@ -23,4 +24,15 @@ class RolForm(forms.ModelForm):
             'permiso': forms.CheckboxSelectMultiple(),
         }
 
+
+class PermisoForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Permiso"""
+    class Meta:
+        model = Permiso
+        fields = [
+            'nombre'
+        ]
+        labels = {
+            'nombre': 'Nombre',
+        }
 

@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Rol
-from .forms import RolForm
+from .models import Rol, Permiso
+from .forms import RolForm, PermisoForm
 
 """
 Vistas de la app de Roles.
@@ -70,4 +70,34 @@ def eliminar_rol(request, rol_id):
         'rol': rol
     }
     return render(request, 'roles/eliminar_rol.html', context)
+
+
+@login_required
+def permiso_index(request):
+    """
+    Clase de la vista de la lista de Permisos
+    """
+    permisos = Permiso.objects.all().order_by('id')
+    context = {
+        'permiso_list': permisos
+    }
+    return render(request, 'roles/permiso_index.html', context)
+
+
+@login_required
+def crear_permiso(request):
+    """
+    Clase de la vista para la creacion de un nuevo Permiso.
+    """
+    form = PermisoForm()
+    if request.method == 'POST':
+        form = PermisoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/roles/')
+
+    context = {
+        'form': form
+    }
+    return render(request, 'roles/permiso_form.html', context)
 

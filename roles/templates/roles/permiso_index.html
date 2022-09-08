@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        table, td {
+            border: 1px solid black;
+            padding: 1px;
+        }
+        table {
+            border-spacing: 1px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Permisos</title>
+</head>
+<body>
+    <h1>Roles</h1>
+    <a href="{% url 'roles:crear_permiso' %}">Crear permiso</a>
+    <a href="{% url 'roles:index' %}">Roles</a>
+    {% if permiso_list %}
+        <table>
+            {% for permiso in permiso_list %}
+                <tr>
+                    <td style="width:100%">{{ permiso.nombre }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No hay permisos disponibles.</p>
+    {% endif %}
+</body>
+</html>

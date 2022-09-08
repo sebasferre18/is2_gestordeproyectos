@@ -27,10 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'roles.apps.RolesConfig',
-    'SSO',
     'allauth.socialaccount.providers.google',
     'django.contrib.sites',
-
+    'usuarios',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

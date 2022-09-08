@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Proyectos</title>
+</head>
+<body>
+    <h1>Proyectos</h1>
+    <a href="http://localhost:8000/proyectos/create/">Crear Proyecto</a><br><br>
+    {% if proyectos %}
+        {% for proyecto in proyectos %}
+        <tr>
+            <td>{{ proyecto.id }}</td>
+            <td>{{ proyecto.nombre }}</td>
+            <td>{{ proyecto.descripcion }}</td>
+            <td>{{ proyecto.scrum_master }}</td>
+            <a href="{% url 'proyectos:asignar_usuarios' %}">Asignar Usuarios</a>
+            <a href="{% url 'proyectos:desasignar_usuarios' %}">Desasignar Usuarios</a>
+            <a href="{% url 'proyectos:administrar_roles' %}">Administrar Roles</a>
+            <br>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <h1>No hay proyectos</h1>
+    {% endif %}
+    <br><br>
+    <a href="http://localhost:8000/">Home</a><br>
+</body>
+</html>

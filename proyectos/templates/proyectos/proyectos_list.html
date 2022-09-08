@@ -14,9 +14,7 @@
             <td>{{ proyecto.nombre }}</td>
             <td>{{ proyecto.descripcion }}</td>
             <td>{{ proyecto.scrum_master }}</td>
-            <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Usuarios</a>
-            <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Usuarios</a>
-            <a href="{% url 'proyectos:administrar_roles' proyecto.id %}">Administrar Roles</a>
+            <a href="{% url 'proyectos:administrar_usuarios' proyecto.id %}">Administrar Usuarios</a>
             <br>
         </tr>
         {% endfor %}

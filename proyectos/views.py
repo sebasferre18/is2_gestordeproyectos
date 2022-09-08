@@ -42,6 +42,7 @@ from django.contrib.auth.decorators import login_required
 
 from proyectos.models import Proyecto
 from proyectos.forms import ProyectoForm
+from usuarios.models import Usuario
 
 def listar_proyectos(request):
     proyecto = Proyecto.objects.all()
@@ -84,35 +85,44 @@ def desasignar_usuarios(request, id_proyecto):
     contexto = {'formulario': formulario}
     return render(request, 'proyectos/modificar_usuario.html', contexto)'''
 
+def administrar_usuarios(request, id_proyecto):
+    usuario = Usuario.objects.all()
+    contexto = {'usuarios': usuario, 'id_proyecto':id_proyecto}
+    return render(request, "proyectos/administrar_usuarios.html", contexto)
+
 def asignar_usuarios(request, id_proyecto):
 
-    return render(request, "proyectos/asignar_usuarios.html")
+    return render(request, "proyectos/asignar_usuarios.html", {'id_proyecto': id_proyecto})
 
 def asignar_usuarios_busqueda(request, id_proyecto):
 
-    '''if request.GET["user"]:
+    if request.GET["user"]:
 
         #mensaje="Articulo buscado: %r" %request.GET["produc"]
-        usuario=request.GET["user"]
+        usuariob=request.GET["user"]
 
-        if len(usuario)>30:
+        if len(usuariob)>30:
 
             mensaje = "Nombre de usuario demasiado largo"
 
         else:
 
-            articulos=Articulos.objects.filter(nombre__icontains=usuario)
+            usuarios=Usuario.objects.filter(nombre__icontains=usuariob)
 
-            return render(request, "resultados_busqueda.html", {"articulos":articulos, "query":usuario})
+            return render(request, "proyectos/asignar_usuarios_busqueda.html", {"usuarios":usuarios, "query":usuariob})
     else:
 
-        mensaje="No has introducido ningun usuario"'''
+        mensaje="No has introducido ningun usuario"
 
-    return HttpResponse("Funciona")
-def desasignar_usuarios(request, id_proyecto):
+    return HttpResponse(mensaje)
+    #return HttpResponse("Funciona")
 
+def desasignar_usuarios(request, id_usuario):
+    usuario = get_object_or_404(Usuario, id=id_usuario)
+    usuario.delete()
+    return redirect('proyectos:listar_proyectos')
     #return (request)
-    return HttpResponse("Desasignamos usuarios")
+    #return HttpResponse("Desasignamos usuarios")
 
 
 def administrar_roles(request, id_proyecto):

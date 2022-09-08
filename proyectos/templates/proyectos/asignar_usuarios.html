@@ -10,7 +10,7 @@
 
     <h1> Buscar usuario a asignar </h1>
 
-    <form action="/asignar_usuarios_busqueda/" method="GET" >
+    <form action="/proyectos/{{id_proyecto}}/asignar_usuarios_busqueda/" method="GET" >{% csrf_token %}
 
         <input type="text" name="user">
 

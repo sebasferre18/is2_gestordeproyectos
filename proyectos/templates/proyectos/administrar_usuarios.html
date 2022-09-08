@@ -7,9 +7,6 @@
 <body>
     <h1>Usuarios</h1>
     <a href="http://localhost:8000/proyectos/{{id_proyecto}}/asignar_usuarios/">Asignar nuevo usuario</a><br><br>
-    
-    <a href="{% url 'proyectos:asignar_usuarios' {{id_proyecto}} %}">Asignar nuevo usuario</a><br><br>
-
     {% if usuarios %}
         {% for usuario in usuarios %}
         <tr>

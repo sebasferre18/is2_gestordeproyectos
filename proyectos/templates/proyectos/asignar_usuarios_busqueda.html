@@ -1,0 +1,29 @@
+<html>
+
+<body>
+
+<p>Estas buscando: <strong>{{query}}</strong></p>
+
+{% if usuarios %}
+
+    <p>Usuarios encontrados: {{usuarios|length}} usuarios</p>
+
+    <ul>
+
+        {% for usuario in usuarios %}
+        <li>
+            {{usuario.nombre}} &nbsp; {{usuario.seccion}} &nbsp; {{usuario.precio}}
+
+        </li>
+        {% endfor %}
+
+    </ul>
+{% else %}
+
+    <p>Usuario no encontrado</p>
+
+{% endif %}
+
+</body>
+
+</html>

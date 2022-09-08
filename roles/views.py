@@ -1,7 +1,9 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+from usuarios.models import Usuario
 from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
+from funciones import obtener_permisos
 
 """
 Vistas de la app de Roles.
@@ -14,8 +16,16 @@ def index(request):
     Clase de la vista de la lista de Roles
     """
     roles = Rol.objects.all().order_by('id')
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
     context = {
-        'role_list': roles
+        'role_list': roles,
+        'permisos': permisos
     }
     return render(request, 'roles/index.html', context)
 
@@ -32,8 +42,16 @@ def crear_rol(request):
             form.save()
             return redirect('/roles/')
 
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
     context = {
-        'form': form
+        'form': form,
+        'permisos': permisos
     }
     return render(request, 'roles/rol_form.html', context)
 
@@ -52,8 +70,16 @@ def modificar_rol(request, rol_id):
             form.save()
             return redirect('/roles/')
 
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
     context = {
-        'form': form
+        'form': form,
+        'permisos': permisos
     }
     return render(request, 'roles/rol_form.html', context)
 
@@ -61,13 +87,21 @@ def modificar_rol(request, rol_id):
 @login_required
 def eliminar_rol(request, rol_id):
     """Clase de la vista para eliminar un rol"""
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
     rol = get_object_or_404(Rol, pk=rol_id)
     if request.method == 'POST':
         rol.delete()
         return redirect('/roles/')
 
     context = {
-        'rol': rol
+        'rol': rol,
+        'permisos': permisos
     }
     return render(request, 'roles/eliminar_rol.html', context)
 
@@ -78,8 +112,17 @@ def permiso_index(request):
     Clase de la vista de la lista de Permisos
     """
     permisos = Permiso.objects.all().order_by('id')
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    p = obtener_permisos(rol)
+
     context = {
-        'permiso_list': permisos
+        'permiso_list': permisos,
+        'permisos': p
     }
     return render(request, 'roles/permiso_index.html', context)
 
@@ -94,10 +137,18 @@ def crear_permiso(request):
         form = PermisoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/roles/')
+            return redirect('/permissions/')
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    p = obtener_permisos(rol)
 
     context = {
-        'form': form
+        'form': form,
+        'permisos': p
     }
     return render(request, 'roles/permiso_form.html', context)
 

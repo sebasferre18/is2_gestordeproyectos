@@ -7,11 +7,20 @@
 <body>
     <h1>Bienvenido al sistema de gestor de proyecto del Grupo 6</h1>
 
-    <a href="http://localhost:8000/accounts/login/">Login</a><br>
-    <a href="http://localhost:8000/accounts/logout/">Logout</a><br>
-    <a href="http://localhost:8000/usuarios/listar_usuarios/">Usuarios</a><br>
-    <a href="http://localhost:8000/roles/">Roles</a><br>
-    <a href="http://localhost:8000/proyectos/">Proyectos</a><br>
+    {% if user.is_authenticated %}
+        {% if 'Visualizar Usuarios' in permisos %}
+            <a href="http://localhost:8000/usuarios/listar_usuarios/">Usuarios</a><br>
+        {% endif %}
+        {% if 'Visualizar Roles' in permisos %}
+            <a href="http://localhost:8000/roles/">Roles</a><br>
+        {% endif %}
+        <a href="http://localhost:8000/proyectos/">Proyectos</a><br>
+        <a href="http://localhost:8000/accounts/logout/">Logout</a><br>
+
+        <h2>Usted se ha conectado como: {{ user.username }}</h2>
+    {% else %}
+        <a href="http://localhost:8000/accounts/login/">Login</a><br>
+    {% endif %}
 
 </body>
 </html>

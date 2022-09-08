@@ -11,9 +11,9 @@
         {% for usuario in usuarios %}
         <tr>
             <td>{{ usuario.id }}</td>
-            <td>{{ usuario.nombre }}</td>
-            <td>{{ usuario.apellido }}</td>
-            <td>{{ usuario.nombreUsuario }}</td>
+            <td>{{ usuario.user.last_name }}</td>
+            <td>{{ usuario.user.first_name }}</td>
+            <td>{{ usuario.user.username }}</td>
             <td>{{ usuario.capacidadTrabajo }}</td>
             <a href="{% url 'usuarios:modificar_usuario' usuario.id %}">Modificar</a>
             <a href="{% url 'usuarios:eliminar_usuario' usuario.id %}">Eliminar</a>

@@ -12,10 +12,15 @@
 </head>
 <body>
     <form action="" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" name="OK">
-        <a href="{% url 'roles:permiso_index' %}">Cancelar</a>
+        {% if "Visualizar Permisos" in permisos %}
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="OK">
+            <a href="{% url 'roles:permiso_index' %}">Cancelar</a>
+        {% else %}
+            <h1>No tienes los permisos para visualizar esta pagina</h1>
+            <a href="http://localhost:8000/">Home</a><br>
+        {% endif %}
     </form>
 </body>
 </html>

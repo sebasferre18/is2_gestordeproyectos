@@ -120,6 +120,8 @@ def asignar_usuarios_busqueda(request, id_proyecto):
 def desasignar_usuarios(request, id_usuario):
     usuario = get_object_or_404(Usuario, id=id_usuario)
     usuario.delete()
+
+    #return redirect('proyectos:administrar_usuarios', id_proyecto)
     return redirect('proyectos:listar_proyectos')
     #return (request)
     #return HttpResponse("Desasignamos usuarios")

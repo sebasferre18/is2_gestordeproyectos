@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <h1>Usuarios</h1>
+    <a href="http://localhost:8000/proyectos/{{id_proyecto}}/asignar_usuarios/">Asignar nuevo usuario</a><br><br>
+    
+    <a href="{% url 'proyectos:asignar_usuarios' {{id_proyecto}} %}">Asignar nuevo usuario</a><br><br>
+
+    {% if usuarios %}
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario.id }}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.apellido }}</td>
+            <td>{{ usuario.nombreUsuario }}</td>
+            <td>{{ usuario.capacidadTrabajo }}</td>
+            <a href="{% url 'proyectos:desasignar_usuarios' usuario.id %}">Desasignar</a>
+            <a href="{% url 'proyectos:administrar_roles' usuario.id %}">Administrar Roles</a>
+            <br>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <h1>No hay usuarios</h1>
+    {% endif %}
+    <br><br>
+    <a href="http://localhost:8000/proyectos/">Atras</a><br>
+</body>
+</html>

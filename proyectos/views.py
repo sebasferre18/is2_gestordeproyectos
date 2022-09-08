@@ -84,10 +84,11 @@ def desasignar_usuarios(request, id_proyecto):
     contexto = {'formulario': formulario}
     return render(request, 'proyectos/modificar_usuario.html', contexto)'''
 
-def asignar_usuarios(request):
+def asignar_usuarios(request, id_proyecto):
+
     return render(request, "proyectos/asignar_usuarios.html")
 
-def asignar_usuarios_busqueda(request):
+def asignar_usuarios_busqueda(request, id_proyecto):
 
     '''if request.GET["user"]:
 
@@ -108,13 +109,13 @@ def asignar_usuarios_busqueda(request):
         mensaje="No has introducido ningun usuario"'''
 
     return HttpResponse("Funciona")
-def desasignar_usuarios(request):
+def desasignar_usuarios(request, id_proyecto):
 
     #return (request)
     return HttpResponse("Desasignamos usuarios")
 
 
-def administrar_roles(request):
+def administrar_roles(request, id_proyecto):
 
     #return render(request)
     return HttpResponse("Administramos roles")

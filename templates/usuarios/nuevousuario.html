@@ -10,7 +10,8 @@
 {%  endblock %}
 {% block contenido %}
     <form id="formulario" method="post" action="">{% csrf_token %}
-        <table>{{ formulario }}</table>
+        <table>{{ usuario }}
+            {{ formulario }}</table>
         <p><input type="submit" value="Registrar"/></p>
     </form>
 

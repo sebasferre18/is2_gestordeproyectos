@@ -1,36 +1,54 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
+from django.forms.formsets import formset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 
-from usuarios.models import Usuario
-from usuarios.forms import UsuarioForm
+from usuarios.models import Usuario, User
+from usuarios.forms import UsuarioForm, UserForm, UsuarioFormSet
 
 @login_required
 def nuevo_usuario(request):
-    if request.method=='POST':
-        formulario = UsuarioForm(request.POST)
-        if formulario.is_valid():
-            formulario.save()
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        usuario_form = UsuarioFormSet(request.POST)
+        if user_form.is_valid() and usuario_form.is_valid():
+            user = user_form.save()
+
+            for a in usuario_form.forms:
+                up = a.save(commit=False)
+                up.user = user
+                up.save()
+
             return HttpResponseRedirect('/')
     else:
-        formulario = UsuarioForm()
-    return render(request,  'usuarios/nuevousuario.html', {'formulario':formulario})
+        user_form = UserForm()
+        usuario_form = UsuarioFormSet()
+    return render(request,  'usuarios/nuevousuario.html', {'usuario': user_form, 'formulario':usuario_form})
 
 @login_required
 def modificar_usuario(request, id_usuario):
+    user = get_object_or_404(User, pk=id_usuario)
     usuario = get_object_or_404(Usuario, pk=id_usuario)
-    if request.method == "POST":
-        formulario = UsuarioForm(request.POST, instance=usuario)
-        if formulario.is_valid():
-            usuario = formulario.save(commit=False)
-            usuario.save()
-            return redirect('usuarios:listar_usuarios')
-    else:
-        formulario = UsuarioForm(instance=usuario)
-    contexto = {'formulario': formulario}
+    user_form = UserForm(instance=user)
+    usuario_form = UsuarioFormSet(instance=usuario)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        usuario_form = UsuarioFormSet(request.POST, instance=usuario)
+        if user_form.is_valid() and usuario_form.is_valid():
+            user = user_form.save()
+
+            for a in usuario_form.forms:
+                up = a.save(commit=False)
+                up.user = user
+                up.save()
+
+            return HttpResponseRedirect('/')
+
+    contexto = {'usuario': user_form, 'formulario':usuario_form}
     return render(request, 'usuarios/modificar_usuario.html', contexto)
 
 @login_required
@@ -41,6 +59,6 @@ def usuario_list(request):
 
 @login_required
 def eliminar_usuario(request, id_usuario):
-    usuario = get_object_or_404(Usuario, id=id_usuario)
-    usuario.delete()
+    user = get_object_or_404(User, id=id_usuario)
+    user.delete()
     return redirect('usuarios:listar_usuarios')

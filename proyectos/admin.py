@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import Proyecto
+from .models import Proyecto, Miembro
 # Register your models here.
 
-admin.site.register(Proyecto)
+
+class MiembroInline(admin.TabularInline):
+    model = Miembro
+
+
+class ProyectoAdmin(admin.ModelAdmin):
+    inlines = (MiembroInline,)
+
+
+admin.site.register(Proyecto, ProyectoAdmin)

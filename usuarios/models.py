@@ -7,7 +7,7 @@ from roles.models import *
 
 # Create your models here.
 class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     rol = models.ManyToManyField(Rol, blank=True)
     ci = models.IntegerField(blank=True, null=True)
     telefono = models.CharField(max_length=50, blank=True, null=True)

@@ -23,6 +23,6 @@ class MiembroForm(forms.ModelForm):
     class Meta:
         model = Miembro
         fields = [
-            'proyecto',
-            'usuario'
+            'usuario',
+            'rol'
         ]

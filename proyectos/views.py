@@ -43,21 +43,39 @@ from datetime import date
 
 from proyectos.models import Proyecto, Miembro
 from proyectos.forms import ProyectoForm, MiembroForm
+from usuarios.models import Usuario
+from funciones import obtener_permisos
 
 @login_required
 def listar_proyectos(request):
-    proyecto = Proyecto.objects.all()
-    contexto = {'proyectos': proyecto}
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
+    proyecto = Proyecto.objects.filter(miembro__usuario__user=request.user)
+
+    contexto = {'proyectos': proyecto, 'permisos': permisos}
     return render(request, 'proyectos/proyectos_list.html', contexto)
 
 
 @login_required
 def crear_proyecto(request):
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    miembro = Miembro()
+    miembro.usuario = usuario
+
     if request.method=='POST':
         formulario = ProyectoForm(request.POST)
         if formulario.is_valid():
-            formulario.save()
-            return HttpResponseRedirect('/')
+            proyecto = formulario.save()
+            miembro.proyecto = proyecto
+            miembro.rol = usuario.rol.get(pk=1)
+            miembro.save()
+            return HttpResponseRedirect('/proyectos/')
     else:
         formulario = ProyectoForm()
     return render(request,  'proyectos/crear_proyecto.html', {'formulario':formulario})
@@ -90,11 +108,14 @@ def desasignar_usuarios(request, id_proyecto):
 
 @login_required
 def asignar_usuarios(request, proyecto_id):
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     form = MiembroForm()
     if request.method == 'POST':
         form = MiembroForm(request.POST)
         if form.is_valid():
-            form.save()
+            miembro = form.save(commit=False)
+            miembro.proyecto = proyecto
+            miembro.save()
             return redirect('proyectos:ver_detalles', proyecto_id)
     context = {
         'form': form,
@@ -159,9 +180,22 @@ def administrar_roles(request):
 def ver_detalles(request, proyecto_id):
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembros = Miembro.objects.filter(proyecto=proyecto)
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    miembro = miembros.get(usuario=usuario)
+    rol = miembro.rol
+
+    if rol:
+        permisos = obtener_permisos([rol])
+    else:
+        permisos = []
+
     context = {
         'proyecto': proyecto,
-        'miembros': miembros
+        'miembros': miembros,
+        'permisos': permisos
     }
     return render(request, 'proyectos/proyecto_detalles.html', context)
 

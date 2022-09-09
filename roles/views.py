@@ -81,7 +81,7 @@ def modificar_rol(request, rol_id):
         'form': form,
         'permisos': permisos
     }
-    return render(request, 'roles/crear_rol.html', context)
+    return render(request, 'roles/modificar_rol.html', context)
 
 
 @login_required

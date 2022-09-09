@@ -55,7 +55,10 @@ def listar_proyectos(request):
 
     permisos = obtener_permisos(rol)
 
-    proyecto = Proyecto.objects.filter(miembro__usuario__user=request.user)
+    if "Crear Permiso" in permisos:
+        proyecto = Proyecto.objects.all().order_by('id')
+    else:
+        proyecto = Proyecto.objects.filter(miembro__usuario__user=request.user).order_by('id')
 
     contexto = {'proyectos': proyecto, 'permisos': permisos}
     return render(request, 'proyectos/proyectos_list.html', contexto)
@@ -184,13 +187,17 @@ def ver_detalles(request, proyecto_id):
     user = request.user
 
     usuario = Usuario.objects.get(user_id=user.id)
-    miembro = miembros.get(usuario=usuario)
-    rol = miembro.rol
+    rol = usuario.rol.all()
 
-    if rol:
-        permisos = obtener_permisos([rol])
-    else:
-        permisos = []
+    permisos = obtener_permisos(rol)
+
+    if "Crear Proyecto" not in permisos:
+        miembro = miembros.get(usuario=usuario)
+        rol = miembro.rol
+        if rol:
+            permisos = obtener_permisos([rol])
+        else:
+            permisos = []
 
     context = {
         'proyecto': proyecto,

@@ -9,17 +9,17 @@
 
     {% if user.is_authenticated %}
         {% if 'Visualizar Usuarios' in permisos %}
-            <a href="http://localhost:8000/usuarios/listar_usuarios/">Usuarios</a><br>
+            <a href="/usuarios/listar_usuarios/">Usuarios</a><br>
         {% endif %}
         {% if 'Visualizar Roles' in permisos %}
-            <a href="http://localhost:8000/roles/">Roles</a><br>
+            <a href="/roles/">Roles</a><br>
         {% endif %}
-        <a href="http://localhost:8000/proyectos/">Proyectos</a><br>
-        <a href="http://localhost:8000/accounts/logout/">Logout</a><br>
+        <a href="/proyectos/">Proyectos</a><br>
+        <a href="/accounts/logout/">Logout</a><br>
 
         <h2>Usted se ha conectado como: {{ user.username }}</h2>
     {% else %}
-        <a href="http://localhost:8000/accounts/login/">Login</a><br>
+        <a href="/accounts/login/">Login</a><br>
     {% endif %}
 
 </body>

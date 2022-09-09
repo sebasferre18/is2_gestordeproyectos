@@ -11,10 +11,10 @@
         {% for proyecto in proyectos %}
         <tr>
             <td>{{ proyecto.id }}</td>
-            <td>{{ proyecto.nombre }}</td>
+            <td><a href="{% url 'proyectos:ver_detalles' proyecto.id %}">{{ proyecto.nombre }}</a></td>
             <td>{{ proyecto.descripcion }}</td>
             <td>{{ proyecto.scrum_master }}</td>
-            <a href="{% url 'proyectos:asignar_usuarios' %}">Asignar Usuarios</a>
+            <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Usuarios</a>
             <a href="{% url 'proyectos:desasignar_usuarios' %}">Desasignar Usuarios</a>
             <a href="{% url 'proyectos:administrar_roles' %}">Administrar Roles</a>
             <br>

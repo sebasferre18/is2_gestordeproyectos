@@ -39,15 +39,19 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
-from proyectos.models import Proyecto
-from proyectos.forms import ProyectoForm
+from proyectos.models import Proyecto, Miembro
+from proyectos.forms import ProyectoForm, MiembroForm
 
+@login_required
 def listar_proyectos(request):
     proyecto = Proyecto.objects.all()
     contexto = {'proyectos': proyecto}
     return render(request, 'proyectos/proyectos_list.html', contexto)
 
+
+@login_required
 def crear_proyecto(request):
     if request.method=='POST':
         formulario = ProyectoForm(request.POST)
@@ -84,9 +88,22 @@ def desasignar_usuarios(request, id_proyecto):
     contexto = {'formulario': formulario}
     return render(request, 'proyectos/modificar_usuario.html', contexto)'''
 
-def asignar_usuarios(request):
-    return render(request, "proyectos/asignar_usuarios.html")
+@login_required
+def asignar_usuarios(request, proyecto_id):
+    form = MiembroForm()
+    if request.method == 'POST':
+        form = MiembroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('proyectos:ver_detalles', proyecto_id)
+    context = {
+        'form': form,
+        'proyecto_id': proyecto_id,
+    }
+    return render(request, "proyectos/asignar_usuarios.html", context)
 
+
+@login_required
 def asignar_usuarios_busqueda(request):
 
     '''if request.GET["user"]:
@@ -108,12 +125,26 @@ def asignar_usuarios_busqueda(request):
         mensaje="No has introducido ningun usuario"'''
 
     return HttpResponse("Funciona")
-def desasignar_usuarios(request):
 
-    #return (request)
-    return HttpResponse("Desasignamos usuarios")
+@login_required
+def desasignar_usuarios(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto)
+    context = {
+        'miembros': miembros,
+        'proyecto_id': proyecto_id
+    }
+    return render(request, 'proyectos/desasignar_usuarios.html', context)
 
 
+@login_required
+def eliminar_miembro(request, proyecto_id, miembro_id):
+    miembro = get_object_or_404(Miembro, id=miembro_id)
+    miembro.delete()
+    return redirect('proyectos:ver_detalles', proyecto_id)
+
+
+@login_required
 def administrar_roles(request):
 
     #return render(request)
@@ -123,3 +154,40 @@ def administrar_roles(request):
     proyecto = get_object_or_404(Proyecto, id=id_proyecto)
     proyecto.delete()
     return redirect('usuarios:listar_usuarios')'''
+
+@login_required
+def ver_detalles(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto)
+    context = {
+        'proyecto': proyecto,
+        'miembros': miembros
+    }
+    return render(request, 'proyectos/proyecto_detalles.html', context)
+
+@login_required
+def iniciar_proyecto(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    proyecto.estado = 'En ejecucion'
+    proyecto.fecha_inicio = date.today()
+    proyecto.save()
+    return redirect('proyectos:ver_detalles', proyecto_id)
+
+
+@login_required
+def finalizar_proyecto(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    proyecto.estado = 'Finalizado'
+    proyecto.fecha_fin = date.today()
+    proyecto.save()
+    return redirect('proyectos:ver_detalles', proyecto_id)
+
+
+@login_required
+def cancelar_proyecto(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    proyecto.estado = 'Cancelado'
+    proyecto.fecha_fin = date.today()
+    proyecto.save()
+    return redirect('proyectos:ver_detalles', proyecto_id)
+

@@ -22,7 +22,7 @@ def nuevo_usuario(request):
                 up.user = user
                 up.save()
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/usuarios/listar_usuarios/')
     else:
         user_form = UserForm()
         usuario_form = UsuarioFormSet()
@@ -46,14 +46,14 @@ def modificar_usuario(request, id_usuario):
                 up.user = user
                 up.save()
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/usuarios/listar_usuarios/')
 
     contexto = {'usuario': user_form, 'formulario':usuario_form}
     return render(request, 'usuarios/modificar_usuario.html', contexto)
 
 @login_required
 def usuario_list(request):
-    usuario = Usuario.objects.all()
+    usuario = Usuario.objects.all().order_by('user')
     contexto = {'usuarios': usuario}
     return render(request, 'usuarios/usuarios_list.html', contexto)
 

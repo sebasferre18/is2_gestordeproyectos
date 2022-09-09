@@ -53,7 +53,7 @@ def crear_rol(request):
         'form': form,
         'permisos': permisos
     }
-    return render(request, 'roles/rol_form.html', context)
+    return render(request, 'roles/crear_rol.html', context)
 
 
 @login_required
@@ -81,7 +81,7 @@ def modificar_rol(request, rol_id):
         'form': form,
         'permisos': permisos
     }
-    return render(request, 'roles/rol_form.html', context)
+    return render(request, 'roles/crear_rol.html', context)
 
 
 @login_required

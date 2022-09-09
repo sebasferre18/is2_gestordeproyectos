@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Desasignar Usuarios</title>
+</head>
+<body>
+    <h1>Desasignar Usuarios</h1>
+    <table>
+        {% for m in miembros %}
+        <tr>
+            <td>{{ m.usuario.user.username }}</td>
+            <td><a href="/proyectos/unassign/{{ proyecto_id }}/{{ m.id }}">Desasignar</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+</body>
+</html>

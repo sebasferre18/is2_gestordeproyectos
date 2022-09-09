@@ -10,12 +10,11 @@
 
     <h1> Buscar usuario a asignar </h1>
 
-    <form action="/asignar_usuarios_busqueda/" method="GET" >
-
-        <input type="text" name="user">
-
-        <input type="submit" value="Buscar">
-
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" name="OK">
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
     </form>
 
 </body>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Proyecto</title>
+</head>
+<body>
+{% block encabezado %}
+    <h1> Registrar nuevo proyecto </h1>
+{%  endblock %}
+{% block contenido %}
+    <form id="formulario" method="post" action="">{% csrf_token %}
+        <table>{{ formulario }}</table>
+        <br>
+        <input type="submit" value="Registrar"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>
+    </form>
+
+{% endblock %}
+</body>
+</html>

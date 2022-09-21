@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Bienvenido al sistema de gestor de proyecto del Grupo 6</h1>
+
+    {% if user.is_authenticated %}
+        {% if 'Visualizar Usuarios' in permisos %}
+            <a href="/usuarios/listar_usuarios/">Usuarios</a><br>
+        {% endif %}
+        {% if 'Visualizar Roles' in permisos %}
+            <a href="/roles/">Roles</a><br>
+        {% endif %}
+        <a href="/proyectos/">Proyectos</a><br>
+        <a href="/accounts/logout/">Logout</a><br>
+
+        <h2>Usted se ha conectado como: {{ user.username }}</h2>
+    {% else %}
+        <a href="/accounts/login/">Login</a><br>
+    {% endif %}
+
+</body>
+</html>

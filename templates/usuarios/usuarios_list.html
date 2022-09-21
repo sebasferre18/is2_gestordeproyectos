@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+</head>
+<body>
+    <h1>Usuarios</h1>
+    <a href="http://localhost:8000/usuarios/nuevo_usuario/">Crear Usuario</a><br><br>
+    {% if usuarios %}
+        {% for usuario in usuarios %}
+            {% if usuario.rol.nombre != "Administrador" %}
+            <tr>
+                <td>{{ usuario.user.last_name }}</td>
+                <td>{{ usuario.user.first_name }}</td>
+                <td>{{ usuario.user.username }}</td>
+                <td>{{ usuario.rol }}</td>
+                <a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a>
+                <a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a>
+                <br>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h1>No hay usuarios</h1>
+    {% endif %}
+    <br><br>
+    <a href="http://localhost:8000/">Home</a><br>
+</body>
+</html>

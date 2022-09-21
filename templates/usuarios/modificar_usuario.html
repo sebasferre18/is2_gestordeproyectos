@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modificar Usuario</title>
+</head>
+<body>
+    <h1> Modificar Usuario </h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            {{ usuario }}
+            {{ formulario }}
+        </table>
+        <br>
+        <button type="submit" class="save btn btn-default">Guardar</button> &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'usuarios:listar_usuarios' %}'">Cancelar</button>
+        </form>
+
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+
+<head>
+
+<title>Busqueda de  Usuario</title>
+
+</head>
+
+<body>
+
+    <h1> Buscar usuario a asignar </h1>
+
+    <form action="" method="POST">{% csrf_token %}
+        {{ form }}
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Asignar"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
+        <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:ver_detalles' proyecto_id %}'">Cancelar</button>!-->
+    </form>
+
+</body>
+
+</html>

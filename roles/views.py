@@ -11,7 +11,7 @@ Vistas de la app de Roles.
 
 
 @login_required
-def index(request):
+def index(request, proyecto_id):
     """
     Clase de la vista de la lista de Roles
     """
@@ -25,13 +25,14 @@ def index(request):
 
     context = {
         'role_list': roles,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id
     }
     return render(request, 'roles/index.html', context)
 
 
 @login_required
-def crear_rol(request):
+def crear_rol(request, proyecto_id):
     """
     Clase de la vista para la creacion de un nuevo Rol.
     """
@@ -40,7 +41,7 @@ def crear_rol(request):
         form = RolForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/roles/')
+            return redirect('roles:index', proyecto_id)
 
     user = request.user
 
@@ -51,13 +52,14 @@ def crear_rol(request):
 
     context = {
         'form': form,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id
     }
     return render(request, 'roles/crear_rol.html', context)
 
 
 @login_required
-def modificar_rol(request, rol_id):
+def modificar_rol(request, rol_id, proyecto_id):
     """
     Clase de la vista para la modificacion de un Rol
     """
@@ -68,7 +70,7 @@ def modificar_rol(request, rol_id):
         form = RolForm(request.POST, instance=rol)
         if form.is_valid():
             form.save()
-            return redirect('/roles/')
+            return redirect('roles:index', proyecto_id)
 
     user = request.user
 
@@ -79,13 +81,14 @@ def modificar_rol(request, rol_id):
 
     context = {
         'form': form,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id
     }
     return render(request, 'roles/modificar_rol.html', context)
 
 
 @login_required
-def eliminar_rol(request, rol_id):
+def eliminar_rol(request, rol_id, proyecto_id):
     """Clase de la vista para eliminar un rol"""
     user = request.user
 
@@ -97,11 +100,12 @@ def eliminar_rol(request, rol_id):
     rol = get_object_or_404(Rol, pk=rol_id)
     if request.method == 'POST':
         rol.delete()
-        return redirect('/roles/')
+        return redirect('roles:index', proyecto_id)
 
     context = {
         'rol': rol,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id
     }
     return render(request, 'roles/eliminar_rol.html', context)
 
@@ -137,7 +141,7 @@ def crear_permiso(request):
         form = PermisoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/permissions/')
+            return redirect('/roles/permissions/')
 
     user = request.user
 

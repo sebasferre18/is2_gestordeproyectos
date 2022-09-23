@@ -12,7 +12,7 @@
             {% csrf_token %}
             {{ form }}
             <input type="submit" name="OK">
-            <a href="{% url 'roles:index' %}">Cancelar</a>
+            <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

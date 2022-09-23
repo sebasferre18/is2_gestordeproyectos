@@ -7,10 +7,10 @@
 <body>
     {% if "Eliminar Rol" in permisos%}
         <p>¿Estas seguro de que desea eliminar el rol "{{ rol }}"?</p>
-        <form action="{% url 'roles:eliminar_rol' rol.id %}" method="POST">
+        <form action="{% url 'roles:eliminar_rol' rol.id proyecto_id %}" method="POST">
             {% csrf_token %}
             <input type="submit" name="Eliminar">
-            <a href="{% url 'roles:index' %}">Cancelar</a>
+            <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

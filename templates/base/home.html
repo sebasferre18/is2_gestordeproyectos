@@ -11,8 +11,8 @@
         {% if 'Visualizar Usuarios' in permisos %}
             <a href="/usuarios/listar_usuarios/">Usuarios</a><br>
         {% endif %}
-        {% if 'Visualizar Roles' in permisos %}
-            <a href="/roles/">Roles</a><br>
+        {% if 'Visualizar Permisos' in permisos %}
+            <a href="{% url 'roles:permiso_index' %}">Permisos</a><br>
         {% endif %}
         <a href="/proyectos/">Proyectos</a><br>
         <a href="/accounts/logout/">Logout</a><br>

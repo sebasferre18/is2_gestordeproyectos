@@ -9,15 +9,17 @@
     <a href="http://localhost:8000/usuarios/nuevo_usuario/">Crear Usuario</a><br><br>
     {% if usuarios %}
         {% for usuario in usuarios %}
-        <tr>
-            <td>{{ usuario.user.last_name }}</td>
-            <td>{{ usuario.user.first_name }}</td>
-            <td>{{ usuario.user.username }}</td>
-            <td>{{ usuario.capacidadTrabajo }}</td>
-            <a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a>
-            <a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a>
-            <br>
-        </tr>
+            {% if usuario.rol.nombre != "Administrador" %}
+            <tr>
+                <td>{{ usuario.user.last_name }}</td>
+                <td>{{ usuario.user.first_name }}</td>
+                <td>{{ usuario.user.username }}</td>
+                <td>{{ usuario.rol }}</td>
+                <a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a>
+                <a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a>
+                <br>
+            </tr>
+            {% endif %}
         {% endfor %}
     {% else %}
         <h1>No hay usuarios</h1>

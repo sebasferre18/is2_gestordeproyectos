@@ -10,10 +10,11 @@
         {% for m in miembros %}
         <tr>
             <td>{{ m.usuario.user.username }}</td>
-            <td><a href="/proyectos/unassign/{{ proyecto_id }}/{{ m.id }}">Desasignar</a></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/proyectos/unassign/{{ proyecto_id }}/{{ m.id }}">Desasignar</a></td>
         </tr>
         {% endfor %}
     </table>
+    <br>
     <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
 </body>
 </html>

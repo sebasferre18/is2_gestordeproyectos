@@ -11,8 +11,10 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" name="OK">
+            <br>
+            <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
             <a href="{% url 'roles:index' %}">Cancelar</a>
+            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'roles:index' %}'">Cancelar</button>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

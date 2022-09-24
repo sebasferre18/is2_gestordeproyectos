@@ -34,30 +34,36 @@
         {% for m in miembros %}
             <tr>
                 <td>{{ m.usuario }}</td>
-                <td>{{ m.rol }}</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ m.rol }}</td>
             </tr>
         {% endfor %}
     </table>
+    <br>
     {% if proyecto.estado == 'Planificacion' %}
         {% if "Iniciar Proyecto" in permisos %}
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:iniciar_proyecto' proyecto.id %}'">Iniciar</button>
+        <br><br>
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:iniciar_proyecto' proyecto.id %}'">Iniciar</button>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
     {% elif proyecto.estado == 'En ejecucion' %}
         {% if "Finalizar Proyecto" in permisos %}
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:finalizar_proyecto' proyecto.id %}'">Finalizar</button>
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:finalizar_proyecto' proyecto.id %}'">Finalizar</button>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
         {% if "Cancelar Proyecto" in permisos %}
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:cancelar_proyecto' proyecto.id %}'">Cancelar</button>
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:cancelar_proyecto' proyecto.id %}'">Cancelar</button>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
     {% endif %}
+    <br><br>
     {% if proyecto.estado == 'Planificacion' or proyecto.estado == 'En ejecucion' %}
         {% if "Asignar Miembros" in permisos %}
-        <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Miembros</a>
+        <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Miembros</a>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
         {% if "Desasignar Miembros" in permisos %}
-        <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>
+        <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
     {% endif %}
+    <br><br>
+    <a href="{% url 'tipo_us:listar_tipo_us' %}">User Story</a>
+    <br><br>
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
 </body>
 </html>

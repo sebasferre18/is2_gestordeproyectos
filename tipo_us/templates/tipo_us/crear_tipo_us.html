@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Crear Tipo US
+    </title>
+</head>
+<body>
+    {% if "Crear Tipo US" in permisos %}
+        <h1>Registrar nuevo Tipo de User Story</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <br><br>
+            <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'tipo_us:listar_tipo_us' %}'">Cancelar</button>!-->
+            <a href="{% url 'tipo_us:listar_tipo_us' %}">Cancelar</a>
+        </form>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+</body>
+</html>

@@ -21,6 +21,7 @@ class RolForm(forms.ModelForm):
             'permiso': 'Permisos',
         }
         widgets = {
+
             'permiso': forms.CheckboxSelectMultiple(),
         }
 

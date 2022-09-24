@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        table, td {
+            border: 1px solid black;
+            padding: 1px;
+        }
+        table {
+            border-spacing: 1px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Lista de Tipos de US</title>
+</head>
+<body>
+    {% if "Visualizar Tipo US" in permisos %}
+        <h1>Tipos de User Story</h1>
+        <a href="{% url 'tipo_us:crear_tipo_us' %}">Crear Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <br>
+        {% if tipo_us %}
+            <table>
+                {% for tipo in tipo_us %}
+                <tr>
+                    <td style="width:30%">{{ tipo.nombre }}</td>
+                    <td>{{ tipo.descripcion }}</td>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <td><a href="{% url 'tipo_us:modificar_tipo_us' tipo.id %}">Modificar</a></td>
+                    <td><a href="{% url 'tipo_us:eliminar_tipo_us' tipo.id %}">Eliminar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h1>No existen tipos de User Story</h1>
+        {% endif %}
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+    {% endif %}
+    <br><br>
+    <a href="http://localhost:8000/">Home</a><br>
+</body>
+</html>

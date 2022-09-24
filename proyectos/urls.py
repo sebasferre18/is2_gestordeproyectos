@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 """
@@ -19,7 +19,11 @@ urlpatterns = [
     path('start/<int:proyecto_id>/', views.iniciar_proyecto, name='iniciar_proyecto'),
     path('end/<int:proyecto_id>/', views.finalizar_proyecto, name='finalizar_proyecto'),
     path('cancel/<int:proyecto_id>/', views.cancelar_proyecto, name='cancelar_proyecto'),
+
 ]
 '''path('create/', views.crear_rol, name='crear_rol'),
     path('<int:rol_id>/', views.modificar_rol, name='modificar_rol'),
-    path('delete/<int:rol_id>/', views.eliminar_rol, name='eliminar_rol'),'''
+    path('delete/<int:rol_id>/', views.eliminar_rol, name='eliminar_rol'),
+    
+    path('tipo_us/', include('tipo_us.urls')),
+    '''

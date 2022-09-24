@@ -1,37 +1,3 @@
-'''from django.shortcuts import render, HttpResponse'''
-
-# Create your views here.
-
-'''Vistas de la App Proyectos'''
-
-'''def index(request):'''
-        #Clase de la vista de la lista de Roles
-'''roles = Rol.objects.all().order_by('id')
-    context = {
-        'role_list': roles
-    }'''
-    #mensaje = 5
-
-''' return render(request, 'proyectos/index.html')
-
-def crear_proyecto(request):
-
-    return render(request, 'proyectos/proyect_form.html')
-
-
-def asignar_usuarios(request):
-
-    return render(request)
-
-
-def desasignar_usuarios(request):
-
-    return render(request)
-
-
-def administrar_roles(request):
-
-    return render(request)'''
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect

@@ -11,7 +11,8 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}
-            <input type="submit" name="OK">
+            <br><br>
+            <input type="submit" name="OK" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="{% url 'roles:index' %}">Cancelar</a>
         </form>
     {% else %}

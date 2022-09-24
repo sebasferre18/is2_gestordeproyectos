@@ -12,7 +12,9 @@
     <form id="formulario" method="post" action="">{% csrf_token %}
         <table>{{ usuario }}
             {{ formulario }}</table>
-        <p><input type="submit" value="Registrar"/></p>
+        <br>
+        <input type="submit" value="Registrar"/> &nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'usuarios:listar_usuarios' %}'">Cancelar</button>
     </form>
 
 {% endblock %}

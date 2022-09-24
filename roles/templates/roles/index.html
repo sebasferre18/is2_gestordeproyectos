@@ -16,7 +16,7 @@
 <body>
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
-        <a href="{% url 'roles:crear_rol' %}">Crear</a>
+        <a href="{% url 'roles:crear_rol' %}">Crear Rol</a>&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="{% url 'roles:permiso_index' %}">Permisos</a>
         {% if role_list %}
             <table>

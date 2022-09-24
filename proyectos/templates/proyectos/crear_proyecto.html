@@ -11,8 +11,11 @@
 {% block contenido %}
     <form id="formulario" method="post" action="">{% csrf_token %}
         <table>{{ formulario }}</table>
-        <p><input type="submit" value="Registrar"/></p>
-         <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>
+        <br>
+        <input type="submit" value="Registrar"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
+        <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>!-->
+
     </form>
 
 {% endblock %}

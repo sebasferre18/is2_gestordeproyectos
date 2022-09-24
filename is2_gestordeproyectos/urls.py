@@ -10,4 +10,5 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('accounts/profile/', views.home, name='home'),
     path('proyectos/', include('proyectos.urls')),
+    path('tipo_us/', include('tipo_us.urls')),
 ]

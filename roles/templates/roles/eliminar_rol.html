@@ -9,7 +9,8 @@
         <p>¿Estas seguro de que desea eliminar el rol "{{ rol }}"?</p>
         <form action="{% url 'roles:eliminar_rol' rol.id %}" method="POST">
             {% csrf_token %}
-            <input type="submit" name="Eliminar">
+            <br>
+            <input type="submit" name="Eliminar" value="Eliminar">&nbsp;&nbsp;&nbsp;&nbsp;
             <a href="{% url 'roles:index' %}">Cancelar</a>
         </form>
     {% else %}

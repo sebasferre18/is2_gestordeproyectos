@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Modificar Tipo de US
+    </title>
+</head>
+<body>
+    {% if "Modificar Tipo US" in permisos %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <br><br>
+            <input type="submit" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'tipo_us:listar_tipo_us' %}'">Cancelar</button>!-->
+            <a href="{% url 'tipo_us:listar_tipo_us' %}">Cancelar</a>
+        </form>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+</body>
+</html>

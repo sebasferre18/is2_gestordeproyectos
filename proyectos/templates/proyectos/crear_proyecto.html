@@ -13,7 +13,9 @@
         <table>{{ formulario }}</table>
         <br>
         <input type="submit" value="Registrar"/>&nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>
+        <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
+        <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>!-->
+
     </form>
 
 {% endblock %}

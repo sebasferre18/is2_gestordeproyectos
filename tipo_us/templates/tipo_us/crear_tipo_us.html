@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>
-        Modificar rol
+        Crear Tipo US
     </title>
 </head>
 <body>
-    {% if "Modificar Rol" in permisos %}
+    {% if "Crear Tipo US" in permisos %}
+        <h1>Registrar nuevo Tipo de User Story</h1>
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}
             <br><br>
-            <input type="submit" name="OK" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'roles:index' %}">Cancelar</a>
+            <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'tipo_us:listar_tipo_us' %}'">Cancelar</button>!-->
+            <a href="{% url 'tipo_us:listar_tipo_us' %}">Cancelar</a>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

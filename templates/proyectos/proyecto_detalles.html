@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Proyecto</title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Detalles del Proyecto{% endblock titulo %}
+{% block cuerpo %}
     <h1>Proyectos</h1>
     <h2>{{ proyecto }}</h2>
     <table>
@@ -37,7 +33,7 @@
                 <td>{{ m.rol }}</td>
             </tr>
         {% endfor %}
-    </table>
+    </table><br>
     {% if proyecto.estado == 'Planificacion' %}
         {% if "Iniciar Proyecto" in permisos %}
         <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:iniciar_proyecto' proyecto.id %}'">Iniciar</button>
@@ -62,5 +58,4 @@
         {% endif %}
     {% endif %}
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
-</body>
-</html>
+{% endblock cuerpo %}

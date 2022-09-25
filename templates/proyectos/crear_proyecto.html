@@ -1,15 +1,15 @@
 {% extends 'base/home.html' %}
-{% block titulo %}Nuevo Usuario{% endblock titulo %}
+{% block titulo %}Nuevo Proyecto{% endblock titulo %}
 {% block cuerpo %}
-    {% if 'Gestionar Usuarios' in permisos %}
+    {% if "Crear Proyecto" in permisos %}
         {% block encabezado %}
-            <h1> Registrar nuevo usuario</h1>
+            <h1> Registrar nuevo proyecto </h1>
         {%  endblock %}
         {% block contenido %}
             <form id="formulario" method="post" action="">{% csrf_token %}
-                <table>{{ usuario }}
-                    {{ formulario }}</table>
+                <table>{{ formulario }}</table>
                 <p><input type="submit" value="Registrar"/></p>
+                <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>
             </form>
         {% endblock %}
     {% else %}

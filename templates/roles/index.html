@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        table, td {
-            border: 1px solid black;
-            padding: 1px;
-        }
-        table {
-            border-spacing: 1px;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <title>Roles</title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Roles{% endblock titulo %}
+{% block cuerpo %}
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
         <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a><br><br>
@@ -35,5 +22,4 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
     <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a><br>
-</body>
-</html>
+{% endblock cuerpo %}

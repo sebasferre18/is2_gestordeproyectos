@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Formulario de Usuario</title>
-</head>
-<body>
-    {% block content %}
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Guardar</button>
-        </form>
-    {% endblock %}
-</body>
-</html>
+{% extends 'base/home.html' %}
+{% block titulo %}Formulario de Usuario{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Gestionar Usuarios' in permisos %}
+        {% block content %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Guardar</button>
+            </form>
+        {% endblock %}
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

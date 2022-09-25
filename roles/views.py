@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
+from proyectos.models import Proyecto
 from funciones import obtener_permisos
 
 """
@@ -15,7 +16,8 @@ def index(request, proyecto_id):
     """
     Clase de la vista de la lista de Roles
     """
-    roles = Rol.objects.all().order_by('id')
+    roles = Rol.objects.filter(proyecto_id=proyecto_id).order_by('id')
+
     user = request.user
 
     usuario = Usuario.objects.get(user_id=user.id)
@@ -36,11 +38,15 @@ def crear_rol(request, proyecto_id):
     """
     Clase de la vista para la creacion de un nuevo Rol.
     """
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     form = RolForm()
     if request.method == 'POST':
         form = RolForm(request.POST)
         if form.is_valid():
-            form.save()
+            aux = form.save(commit=False)
+            aux.proyecto = proyecto
+            aux.save()
+            form.save_m2m()
             return redirect('roles:index', proyecto_id)
 
     user = request.user

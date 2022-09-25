@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        Crear rol
-    </title>
-</head>
-<body>
-    {% if "Crear Rol" in permisos %}
+{% extends 'base/home.html' %}
+{% block titulo %}Modificar rol{% endblock titulo %}
+{% block cuerpo %}
+    {% if "Modificar Rol" in permisos %}
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}
@@ -18,5 +12,4 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="http://localhost:8000/">Home</a><br>
     {% endif %}
-</body>
-</html>
+{% endblock cuerpo %}

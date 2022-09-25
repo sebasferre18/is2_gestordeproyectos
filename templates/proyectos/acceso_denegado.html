@@ -1,0 +1,6 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Acceso denegado{% endblock titulo %}
+{% block cuerpo %}
+    <h1>No perteneces a este proyecto</h1>
+    <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
+{% endblock cuerpo %}

@@ -26,6 +26,7 @@ class Rol(models.Model):
     permiso = models.ManyToManyField('Permiso', blank=False)
     nombre = models.CharField(max_length=50, unique=True, blank=False, null=False)
     descripcion = models.TextField(blank=True, null=True)
+    proyecto = models.ForeignKey('proyectos.Proyecto', on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         """

@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        table, td {
-            border: 1px solid black;
-            padding: 1px;
-        }
-        table {
-            border-spacing: 1px;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <title>Permisos</title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Permisos{% endblock titulo %}
+{% block cuerpo %}
     {% if "Crear Permiso" in permisos %}
         <h1>Permisos</h1>
         <a href="{% url 'roles:crear_permiso' %}">Crear permiso</a><br><br>
@@ -33,5 +20,4 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="http://localhost:8000/">Home</a><br>
     {% endif %}
-</body>
-</html>
+{% endblock cuerpo %}

@@ -1,8 +1,13 @@
 from django import forms
 from proyectos.models import Proyecto, Miembro
 
+"""
+Definicion de los formularios para la gestion de proyectos.
+"""
+
 
 class ProyectoForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Proyecto"""
     class Meta:
         model = Proyecto
         fields = [
@@ -20,6 +25,7 @@ class ProyectoForm(forms.ModelForm):
 
 
 class MiembroForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Miembro"""
     class Meta:
         model = Miembro
         fields = [

@@ -1,13 +1,6 @@
-<html>
-
-<head>
-
-<title>Busqueda de  Usuario</title>
-
-</head>
-
-<body>
-
+{% extends 'base/home.html' %}
+{% block titulo %}Asignar Usuarios{% endblock titulo %}
+{% block cuerpo %}
     <h1> Buscar usuario a asignar </h1>
 
     <form action="" method="POST">
@@ -16,7 +9,4 @@
         <input type="submit" name="OK">
         <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
     </form>
-
-</body>
-
-</html>
+{% endblock cuerpo %}

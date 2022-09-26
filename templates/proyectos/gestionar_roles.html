@@ -5,7 +5,7 @@
         <h1>Gestionar roles del miembro {{ miembro.usuario.user.username }}</h1>
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form }}
+            <table>{{ form }}</table><br>
             <input type="submit" name="OK">
             <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
         </form><br>

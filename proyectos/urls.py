@@ -13,9 +13,11 @@ urlpatterns = [
     path('<int:proyecto_id>/', views.ver_detalles, name='ver_detalles'),
     path('assign/<int:proyecto_id>/', views.asignar_usuarios, name='asignar_usuarios'),
     path('unassign/<int:proyecto_id>/', views.desasignar_usuarios, name='desasignar_usuarios'),
+    path('assign/<int:proyecto_id>/<int:user_id>', views.agregar_miembro, name='agregar_miembro'),
     path('unassign/<int:proyecto_id>/<int:miembro_id>', views.eliminar_miembro, name='eliminar_miembro'),
     path('start/<int:proyecto_id>/', views.iniciar_proyecto, name='iniciar_proyecto'),
     path('end/<int:proyecto_id>/', views.finalizar_proyecto, name='finalizar_proyecto'),
     path('cancel/<int:proyecto_id>/', views.cancelar_proyecto, name='cancelar_proyecto'),
     path('denied', views.acceso_denegado, name='acceso_denegado'),
+    path('members/<int:proyecto_id>/<int:miembro_id>', views.gestionar_roles, name='gestionar_roles'),
 ]

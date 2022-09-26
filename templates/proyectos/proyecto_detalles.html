@@ -31,6 +31,9 @@
             <tr>
                 <td>{{ m.usuario }}</td>
                 <td>{{ m.rol }}</td>
+                {% if 'Gestionar Roles De Un Usuario' in permisos %}
+                    <td><a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a></td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table><br>

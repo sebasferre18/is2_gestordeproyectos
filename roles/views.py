@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
-from proyectos.models import Proyecto
+from proyectos.models import Proyecto, Miembro
 from funciones import obtener_permisos
 
 """
@@ -17,13 +17,18 @@ def index(request, proyecto_id):
     Clase de la vista de la lista de Roles
     """
     roles = Rol.objects.filter(proyecto_id=proyecto_id).order_by('id')
+    proyecto = Proyecto.objects.get(id=proyecto_id)
 
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
+    rol = miembro_aux.rol
+    if rol:
+        permisos = obtener_permisos([rol])
+    else:
+        permisos = []
 
     context = {
         'role_list': roles,
@@ -50,11 +55,15 @@ def crear_rol(request, proyecto_id):
             return redirect('roles:index', proyecto_id)
 
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
+    rol = miembro_aux.rol
+    if rol:
+        permisos = obtener_permisos([rol])
+    else:
+        permisos = []
 
     context = {
         'form': form,
@@ -69,6 +78,7 @@ def modificar_rol(request, rol_id, proyecto_id):
     """
     Clase de la vista para la modificacion de un Rol
     """
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     rol = get_object_or_404(Rol, pk=rol_id)
     form = RolForm(instance=rol)
 
@@ -79,11 +89,15 @@ def modificar_rol(request, rol_id, proyecto_id):
             return redirect('roles:index', proyecto_id)
 
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
+    rol = miembro_aux.rol
+    if rol:
+        permisos = obtener_permisos([rol])
+    else:
+        permisos = []
 
     context = {
         'form': form,
@@ -96,12 +110,17 @@ def modificar_rol(request, rol_id, proyecto_id):
 @login_required
 def eliminar_rol(request, rol_id, proyecto_id):
     """Clase de la vista para eliminar un rol"""
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
+    rol = miembro_aux.rol
+    if rol:
+        permisos = obtener_permisos([rol])
+    else:
+        permisos = []
 
     rol = get_object_or_404(Rol, pk=rol_id)
     if request.method == 'POST':

@@ -4,10 +4,10 @@ from . import views
 app_name = 'tipo_us'
 
 urlpatterns = [
-    path('', views.listar_tipo_us, name='listar_tipo_us'),
-    path('crear_tipo_us/', views.crear_tipo_us, name='crear_tipo_us'),
-    path('modificar_tipo_us/<int:tipo_us_id>/', views.modificar_tipo_us, name='modificar_tipo_us'),
-    path('eliminar_tipo_us/<int:tipo_us_id>/', views.eliminar_tipo_us, name='eliminar_tipo_us'),
+    path('<int:proyecto_id>/', views.listar_tipo_us, name='listar_tipo_us'),
+    path('crear_tipo_us/<int:proyecto_id>/', views.crear_tipo_us, name='crear_tipo_us'),
+    path('modificar_tipo_us/<int:proyecto_id>/<int:tipo_us_id>/', views.modificar_tipo_us, name='modificar_tipo_us'),
+    path('eliminar_tipo_us/<int:proyecto_id>/<int:tipo_us_id>/', views.eliminar_tipo_us, name='eliminar_tipo_us'),
 ]
 
 '''path('create/', views.crear_proyecto, name='crear_proyecto'),

@@ -6,98 +6,116 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from datetime import date
 
-from tipo_us.models import Tipo_US
+from tipo_us.models import Tipo_US, MiembroTipoUs
 from tipo_us.forms import Tipo_usForm
+from proyectos.models import Proyecto
 from usuarios.models import Usuario
 from funciones import obtener_permisos
 
 # Create your views here.
 
-def listar_tipo_us(request):
-    tipo_us = Tipo_US.objects.all().order_by('id')
+def listar_tipo_us(request, proyecto_id):
+    #tipo_us = Tipo_US.objects.all().order_by('id')
+    #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    miembro_tipo_us = MiembroTipoUs.objects.filter(proyecto=proyecto)
 
-    form = Tipo_usForm()
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+    permisos = obtener_permisos(rol)
+
+    #Aun no se tiene seguridad si es necesario implementar este condicional
+    '''if "Crear Tipo US" not in permisos:
+        miembro = miembro_tipo_us.get(usuario=usuario)
+        rol = miembro.rol
+        if rol:
+            permisos = obtener_permisos([rol])
+        else:
+            permisos = []'''
+
+    context = {
+        #'tipo_us': tipo_us,
+        'permisos': permisos,
+        'proyecto': proyecto,
+        'miembro_tipo_us': miembro_tipo_us,
+    }
+
+    '''form = Tipo_usForm()
     if request.method == 'POST':
         form = Tipo_usForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/tipo_us/')
-
-    user = request.user
-
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
-
-    context = {
-        'tipo_us': tipo_us,
-        'permisos': permisos
-    }
+            return redirect('/tipo_us/')'''
 
     return render(request, 'tipo_us/listar_tipo_us.html', context)
 
-def crear_tipo_us(request):
+'''< !-- < table >
+{ %
+for m in miembros %}
+< tr >
+< td
+style = "width:30%" > {{tipo.nombre}} < / td >
+< td > {{tipo.descripcion}} < / td > & nbsp; & nbsp; & nbsp; & nbsp;
+< td > < a
+href = "{% url 'tipo_us:modificar_tipo_us' tipo.id %}" > Modificar < / a > < / td >
+< td > < a
+href = "{% url 'tipo_us:eliminar_tipo_us' tipo.id %}" > Eliminar < / a > < / td >
+< / tr >
+{ % endfor %}
+< / table >!-->'''
+
+def crear_tipo_us(request, proyecto_id):
+    #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    miembro = MiembroTipoUs()
+    miembro.proyecto = proyecto
 
     form = Tipo_usForm()
     if request.method == 'POST':
         form = Tipo_usForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/tipo_us/')
+            tipo_us = form.save()
+            miembro.tipo_us = tipo_us
+            miembro.save()
+            return HttpResponseRedirect('/tipo_us/' + str(proyecto_id) + '/')
 
-    user = request.user
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
 
     context = {
         'form': form,
-        'permisos': permisos
+        'proyecto': proyecto
     }
     return render(request, 'tipo_us/crear_tipo_us.html', context)
 
-
-def modificar_tipo_us(request, tipo_us_id):
-    tipo_u = get_object_or_404(Tipo_US, pk=tipo_us_id)
-    form = Tipo_usForm(instance=tipo_u)
+def modificar_tipo_us(request, proyecto_id, tipo_us_id):
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
+    tipo_us = miembro_tipo_us.tipo_us
+    form = Tipo_usForm(instance=tipo_us)
 
     if request.method == 'POST':
-        form = Tipo_usForm(request.POST, instance=tipo_u)
+        form = Tipo_usForm(request.POST, instance=tipo_us)
         if form.is_valid():
             form.save()
-            return redirect('/tipo_us/')
-
-    user = request.user
-
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
+            return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
     context = {
         'form': form,
-        'permisos': permisos
+        'proyecto': proyecto
     }
     return render(request, 'tipo_us/modificar_tipo_us.html', context)
 
 
-def eliminar_tipo_us(request, tipo_us_id):
-    user = request.user
+def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
 
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
-
-    tipo_u = get_object_or_404(Tipo_US, pk=tipo_us_id)
     if request.method == 'POST':
-        tipo_u.delete()
-        return redirect('/tipo_us/')
+        miembro_tipo_us.delete()
+        return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
     context = {
-        'tipo_u': tipo_u,
-        'permisos': permisos
+        'miembro_tipo_us': miembro_tipo_us,
+        'proyecto': proyecto
     }
     return render(request, 'tipo_us/eliminar_tipo_us.html', context)

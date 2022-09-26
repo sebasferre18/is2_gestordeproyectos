@@ -1,23 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Modificar Usuario</title>
-</head>
-<body>
-    <h1> Modificar Usuario </h1>
-
-    <form method="POST">
-        {% csrf_token %}
-        <table>
-            {{ usuario }}
-            {{ formulario }}
-        </table>
-        <br>
-        <button type="submit" class="save btn btn-default">Guardar</button> &nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'usuarios:listar_usuarios' %}'">Cancelar</button>
+{% extends 'base/home.html' %}
+{% block titulo %}Modificar Usuario{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Gestionar Usuarios' in permisos %}
+        <h1> Modificar Usuario </h1>
+        <br><br>
+        <form method="POST">
+            {% csrf_token %}
+            <table>
+                {{ usuario }}
+                {{ formulario }}
+            </table>
+            <button type="submit" class="save btn btn-default">Guardar</button>
+            <button class="cancel-link btn btn-default" onclick="location.href='{% url 'usuarios:listar_usuarios' %}'">Cancelar</button>
         </form>
-
-
-</body>
-</html>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

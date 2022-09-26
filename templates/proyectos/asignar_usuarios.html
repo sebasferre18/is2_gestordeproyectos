@@ -1,0 +1,24 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Asignar Miembros{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Asignar Miembros' in permisos %}
+        <h1>Asignar Miembros</h1>
+        {% if usuarios %}
+            <table>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.user.username }}</td>
+                    <td><a href="{% url 'proyectos:agregar_miembro' proyecto_id u.user_id %}">Asignar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No hay usuarios que asignar al proyecto.</p>
+        {% endif %}
+        <br>
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

@@ -25,15 +25,21 @@ class RolForm(forms.ModelForm):
             'permiso': forms.CheckboxSelectMultiple(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(RolForm, self).__init__(*args, **kwargs)
+        self.fields['permiso'].queryset = Permiso.objects.all().exclude(es_admin=True)
+
 
 class PermisoForm(forms.ModelForm):
     """Formulario generico con los campos del modelo Permiso"""
     class Meta:
         model = Permiso
         fields = [
-            'nombre'
+            'nombre',
+            'es_admin'
         ]
         labels = {
             'nombre': 'Nombre',
+            'es_admin': 'Es permiso administrativo',
         }
 

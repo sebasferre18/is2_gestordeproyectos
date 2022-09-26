@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        table, td {
+            border: 1px solid black;
+            padding: 1px;
+        }
+        table {
+            border-spacing: 1px;
+        }
+    </style>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>{% block titulo %}Home{% endblock titulo %}</title>
 </head>
 <body>
+    {% block cuerpo %}
     <h1>Bienvenido al sistema de gestor de proyecto del Grupo 6</h1>
 
     {% if user.is_authenticated %}
         {% if 'Visualizar Usuarios' in permisos %}
             <a href="/usuarios/listar_usuarios/">Usuarios</a><br>
         {% endif %}
-        {% if 'Visualizar Roles' in permisos %}
-            <a href="/roles/">Roles</a><br>
+        {% if 'Visualizar Permisos' in permisos %}
+            <a href="{% url 'roles:permiso_index' %}">Permisos</a><br>
         {% endif %}
         <a href="/proyectos/">Proyectos</a><br>
         <a href="/accounts/logout/">Logout</a><br>
@@ -21,6 +31,6 @@
     {% else %}
         <a href="/accounts/login/">Login</a><br>
     {% endif %}
-
+    {% endblock cuerpo %}
 </body>
 </html>

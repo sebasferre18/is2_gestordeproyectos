@@ -1,0 +1,24 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Desasignar Miembros{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Desasignar Miembros' in permisos %}
+        <h1>Desasignar Miembros</h1>
+        {% if miembros %}
+            <table>
+                {% for m in miembros %}
+                <tr>
+                    <td>{{ m.usuario.user.username }}</td>
+                    <td><a href="{% url 'proyectos:eliminar_miembro' proyecto_id m.id %}">Desasignar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No hay usuarios que desasignar al proyecto.</p>
+        {% endif %}
+        <br>
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

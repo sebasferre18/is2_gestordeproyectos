@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        {% if permiso %}
-            Modificar permiso: {{ permiso.name }}
-        {% else %}
-            Crear permiso
-        {% endif %}
-    </title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Formulario de permiso{% endblock titulo %}
+{% block cuerpo %}
     <form action="" method="POST">
         {% if "Visualizar Permisos" in permisos %}
         <h1>Crear Permiso</h1>
@@ -25,5 +15,4 @@
             <a href="http://localhost:8000/">Home</a><br>
         {% endif %}
     </form>
-</body>
-</html>
+{% endblock cuerpo %}

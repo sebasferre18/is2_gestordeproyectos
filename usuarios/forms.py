@@ -3,23 +3,25 @@ from django.contrib.auth.models import User
 from usuarios.models import Usuario
 from django.forms import inlineformset_factory
 
+"""
+Definicion de los formularios para la gestion de usuarios.
+"""
+
 
 class UserForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo User de Django"""
     class  Meta:
         model = User
         fields = [
             'first_name',
             'last_name',
             'username',
-            'email',
-            'password'
+            'email'
         ]
-        widgets = {
-            'password': forms.PasswordInput,
-        }
 
 
 class UsuarioForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo extendido Usuario"""
     class Meta:
         model = Usuario
         fields = [

@@ -1,0 +1,15 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Crear rol{% endblock titulo %}
+{% block cuerpo %}
+    {% if "Crear Rol" in permisos %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="OK">
+            <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
+        </form>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

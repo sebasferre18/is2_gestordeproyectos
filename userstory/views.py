@@ -8,13 +8,6 @@ from funciones import obtener_permisos
 def listar_us(request):
     us = UserStory.objects.all().order_by('id')
 
-    form = US_Form()
-    if request.method == 'POST':
-        form = US_Form(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/listar_us/')
-
     user = request.user
 
     usuario = Usuario.objects.get(user_id=user.id)
@@ -23,7 +16,7 @@ def listar_us(request):
     permisos = obtener_permisos(rol)
 
     context = {
-        'us': us,
+        'UserStory': us,
         'permisos': permisos
     }
 
@@ -36,7 +29,7 @@ def crear_us(request):
         form = US_Form(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/crear_us/')
+            return redirect('/userstory/listar_us/')
 
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
@@ -46,20 +39,20 @@ def crear_us(request):
 
     context = {
         'form': form,
-        'permisos': permisos
+        'permisos': permisos,
     }
     return render(request, 'userstory/crear_us.html', context)
 
 
-def modificar_us(request, tipo_us_id):
-    us = get_object_or_404(UserStory, pk=tipo_us_id)
+def modificar_us(request, us_id):
+    us = get_object_or_404(UserStory, pk=us_id)
     form = US_Form(instance=us)
 
     if request.method == 'POST':
         form = US_Form(request.POST, instance=us)
         if form.is_valid():
             form.save()
-            return redirect('/listar_us/')
+            return redirect('/userstory/listar_us/')
 
     user = request.user
 

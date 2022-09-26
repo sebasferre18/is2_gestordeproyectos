@@ -20,9 +20,28 @@
         <br>
         {% if UserStory %}
             <table>
+                <td>Nombre</td>
+                <td>Descripcion</td>
+                <td>tipode US</td>
+                <td>horas estimadas</td>
+                <td>fecha de creacion</td>
+                <td>user point</td>
+                <td>business value</td>
+                <td>autor</td>
+                <td>aprobado</td>
+                <td>Modificar</td>
                 {% for us in UserStory %}
                 <tr>
-                    <td style="width:30%">{{ us.nombre }}</td>
+                    <td style="text-align: left">{{ us.nombre }}</td>
+                    <td style="text-align: left">{{ us.descripcion }}</td>
+                    <td style="text-align: left">{{ us.tipo_us }}</td>
+                    <td style="text-align: left">{{ us.horas_estimadas }}</td>
+                    <td style="text-align: left">{{ us.fecha_creacion }}</td>
+                    <td style="text-align: left">{{ us.user_point }}</td>
+                    <td style="text-align: left">{{ us.business_value }}</td>
+                    <td style="text-align: left">{{ us.autor }}</td>
+                    <td style="text-align: left">{{ us.aprobado }}</td>
+                    <td style="text-align: left"><a href="{% url 'userstory:modificar_us' us.id %}">Modificar</a></td>
 
                 </tr>
                 {% endfor %}
@@ -34,6 +53,10 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
     <br><br>
-    <a href="http://localhost:8000/">Home</a><br>
+    <a href="http://localhost:8000/">Home</a>
+    <a href="http://localhost:8000/userstory/crear_us">Crear US</a>
+    <a href="http://localhost:8000/tipo_us/">Administrar Tipo US</a>
+    <br>
+
 </body>
 </html>

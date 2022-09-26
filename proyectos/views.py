@@ -9,6 +9,8 @@ from usuarios.models import Usuario
 from roles.models import Rol, Permiso
 from funciones import obtener_permisos
 
+from userstory import views
+
 """
 Vistas de la app de Proyectos.
 """

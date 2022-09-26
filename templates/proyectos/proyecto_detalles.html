@@ -62,5 +62,6 @@
         <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>
         {% endif %}
     {% endif %}
+    <a href="{%  url 'userstory:listar_us' %}">User Story</a>
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
 {% endblock cuerpo %}

@@ -1,23 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        Modificar rol
-    </title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Modificar rol{% endblock titulo %}
+{% block cuerpo %}
     {% if "Modificar Rol" in permisos %}
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}
-            <br><br>
-            <input type="submit" name="OK" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'roles:index' %}">Cancelar</a>
+            <input type="submit" name="OK">
+            <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="http://localhost:8000/">Home</a><br>
     {% endif %}
-</body>
-</html>
+{% endblock cuerpo %}

@@ -19,6 +19,7 @@
         {% if "Crear Tipo US" in permisos %}
             <a href="{% url 'tipo_us:crear_tipo_us' proyecto.id %}">Crear Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
+        <a href="{% url 'tipo_us:importar_tipo_us' proyecto.id %}">Importar Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
         <br>
         {% if miembro_tipo_us %}
             <table>

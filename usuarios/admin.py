@@ -7,12 +7,18 @@ from .models import Usuario
 
 
 class UsuarioInline(admin.StackedInline):
+    """
+    Se define la clase Inline del modelo Usuario que extiende al modelo User de Django
+    """
     model = Usuario
     can_delete = False
     verbose_name_plural = 'usuarios'
 
 
 class UserAdmin(BaseUserAdmin):
+    """
+    Se define la clase que logra extender el modelo User de Django
+    """
     inlines = (UsuarioInline,)
 
 

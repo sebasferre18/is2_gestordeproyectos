@@ -1,30 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        table, td {
-            border: 1px solid black;
-            padding: 1px;
-        }
-        table {
-            border-spacing: 1px;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <title>Roles</title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Roles{% endblock titulo %}
+{% block cuerpo %}
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
-        <a href="{% url 'roles:crear_rol' %}">Crear Rol</a>&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="{% url 'roles:permiso_index' %}">Permisos</a>
+        <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a><br><br>
         {% if role_list %}
             <table>
                 {% for rol in role_list %}
                     <tr>
                         <td style="width:100%">{{ rol.nombre }}</td>
-                        <td><a href="{% url 'roles:modificar_rol' rol.id %}">Modificar</a></td>
-                        <td><a href="{% url 'roles:eliminar_rol' rol.id %}">Eliminar</a></td>
+                        <td><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></td>
+                        <td><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></td>
                     </tr>
                 {% endfor %}
             </table>
@@ -35,6 +21,5 @@
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
-    <a href="http://localhost:8000/">Home</a><br>
-</body>
-</html>
+    <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a><br>
+{% endblock cuerpo %}

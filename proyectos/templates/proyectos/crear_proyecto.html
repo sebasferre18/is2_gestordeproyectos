@@ -1,23 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuevo Proyecto</title>
-</head>
-<body>
-{% block encabezado %}
-    <h1> Registrar nuevo proyecto </h1>
-{%  endblock %}
-{% block contenido %}
-    <form id="formulario" method="post" action="">{% csrf_token %}
-        <table>{{ formulario }}</table>
-        <br>
-        <input type="submit" value="Registrar"/>&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
-        <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>!-->
-
-    </form>
-
-{% endblock %}
-</body>
-</html>
+{% extends 'base/home.html' %}
+{% block titulo %}Nuevo Proyecto{% endblock titulo %}
+{% block cuerpo %}
+    {% if "Crear Proyecto" in permisos %}
+        {% block encabezado %}
+            <h1> Registrar nuevo proyecto </h1>
+        {%  endblock %}
+        {% block contenido %}
+            <form id="formulario" method="post" action="">{% csrf_token %}
+                <table>{{ formulario }}
+                {{ formulario_miembro }}</table>
+                <p><input type="submit" value="Registrar"/></p>
+                <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:listar_proyectos' %}'">Cancelar</button>
+            </form>
+        {% endblock %}
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

@@ -1,0 +1,24 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Importar Tipos de US{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Importar Tipo US' in permisos %}
+        <h1>Importar Tipo de US</h1>
+        {% if tipos_us %}
+            <table>
+                {% for tipo in tipos_us %}
+                <tr>
+                    <td>{{ tipo }}</td>
+                    <td><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.id %}">Importar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No hay tipos de us que importar al proyecto.</p>
+        {% endif %}
+        <br>
+        <a href="{% url 'tipo_us:listar_tipo_us' proyecto_id %}">Volver</a>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="http://localhost:8000/">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

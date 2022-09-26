@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Proyecto</title>
-</head>
-<body>
+{% extends 'base/home.html' %}
+{% block titulo %}Detalles del Proyecto{% endblock titulo %}
+{% block cuerpo %}
     <h1>Proyectos</h1>
     <h2>{{ proyecto }}</h2>
     <table>
@@ -34,36 +30,40 @@
         {% for m in miembros %}
             <tr>
                 <td>{{ m.usuario }}</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ m.rol }}</td>
+                <td>{% for r in m.rol.get_queryset %}
+                    {{ r }}<br>
+                {% endfor %}</td>
+                {% if 'Gestionar Roles De Un Usuario' in permisos %}
+                    <td><a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a></td>
+                {% endif %}
             </tr>
         {% endfor %}
-    </table>
-    <br>
+    </table><br>
     {% if proyecto.estado == 'Planificacion' %}
         {% if "Iniciar Proyecto" in permisos %}
-        <br><br>
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:iniciar_proyecto' proyecto.id %}'">Iniciar</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:iniciar_proyecto' proyecto.id %}'">Iniciar</button>
         {% endif %}
     {% elif proyecto.estado == 'En ejecucion' %}
         {% if "Finalizar Proyecto" in permisos %}
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:finalizar_proyecto' proyecto.id %}'">Finalizar</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:finalizar_proyecto' proyecto.id %}'">Finalizar</button>
         {% endif %}
         {% if "Cancelar Proyecto" in permisos %}
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:cancelar_proyecto' proyecto.id %}'">Cancelar</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'proyectos:cancelar_proyecto' proyecto.id %}'">Cancelar</button>
         {% endif %}
     {% endif %}
-    <br><br>
     {% if proyecto.estado == 'Planificacion' or proyecto.estado == 'En ejecucion' %}
+        {% if 'Visualizar Roles' in permisos %}
+            <a href="{% url 'roles:index' proyecto.id %}">Roles</a>
+        {% endif %}
         {% if "Asignar Miembros" in permisos %}
-        <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Miembros</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Miembros</a>
         {% endif %}
         {% if "Desasignar Miembros" in permisos %}
-        <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>
         {% endif %}
     {% endif %}
     <br><br>
     <a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">User Story</a>
     <br><br>
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
-</body>
-</html>
+{% endblock cuerpo %}

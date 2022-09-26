@@ -38,5 +38,5 @@ class Miembro(models.Model):
     """
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, null=False, blank=False)
     usuario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, null=True, blank=True)
-    rol = models.ForeignKey(Rol, on_delete=models.PROTECT, null=True, blank=True)
+    rol = models.ManyToManyField(Rol, blank=True)
 

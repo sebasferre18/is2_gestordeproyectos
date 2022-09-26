@@ -30,7 +30,9 @@
         {% for m in miembros %}
             <tr>
                 <td>{{ m.usuario }}</td>
-                <td>{{ m.rol }}</td>
+                <td>{% for r in m.rol.get_queryset %}
+                    {{ r }}<br>
+                {% endfor %}</td>
                 {% if 'Gestionar Roles De Un Usuario' in permisos %}
                     <td><a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a></td>
                 {% endif %}

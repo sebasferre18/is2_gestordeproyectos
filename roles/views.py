@@ -24,9 +24,9 @@ def index(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
@@ -59,9 +59,9 @@ def crear_rol(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
@@ -93,9 +93,9 @@ def modificar_rol(request, rol_id, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
@@ -116,9 +116,9 @@ def eliminar_rol(request, rol_id, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 

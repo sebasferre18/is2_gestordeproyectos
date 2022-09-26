@@ -4,7 +4,6 @@ from django.urls import reverse
 from usuarios.models import Usuario
 
 
-@pytest.mark.django_db
 class TestVistas:
     @pytest.mark.django_db
     def test_listar_usuario(self, client, django_user_model):

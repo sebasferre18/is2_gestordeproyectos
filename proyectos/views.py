@@ -75,8 +75,8 @@ def crear_proyecto(request):
             for a in formulario_miembro.forms:
                 up = a.save(commit=False)
                 up.proyecto = form
-                up.rol = sm
                 up.save()
+                up.rol.set([sm])
             return HttpResponseRedirect('/proyectos/')
     else:
         formulario = ProyectoForm()
@@ -103,9 +103,9 @@ def asignar_usuarios(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
@@ -129,9 +129,9 @@ def desasignar_usuarios(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros_aux.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
@@ -170,9 +170,9 @@ def gestionar_roles(request, proyecto_id, miembro_id):
             miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
         except Miembro.DoesNotExist:
             return redirect('proyectos:acceso_denegado')
-        rol = miembro_aux.rol
+        rol = miembro_aux.rol.get_queryset()
         if rol:
-            permisos = obtener_permisos([rol])
+            permisos = obtener_permisos(rol)
         else:
             permisos = []
 
@@ -226,9 +226,9 @@ def ver_detalles(request, proyecto_id):
             miembro = miembros.get(usuario=usuario, proyecto=proyecto)
         except Miembro.DoesNotExist:
             return redirect('proyectos:acceso_denegado')
-        rol = miembro.rol
+        rol = miembro.rol.get_queryset()
         if rol:
-            permisos = obtener_permisos([rol])
+            permisos = obtener_permisos(rol)
         else:
             permisos = []
 

@@ -33,6 +33,9 @@ class MiembroForm(forms.ModelForm):
         fields = [
             'rol'
         ]
+        widgets = {
+            'rol': forms.CheckboxSelectMultiple(),
+        }
 
     def __init__(self, *args, **kwargs):
         self.pro_id = kwargs.pop('pro_id', None)

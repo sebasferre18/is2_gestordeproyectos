@@ -29,6 +29,7 @@
                 <td>business value</td>
                 <td>autor</td>
                 <td>aprobado</td>
+                <td>Proyecto</td>
                 <td>Modificar</td>
                 {% for us in UserStory %}
                 <tr>
@@ -41,6 +42,7 @@
                     <td style="text-align: left">{{ us.business_value }}</td>
                     <td style="text-align: left">{{ us.autor }}</td>
                     <td style="text-align: left">{{ us.aprobado }}</td>
+                    <td style="text-align: left">{{ us.proyecto }}</td>
                     <td style="text-align: left"><a href="{% url 'userstory:modificar_us' us.id %}">Modificar</a></td>
 
                 </tr>
@@ -54,7 +56,7 @@
     {% endif %}
     <br><br>
     <a href="http://localhost:8000/">Home</a>
-    <a href="http://localhost:8000/userstory/crear_us">Crear US</a>
+    <a href="http://localhost:8000/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
     <a href="http://localhost:8000/tipo_us/">Administrar Tipo US</a>
     <br>
 

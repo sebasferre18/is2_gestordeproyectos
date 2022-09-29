@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
+
+from proyectos.models import Proyecto
 from usuarios.models import Usuario
 from userstory.models import UserStory
 from userstory.forms import US_Form
 from funciones import obtener_permisos
 
 
-def listar_us(request):
-    us = UserStory.objects.all().order_by('id')
+def listar_us(request, proyecto_id):
+    us = UserStory.objects.all().filter(proyecto_id=proyecto_id).order_by('id')
 
     user = request.user
 
@@ -17,19 +19,23 @@ def listar_us(request):
 
     context = {
         'UserStory': us,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id,
     }
 
     return render(request, 'userstory/listar_us.html', context)
 
-def crear_us(request):
-
+def crear_us(request, proyecto_id):
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     form = US_Form()
     if request.method == 'POST':
         form = US_Form(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/userstory/listar_us/')
+            aux = form.save(commit=False)
+            aux.proyecto = proyecto
+            aux.save()
+
+            return redirect('userstory:listar_us', proyecto_id)
 
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
@@ -40,6 +46,7 @@ def crear_us(request):
     context = {
         'form': form,
         'permisos': permisos,
+        'proyecto_id': proyecto_id,
     }
     return render(request, 'userstory/crear_us.html', context)
 

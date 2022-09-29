@@ -10,6 +10,7 @@ class UserStory(models.Model):
     autor = models.TextField('usuarios.Usuario', null=True)
     aprobado = models.BooleanField(default=False)
     fecha_creacion = models.DateField(blank=True, null=True)
+    proyecto = models.ForeignKey('proyectos.Proyecto', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.nombre

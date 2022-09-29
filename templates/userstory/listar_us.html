@@ -43,7 +43,7 @@
                     <td style="text-align: left">{{ us.autor }}</td>
                     <td style="text-align: left">{{ us.aprobado }}</td>
                     <td style="text-align: left">{{ us.proyecto }}</td>
-                    <td style="text-align: left"><a href="{% url 'userstory:modificar_us' us.id %}">Modificar</a></td>
+                    <td style="text-align: left"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></td>
 
                 </tr>
                 {% endfor %}

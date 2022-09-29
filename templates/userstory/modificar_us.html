@@ -14,7 +14,7 @@
             <br><br>
             <input type="submit" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
 
-            <a href="{% url 'userstory:listar_us' %}">Cancelar</a>
+            <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

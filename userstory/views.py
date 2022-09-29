@@ -51,7 +51,7 @@ def crear_us(request, proyecto_id):
     return render(request, 'userstory/crear_us.html', context)
 
 
-def modificar_us(request, us_id):
+def modificar_us(request,proyecto_id, us_id):
     us = get_object_or_404(UserStory, pk=us_id)
     form = US_Form(instance=us)
 
@@ -59,7 +59,7 @@ def modificar_us(request, us_id):
         form = US_Form(request.POST, instance=us)
         if form.is_valid():
             form.save()
-            return redirect('/userstory/listar_us/')
+            return redirect('userstory:listar_us', proyecto_id)
 
     user = request.user
 
@@ -70,6 +70,7 @@ def modificar_us(request, us_id):
 
     context = {
         'form': form,
-        'permisos': permisos
+        'permisos': permisos,
+        'proyecto_id': proyecto_id,
     }
     return render(request, 'userstory/modificar_us.html', context)

@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.forms.formsets import formset_factory
@@ -15,11 +16,16 @@ def nuevo_usuario(request):
     """
     Clase de la vista para la creacion de un nuevo Usuario
     """
+    user_form = UserForm()
+    usuario_form = UsuarioFormSet()
+
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         usuario_form = UsuarioFormSet(request.POST)
         if user_form.is_valid() and usuario_form.is_valid():
-            user = user_form.save()
+            user = user_form.save(commit=False)
+            user.password = make_password(user.password)
+            user.save()
 
             for a in usuario_form.forms:
                 up = a.save(commit=False)
@@ -27,16 +33,14 @@ def nuevo_usuario(request):
                 up.save()
 
             return HttpResponseRedirect('/usuarios/listar_usuarios/')
-    else:
-        user_form = UserForm()
-        usuario_form = UsuarioFormSet()
 
-        user_aux = request.user
+    user_aux = request.user
 
-        usuario_aux = Usuario.objects.get(user_id=user_aux.id)
-        rol = usuario_aux.rol.all()
+    usuario_aux = Usuario.objects.get(user_id=user_aux.id)
+    rol = usuario_aux.rol.all()
 
-        permisos = obtener_permisos(rol)
+    permisos = obtener_permisos(rol)
+
     return render(request,  'usuarios/nuevousuario.html', {'usuario': user_form, 'formulario':usuario_form, 'permisos':permisos})
 
 @login_required
@@ -53,7 +57,9 @@ def modificar_usuario(request, id_usuario):
         user_form = UserForm(request.POST, instance=user)
         usuario_form = UsuarioFormSet(request.POST, instance=usuario)
         if user_form.is_valid() and usuario_form.is_valid():
-            user = user_form.save()
+            user = user_form.save(commit=False)
+            user.password = make_password(user.password)
+            user.save()
 
             for a in usuario_form.forms:
                 up = a.save(commit=False)

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from proyectos.models import Proyecto
+from proyectos.models import Proyecto, Miembro
 from usuarios.models import Usuario
 from userstory.models import UserStory
 from userstory.forms import US_Form
@@ -11,11 +11,15 @@ def listar_us(request, proyecto_id):
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id).order_by('id')
 
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto_id=proyecto_id)
+    rol = miembro_aux.rol.get_queryset()
+    if rol:
+        permisos = obtener_permisos(rol)
+    else:
+        permisos = []
 
     context = {
         'UserStory': us,
@@ -38,10 +42,15 @@ def crear_us(request, proyecto_id):
             return redirect('userstory:listar_us', proyecto_id)
 
     user = request.user
+    miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto_id=proyecto_id)
+    rol = miembro_aux.rol.get_queryset()
+    if rol:
+        permisos = obtener_permisos(rol)
+    else:
+        permisos = []
 
     context = {
         'form': form,
@@ -62,11 +71,15 @@ def modificar_us(request,proyecto_id, us_id):
             return redirect('userstory:listar_us', proyecto_id)
 
     user = request.user
-
+    miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
     usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
 
-    permisos = obtener_permisos(rol)
+    miembro_aux = miembros.get(usuario=usuario, proyecto_id=proyecto_id)
+    rol = miembro_aux.rol.get_queryset()
+    if rol:
+        permisos = obtener_permisos(rol)
+    else:
+        permisos = []
 
     context = {
         'form': form,

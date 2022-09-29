@@ -16,19 +16,31 @@
 <body>
     {% if "Visualizar Tipo US" in permisos %}
         <h1>Tipos de User Story</h1>
-        <a href="{% url 'tipo_us:crear_tipo_us' %}">Crear Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        {% if "Crear Tipo US" in permisos %}
+            <a href="{% url 'tipo_us:crear_tipo_us' proyecto.id %}">Crear Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        {% endif %}
+        <a href="{% url 'tipo_us:importar_tipo_us' proyecto.id %}">Importar Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
         <br>
-        {% if tipo_us %}
+        {% if miembro_tipo_us %}
             <table>
-                {% for tipo in tipo_us %}
                 <tr>
-                    <td style="width:30%">{{ tipo.nombre }}</td>
-                    <td>{{ tipo.descripcion }}</td>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <td><a href="{% url 'tipo_us:modificar_tipo_us' tipo.id %}">Modificar</a></td>
-                    <td><a href="{% url 'tipo_us:eliminar_tipo_us' tipo.id %}">Eliminar</a></td>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
                 </tr>
+                {% for m in miembro_tipo_us %}
+                    <tr>
+                        <td style="width:30%">{{ m.tipo_us }}</td>
+                        <td>{{ m.tipo_us.descripcion }}</td>
+                        {% if "Modificar Tipo US" in permisos %}
+                            <td><a href="{% url 'tipo_us:modificar_tipo_us' proyecto.id m.id %}">Modificar</a></td>
+                        {% endif %}
+                        {% if "Eliminar Tipo US" in permisos %}
+                            <td><a href="{% url 'tipo_us:eliminar_tipo_us' proyecto.id m.id %}">Eliminar</a></td>
+                        {% endif %}
+                    </tr>
                 {% endfor %}
             </table>
+            <br>
         {% else %}
             <h1>No existen tipos de User Story</h1>
         {% endif %}
@@ -36,6 +48,7 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
     <br><br>
-    <a href="http://localhost:8000/">Home</a><br>
+    <a href="{% url 'proyectos:ver_detalles' proyecto.id  %}">Volver</a>
 </body>
 </html>
+

@@ -1,4 +1,5 @@
 from django.db import models
+from proyectos.models import Proyecto
 
 # Create your models here.
 
@@ -9,3 +10,10 @@ class Tipo_US(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def crear_tipo_us(self, nombre, fecha_creacion, descripcion):
+        return self._crear_tipo_us(nombre, fecha_creacion, descripcion)
+
+class MiembroTipoUs(models.Model):
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, null=False, blank=False)
+    tipo_us = models.ForeignKey(Tipo_US, on_delete=models.CASCADE, null=True, blank=True)

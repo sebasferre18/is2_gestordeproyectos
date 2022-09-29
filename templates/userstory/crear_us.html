@@ -13,8 +13,7 @@
             {% csrf_token %}
             {{ form }}
             <br><br>
-            <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
-            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'tipo_us:listar_tipo_us' %}'">Cancelar</button>!-->
+            <input type="submit" value="Crear">
             <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
         </form>
     {% else %}

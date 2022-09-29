@@ -16,8 +16,12 @@ class UserForm(forms.ModelForm):
             'first_name',
             'last_name',
             'username',
-            'email'
+            'email',
+            'password'
         ]
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
 
 class UsuarioForm(forms.ModelForm):

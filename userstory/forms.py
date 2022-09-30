@@ -2,6 +2,7 @@ from django import forms
 from .models import UserStory
 
 class US_Form(forms.ModelForm):
+    """Formulario generico con los campos del modelo UserStory"""
     class Meta:
         model = UserStory
 

@@ -46,7 +46,7 @@ def nuevo_usuario(request):
 @login_required
 def modificar_usuario(request, id_usuario):
     """
-    Clase de la vista para la creacion de un Usuario
+    Clase de la vista para la modificacion de un Usuario
     """
     user = get_object_or_404(User, pk=id_usuario)
     usuario = get_object_or_404(Usuario, pk=id_usuario)

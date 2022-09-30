@@ -26,6 +26,7 @@ class RolForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Funcion que excluye aquellos permisos que son administrativos"""
         super(RolForm, self).__init__(*args, **kwargs)
         self.fields['permiso'].queryset = Permiso.objects.all().exclude(es_admin=True)
 

@@ -38,13 +38,15 @@ class MiembroForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Funcion que filtra la seleccion de roles.
+        Esto hace que solamente puedan elegirse los roles del proyecto actual."""
         self.pro_id = kwargs.pop('pro_id', None)
         super(MiembroForm, self).__init__(*args, **kwargs)
         self.fields['rol'].queryset = Rol.objects.filter(proyecto_id=self.pro_id)
 
 
 class MiembroUsuarioForm(forms.ModelForm):
-    """Formulario generico con los campos del modelo Miembro"""
+    """Formulario generico con los campos del modelo Miembro para la asignacion de un Scrum Master"""
     class Meta:
         model = Miembro
         fields = [

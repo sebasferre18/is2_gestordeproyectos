@@ -3,6 +3,7 @@ from tipo_us.models import Tipo_US, MiembroTipoUs
 
 
 class Tipo_usForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Tipo_US"""
     class Meta:
         model = Tipo_US
         fields = [
@@ -20,6 +21,7 @@ class Tipo_usForm(forms.ModelForm):
 
 
 class MiembroTipoUsForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo MiembroTipoUs"""
     class Meta:
         model = MiembroTipoUs
         fields = [

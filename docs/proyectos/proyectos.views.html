@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module proyectos.views</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="proyectos.html"><font color="#ffffff">proyectos</font></a>.views</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="../..">index</a><br><a href="file:/home/sebas/PycharmProjects/is2_gestordeproyectos/proyectos/views.py">/home/sebas/PycharmProjects/is2_gestordeproyectos/proyectos/views.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="userstory.views.html">userstory.views</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-acceso_denegado"><strong>acceso_denegado</strong></a>(request)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;de&nbsp;acceso&nbsp;denegado&nbsp;a&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-agregar_miembro"><strong>agregar_miembro</strong></a>(request, proyecto_id, user_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;eliminar&nbsp;a&nbsp;un&nbsp;miembro&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-asignar_usuarios"><strong>asignar_usuarios</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;asignacion&nbsp;de&nbsp;miembros&nbsp;en&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-cancelar_proyecto"><strong>cancelar_proyecto</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;cancelacion&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-crear_proyecto"><strong>crear_proyecto</strong></a>(request)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;creacion&nbsp;de&nbsp;un&nbsp;nuevo&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-desasignar_usuarios"><strong>desasignar_usuarios</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;desasignacion&nbsp;de&nbsp;miembros&nbsp;en&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-eliminar_miembro"><strong>eliminar_miembro</strong></a>(request, proyecto_id, miembro_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;eliminar&nbsp;a&nbsp;un&nbsp;miembro&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-finalizar_proyecto"><strong>finalizar_proyecto</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;finalizacion&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-gestionar_roles"><strong>gestionar_roles</strong></a>(request, proyecto_id, miembro_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;gestion&nbsp;de&nbsp;roles&nbsp;de&nbsp;un&nbsp;usuario</tt></dd></dl>
+ <dl><dt><a name="-iniciar_proyecto"><strong>iniciar_proyecto</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;inicializacion&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-listar_proyectos"><strong>listar_proyectos</strong></a>(request)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;de&nbsp;la&nbsp;lista&nbsp;de&nbsp;Proyectos</tt></dd></dl>
+ <dl><dt><a name="-ver_detalles"><strong>ver_detalles</strong></a>(request, proyecto_id)</dt><dd><tt>Clase&nbsp;de&nbsp;la&nbsp;vista&nbsp;para&nbsp;la&nbsp;visualizacion&nbsp;de&nbsp;los&nbsp;detalles&nbsp;especificos&nbsp;de&nbsp;un&nbsp;proyecto</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>permisos_sm</strong> = ['Visualizar Roles', 'Crear Rol', 'Modificar Rol', 'Eliminar Rol', 'Iniciar Proyecto', 'Finalizar Proyecto', 'Cancelar Proyecto', 'Asignar Miembros', 'Desasignar Miembros', 'Gestionar Roles De Un Usuario']</td></tr></table>
+</body></html>

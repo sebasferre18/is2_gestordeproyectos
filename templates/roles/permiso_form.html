@@ -12,7 +12,7 @@
             <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'roles:permiso_index' %}'">Cancelar</button>!-->
         {% else %}
             <h1>No tienes los permisos para visualizar esta pagina</h1>
-            <a href="http://localhost:8000/">Home</a><br>
+            <a href="{% url 'home' %}">Home</a><br>
         {% endif %}
     </form>
 {% endblock cuerpo %}

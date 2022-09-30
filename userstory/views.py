@@ -8,6 +8,9 @@ from funciones import obtener_permisos
 
 
 def listar_us(request, proyecto_id):
+    """
+    Clase de la vista de la lista de User Stories
+    """
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id).order_by('id')
 
     user = request.user
@@ -30,6 +33,9 @@ def listar_us(request, proyecto_id):
     return render(request, 'userstory/listar_us.html', context)
 
 def crear_us(request, proyecto_id):
+    """
+    Clase de la vista para la creacion de User Stories
+    """
     proyecto = Proyecto.objects.get(id=proyecto_id)
     form = US_Form()
     if request.method == 'POST':
@@ -61,6 +67,9 @@ def crear_us(request, proyecto_id):
 
 
 def modificar_us(request,proyecto_id, us_id):
+    """
+    Clase de la vista para la modificacion de User Stories
+    """
     us = get_object_or_404(UserStory, pk=us_id)
     form = US_Form(instance=us)
 

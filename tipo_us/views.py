@@ -15,6 +15,9 @@ from funciones import obtener_permisos
 # Create your views here.
 
 def listar_tipo_us(request, proyecto_id):
+    """
+    Clase de la vista de la lista de tipos de User Stories
+    """
     #tipo_us = Tipo_US.objects.all().order_by('id')
     #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -57,6 +60,9 @@ def listar_tipo_us(request, proyecto_id):
     return render(request, 'tipo_us/listar_tipo_us.html', context)
 
 def crear_tipo_us(request, proyecto_id):
+    """
+    Clase de la vista para la creacion de tipos de User Stories
+    """
     #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro = MiembroTipoUs()
@@ -80,6 +86,9 @@ def crear_tipo_us(request, proyecto_id):
     return render(request, 'tipo_us/crear_tipo_us.html', context)
 
 def modificar_tipo_us(request, proyecto_id, tipo_us_id):
+    """
+    Clase de la vista para la creacion de tipos de User Stories
+    """
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
     tipo_us = miembro_tipo_us.tipo_us
@@ -99,6 +108,9 @@ def modificar_tipo_us(request, proyecto_id, tipo_us_id):
 
 
 def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
+    """
+    Clase de la vista para la creacion de tipos de User Stories
+    """
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
 
@@ -146,7 +158,7 @@ def importar_tipo_us(request, proyecto_id):
 
 def agregar_tipo_us(request, proyecto_id, tipo_us_id):
     """
-    Clase de la vista para eliminar a un miembro de un proyecto
+    Clase de la vista para agregar un tipo de US a un proyecto
     """
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     tipo_us = get_object_or_404(Tipo_US, id=tipo_us_id)

@@ -3,7 +3,7 @@
 {% block cuerpo %}
     {% if 'Gestionar Usuarios' in permisos %}
         <h1>Usuarios</h1>
-        <a href="http://localhost:8000/usuarios/nuevo_usuario/">Crear Usuario</a><br><br>
+        <a href="{% url 'usuarios:nuevo_usuario' %}">Crear Usuario</a><br><br>
         {% if usuarios %}
             {% for usuario in usuarios %}
             <tr>
@@ -20,9 +20,9 @@
             <h1>No hay usuarios</h1>
         {% endif %}
         <br><br>
-        <a href="http://localhost:8000/">Home</a><br>
+        <a href="{% url 'home' %}">Home</a><br>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
-        <a href="http://localhost:8000/">Home</a><br>
+        <a href="{% url 'home' %}">Home</a><br>
     {% endif %}
 {% endblock cuerpo %}

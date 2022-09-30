@@ -10,6 +10,9 @@ class UserStory(models.Model):
     autor = models.TextField('usuarios.Usuario', null=True)
     aprobado = models.BooleanField(default=False)
     fecha_creacion = models.DateField(blank=True, null=True)
+    #Datos del sprint
+    sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, Blank=True)
+    usuario = models.OneToOneField('proyectos.Miembro', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.nombre

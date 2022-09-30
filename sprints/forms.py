@@ -1,45 +1,28 @@
-from .models import Rol, Permiso
 from django import forms
+from .models import Sprint
 
-"""
-Definicion de los formularios para la gestion de roles.
-"""
-
-
-class RolForm(forms.ModelForm):
-    """Formulario generico con los campos del modelo Rol"""
+class US_Form(forms.ModelForm):
     class Meta:
-        model = Rol
+        model = Sprint
+
         fields = [
             'nombre',
             'descripcion',
-            'permiso'
+            'duracion',
+            'proyecto',
+            'capacidad',
         ]
+
         labels = {
-            'nombre': 'Nombre',
-            'descripcion': 'Descripcion',
-            'permiso': 'Permisos',
+            'nombre':'nombre',
+            'descripcion':'Descripción de Sprint',
+            'duracion':'Duración estimada',
+            'proyecto':'Proyecto',
+            'capacidad':'Capacidad calculada',
         }
+
         widgets = {
-
-            'permiso': forms.CheckboxSelectMultiple(),
+            'nombre' : forms.TextInput(attrs={'class':'form-control'}),
+            'descripcion' : forms.TextInput(attrs={'class':'form-control'}),
+            'duracion' : forms.TextInput(attrs={'class':'form-control'}),
         }
-
-    def __init__(self, *args, **kwargs):
-        super(RolForm, self).__init__(*args, **kwargs)
-        self.fields['permiso'].queryset = Permiso.objects.all().exclude(es_admin=True)
-
-
-class PermisoForm(forms.ModelForm):
-    """Formulario generico con los campos del modelo Permiso"""
-    class Meta:
-        model = Permiso
-        fields = [
-            'nombre',
-            'es_admin'
-        ]
-        labels = {
-            'nombre': 'Nombre',
-            'es_admin': 'Es permiso administrativo',
-        }
-

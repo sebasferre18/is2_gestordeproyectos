@@ -64,4 +64,5 @@ class TestModelos:
         password = "pass"
         user = django_user_model.objects.create_user(username=username, password=password)
         usuario = Usuario(user=user, ci=1234567, telefono="0444 444444", fecha_nac="01/01/1998")
+        usuario.save()
 

@@ -3,7 +3,7 @@
 {% block cuerpo %}
     <h1>Proyectos</h1>
     {% if "Crear Proyecto" in permisos %}
-        <a href="http://localhost:8000/proyectos/create/">Crear Proyecto</a><br><br>
+        <a href="{% url 'proyectos:crear_proyecto' %}">Crear Proyecto</a><br><br>
     {% endif %}
     {% if proyectos %}
         {% for proyecto in proyectos %}
@@ -18,5 +18,5 @@
         <h1>No hay proyectos</h1>
     {% endif %}
     <br><br>
-    <a href="http://localhost:8000/">Home</a><br>
+    <a href="{% url 'home' %}">Home</a><br>
 {% endblock cuerpo %}

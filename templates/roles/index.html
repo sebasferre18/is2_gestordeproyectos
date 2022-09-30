@@ -3,14 +3,20 @@
 {% block cuerpo %}
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
+        {% if "Crear Rol" in permisos %}
         <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a><br><br>
+        {% endif %}
         {% if role_list %}
             <table>
                 {% for rol in role_list %}
                     <tr>
                         <td style="width:100%">{{ rol.nombre }}</td>
+                        {% if "Modificar Rol" in permisos %}
                         <td><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></td>
+                        {% endif %}
+                        {% if "Eliminar Rol" in permisos %}
                         <td><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </table>

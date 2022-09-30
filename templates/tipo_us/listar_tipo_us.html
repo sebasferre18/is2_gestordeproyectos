@@ -19,7 +19,9 @@
         {% if "Crear Tipo US" in permisos %}
             <a href="{% url 'tipo_us:crear_tipo_us' proyecto.id %}">Crear Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
         {% endif %}
+        {% if "Importar Tipo US" in permisos %}
         <a href="{% url 'tipo_us:importar_tipo_us' proyecto.id %}">Importar Tipo</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        {% endif %}
         <br>
         {% if miembro_tipo_us %}
             <table>
@@ -48,7 +50,7 @@
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
     <br><br>
-    <a href="{% url 'proyectos:ver_detalles' proyecto.id  %}">Volver</a>
+    <a href="{% url 'userstory:listar_us' proyecto.id  %}">Volver</a>
 </body>
 </html>
 

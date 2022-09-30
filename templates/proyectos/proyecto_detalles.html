@@ -61,7 +61,9 @@
         {% if "Desasignar Miembros" in permisos %}
         <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>
         {% endif %}
+        {% if "Visualizar US" in permisos %}
+        <a href="{%  url 'userstory:listar_us' proyecto.id %}">User Story</a>
+        {% endif %}
     {% endif %}
-    <a href="{%  url 'userstory:listar_us' proyecto.id %}">User Story</a>
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
 {% endblock cuerpo %}

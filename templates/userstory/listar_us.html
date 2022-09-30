@@ -30,7 +30,9 @@
                 <td>autor</td>
                 <td>aprobado</td>
                 <td>Proyecto</td>
+                {% if "Modificar US" in permisos %}
                 <td>Modificar</td>
+                {% endif %}
                 {% for us in UserStory %}
                 <tr>
                     <td style="text-align: left">{{ us.nombre }}</td>
@@ -43,21 +45,27 @@
                     <td style="text-align: left">{{ us.autor }}</td>
                     <td style="text-align: left">{{ us.aprobado }}</td>
                     <td style="text-align: left">{{ us.proyecto }}</td>
+                    {% if "Modificar US" in permisos %}
                     <td style="text-align: left"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></td>
-
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </table>
         {% else %}
             <h1>No existen User Story</h1>
         {% endif %}
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+        {% if "Crear US" in permisos %}
+            <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
+        {% endif %}
+        {% if "Visualizar Tipo US" in permisos %}
+            <a href="/tipo_us/{{ proyecto_id }}">Administrar Tipo US</a>
+        {% endif %}
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="{% url 'home' %}">Home</a>
     {% endif %}
     <br><br>
-    <a href="http://localhost:8000/">Home</a>
-    <a href="http://localhost:8000/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
-    <a href="http://localhost:8000/tipo_us/{{ proyecto_id }}">Administrar Tipo US</a>
     <br>
 
 </body>

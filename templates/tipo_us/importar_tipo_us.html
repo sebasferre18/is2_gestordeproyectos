@@ -5,10 +5,17 @@
         <h1>Importar Tipo de US</h1>
         {% if tipos_us %}
             <table>
-                {% for tipo in tipos_us %}
                 <tr>
-                    <td>{{ tipo }}</td>
-                    <td><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.id %}">Importar</a></td>
+                    <th>ID</th>
+                    <th>Tipo de US</th>
+                    <th>Proyecto</th>
+                </tr>
+                {% for tipo in miembros_tipos_us %}
+                <tr>
+                    <td>{{ tipo.id }}</td>
+                    <td>{{ tipo.tipo_us }}</td>
+                    <td>{{ tipo.proyecto }}</td>
+                    <td><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.tipo_us.id %}">Importar</a></td>
                 </tr>
                 {% endfor %}
             </table>

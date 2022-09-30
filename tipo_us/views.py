@@ -113,9 +113,11 @@ def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
     """
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
+    tipo_us = get_object_or_404(Tipo_US, id=miembro_tipo_us.tipo_us.id)
 
     if request.method == 'POST':
         miembro_tipo_us.delete()
+        tipo_us.delete()
         return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
     context = {
@@ -125,7 +127,6 @@ def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
     return render(request, 'tipo_us/eliminar_tipo_us.html', context)
 
 def importar_tipo_us(request, proyecto_id):
-
     """
     Clase de la vista para la importacion de Tipo de US en un proyecto
     """
@@ -137,6 +138,7 @@ def importar_tipo_us(request, proyecto_id):
         ids.append(a.tipo_us.id)
 
     tipos_us = Tipo_US.objects.exclude(id__in=ids)
+    miembros_tipo_us = MiembroTipoUs.objects.exclude(tipo_us_id__in=ids).order_by('proyecto')
 
     user = request.user
     miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
@@ -151,6 +153,7 @@ def importar_tipo_us(request, proyecto_id):
 
     context = {
         'tipos_us': tipos_us,
+        'miembros_tipos_us': miembros_tipo_us,
         'permisos': permisos,
         'proyecto_id': proyecto_id
     }
@@ -163,6 +166,10 @@ def agregar_tipo_us(request, proyecto_id, tipo_us_id):
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     tipo_us = get_object_or_404(Tipo_US, id=tipo_us_id)
 
-    miembro = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us)
+    tipo_us_aux = Tipo_US(nombre=tipo_us.nombre, fecha_creacion=tipo_us.fecha_creacion, descripcion=tipo_us.descripcion)
+    tipo_us_aux.save()
+
+    miembro = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us_aux)
     miembro.save()
     return redirect('tipo_us:importar_tipo_us', proyecto_id)
+

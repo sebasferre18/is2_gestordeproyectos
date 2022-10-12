@@ -1,4 +1,6 @@
 from django import forms
+
+from tipo_us.models import MiembroTipoUs
 from .models import UserStory
 
 class US_Form(forms.ModelForm):
@@ -13,21 +15,15 @@ class US_Form(forms.ModelForm):
             'horas_estimadas',
             'user_point',
             'business_value',
-            'autor',
-            'aprobado',
-            'fecha_creacion',
         ]
 
         labels = {
-            'nombre':'nombre',
-            'tipo_us':'Tipo de user story',
-            'descripcion':'descripcion',
-            'horas_estimadas':'horas estimadas',
-            'user_point':'user point',
-            'business_value':'business value',
-            'autor':'autor',
-            'aprobado':'aprobado',
-            'fecha_creacion':'fecha de creacion',
+            'nombre':'Nombre',
+            'tipo_us':'Tipo de US',
+            'descripcion':'Descripcion',
+            'horas_estimadas':'Horas estimadas',
+            'user_point':'Prioridad tecnica',
+            'business_value':'Prioridad de negocio',
         }
 
         widgets = {
@@ -37,7 +33,12 @@ class US_Form(forms.ModelForm):
             'horas_estimadas' : forms.TextInput(attrs={'class':'form-control'}),
             'user_point' : forms.TextInput(attrs={'class':'form-control'}),
             'business_value' : forms.TextInput(attrs={'class':'form-control'}),
-            'autor' : forms.TextInput(attrs={'class':'form-control'}),
-            'aprobado' : forms.TextInput(attrs={'class':'form-control'}),
-            'fecha_creacion' : forms.TextInput(attrs={'class':'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        """Funcion que filtra la seleccion de roles.
+        Esto hace que solamente puedan elegirse los roles del proyecto actual."""
+        self.pro_id = kwargs.pop('pro_id', None)
+        super(US_Form, self).__init__(*args, **kwargs)
+        self.fields['tipo_us'].queryset = MiembroTipoUs.objects.filter(proyecto_id=self.pro_id)
+

@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Eliminar Tipo de US</title>
-</head>
-<body>
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Eliminar Tipo de US{% endblock titulo %}
+{% block cuerpo %}
     <p>¿Estas seguro de que desea eliminar el Tipo de US "{{ miembro_tipo_us.tipo_us }}"?</p>
     <form action="{% url 'tipo_us:eliminar_tipo_us' proyecto.id miembro_tipo_us.id %}" method="POST">
         {% csrf_token %}
-        <br>
-        <input type="submit" value="Eliminar">&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="enlace">
+        <input class="boton" type="submit" value="Eliminar">
         <a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">Cancelar</a>
+        </div>
     </form>
-</body>
-</html>
+{% endblock cuerpo %}

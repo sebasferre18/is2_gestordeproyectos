@@ -3,7 +3,9 @@
 {% block cuerpo %}
     {% if "Crear Permiso" in permisos %}
         <h1>Permisos</h1>
-        <a href="{% url 'roles:crear_permiso' %}">Crear permiso</a><br><br>
+        <div class="enlace">
+            <a href="{% url 'roles:crear_permiso' %}">Crear permiso</a>
+        </div><br><br>
         {% if permiso_list %}
             <table>
                 {% for permiso in permiso_list %}
@@ -15,7 +17,8 @@
         {% else %}
             <p>No hay permisos disponibles.</p>
         {% endif %}
-        <a href="{% url 'home' %}">Home</a><br>
+        <div class="enlace">
+        <a href="{% url 'home' %}">Volver</a></div><br>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

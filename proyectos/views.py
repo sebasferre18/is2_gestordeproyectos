@@ -182,7 +182,8 @@ def gestionar_roles(request, proyecto_id, miembro_id):
         'form': form,
         'permisos': permisos,
         'miembro': miembro,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
     return render(request, 'proyectos/gestionar_roles.html', context)
 

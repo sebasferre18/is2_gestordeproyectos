@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        Crear Tipo US
-    </title>
-</head>
-<body>
-    <h1>Crear nuevo Tipo de User Story</h1>
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Crear Tipo US{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Crear nuevo Tipo de User Story</h2>
     <form id="form" action="" method="POST">
         {% csrf_token %}
-        {{ form }}
-        <br><br>
-        <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
+        <table>{{ form }}</table>
+        <br>
+        <div class="enlace">
+        <input class="boton" type="submit" value="Crear">
         <a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">Cancelar</a>
+        </div>
     </form>
-</body>
-</html>
+{% endblock cuerpo %}

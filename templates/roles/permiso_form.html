@@ -5,11 +5,12 @@
         {% if "Visualizar Permisos" in permisos %}
         <h1>Crear Permiso</h1>
             {% csrf_token %}
-            {{ form }}
-            <br><br>
-            <input type="submit" value="Crear"> &nbsp;&nbsp;&nbsp;&nbsp;
+            <table>{{ form }}</table>
+            <br>
+            <div class="enlace">
+            <input class="boton" type="submit" value="Crear">
             <a href="{% url 'roles:permiso_index' %}">Cancelar</a>
-            <!--<button class="cancel-link btn btn-default" onclick="location.href='{% url 'roles:permiso_index' %}'">Cancelar</button>!-->
+            </div>
         {% else %}
             <h1>No tienes los permisos para visualizar esta pagina</h1>
             <a href="{% url 'home' %}">Home</a><br>

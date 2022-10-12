@@ -8,7 +8,7 @@
                 {% for u in usuarios %}
                 <tr>
                     <td>{{ u.user.username }}</td>
-                    <td><a href="{% url 'proyectos:agregar_miembro' proyecto_id u.user_id %}">Asignar</a></td>
+                    <td><div class="enlace"><a href="{% url 'proyectos:agregar_miembro' proyecto_id u.user_id %}">Asignar</a></div></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -16,7 +16,9 @@
             <p>No hay usuarios que asignar al proyecto.</p>
         {% endif %}
         <br>
+        <div class="enlace">
         <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

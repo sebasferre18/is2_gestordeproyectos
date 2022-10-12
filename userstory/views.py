@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from datetime import date
 
 from proyectos.models import Proyecto, Miembro
 from usuarios.models import Usuario
@@ -24,10 +25,12 @@ def listar_us(request, proyecto_id):
     else:
         permisos = []
 
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     context = {
         'UserStory': us,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
 
     return render(request, 'userstory/listar_us.html', context)
@@ -36,18 +39,21 @@ def crear_us(request, proyecto_id):
     """
     Clase de la vista para la creacion de User Stories
     """
+    user = request.user
     proyecto = Proyecto.objects.get(id=proyecto_id)
-    form = US_Form()
+    form = US_Form(pro_id=proyecto_id)
     if request.method == 'POST':
-        form = US_Form(request.POST)
+        form = US_Form(request.POST, pro_id=proyecto_id)
         if form.is_valid():
             aux = form.save(commit=False)
             aux.proyecto = proyecto
+            aux.fecha_creacion = date.today()
+            aux.autor = user.username
+            aux.prioridad = round((0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo)
             aux.save()
 
             return redirect('userstory:listar_us', proyecto_id)
 
-    user = request.user
     miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
     usuario = Usuario.objects.get(user_id=user.id)
 
@@ -62,6 +68,7 @@ def crear_us(request, proyecto_id):
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
     return render(request, 'userstory/crear_us.html', context)
 
@@ -71,12 +78,14 @@ def modificar_us(request,proyecto_id, us_id):
     Clase de la vista para la modificacion de User Stories
     """
     us = get_object_or_404(UserStory, pk=us_id)
-    form = US_Form(instance=us)
+    form = US_Form(instance=us, pro_id=proyecto_id)
 
     if request.method == 'POST':
-        form = US_Form(request.POST, instance=us)
+        form = US_Form(request.POST, instance=us, pro_id=proyecto_id)
         if form.is_valid():
-            form.save()
+            aux = form.save(commit=False)
+            aux.prioridad = round((0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo)
+            aux.save()
             return redirect('userstory:listar_us', proyecto_id)
 
     user = request.user
@@ -90,9 +99,11 @@ def modificar_us(request,proyecto_id, us_id):
     else:
         permisos = []
 
+    proyecto = Proyecto.objects.get(id=proyecto_id)
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
     return render(request, 'userstory/modificar_us.html', context)

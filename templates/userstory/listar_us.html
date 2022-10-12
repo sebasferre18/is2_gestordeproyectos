@@ -1,38 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        table, td {
-            border: 1px solid black;
-            padding: 1px;
-        }
-        table {
-            border-spacing: 1px;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <title>Lista de UserStory</title>
-</head>
-<body>
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Product Backlog{% endblock titulo %}
+{% block cuerpo %}
     {% if "Visualizar US" in permisos %}
-        <h1>User Story</h1>
-
-        <br>
+        <h2>Product Backlog</h2>
         {% if UserStory %}
             <table>
-                <td>Nombre</td>
-                <td>Descripcion</td>
-                <td>tipode US</td>
-                <td>horas estimadas</td>
-                <td>fecha de creacion</td>
-                <td>user point</td>
-                <td>business value</td>
-                <td>autor</td>
-                <td>aprobado</td>
-                <td>Proyecto</td>
-                {% if "Modificar US" in permisos %}
-                <td>Modificar</td>
-                {% endif %}
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Tipo de US</th>
+                <th>Horas estimadas</th>
+                <th>Fecha de creacion</th>
+                <th>Prioridad tecnica</th>
+                <th>Prioridad de negocio</th>
+                <th>Trabajo previo en Sprint</th>
+                <th>Prioridad real</th>
+                <th>Autor</th>
+                <th>Aprobado</th>
                 {% for us in UserStory %}
                 <tr>
                     <td style="text-align: left">{{ us.nombre }}</td>
@@ -42,11 +25,12 @@
                     <td style="text-align: left">{{ us.fecha_creacion }}</td>
                     <td style="text-align: left">{{ us.user_point }}</td>
                     <td style="text-align: left">{{ us.business_value }}</td>
+                    <td style="text-align: left">{{ us.sprint_previo }}</td>
+                    <td style="text-align: left">{{ us.prioridad }}</td>
                     <td style="text-align: left">{{ us.autor }}</td>
                     <td style="text-align: left">{{ us.aprobado }}</td>
-                    <td style="text-align: left">{{ us.proyecto }}</td>
                     {% if "Modificar US" in permisos %}
-                    <td style="text-align: left"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></td>
+                        <td style="text-align: left"><div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -54,19 +38,20 @@
         {% else %}
             <h1>No existen User Story</h1>
         {% endif %}
-        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+        <br>
+        <div class="enlace">
         {% if "Crear US" in permisos %}
             <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
         {% endif %}
         {% if "Visualizar Tipo US" in permisos %}
             <a href="/tipo_us/{{ proyecto_id }}">Administrar Tipo US</a>
         {% endif %}
+        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a>
     {% endif %}
     <br><br>
     <br>
-
-</body>
-</html>
+{% endblock cuerpo %}

@@ -8,8 +8,11 @@
         {% block contenido %}
             <form id="formulario" method="post" action="">{% csrf_token %}
                 <table>{{ usuario }}
-                    {{ formulario }}</table>
-                <p><input type="submit" value="Registrar"/></p>
+                    {{ formulario }}</table><br>
+                <div class="enlace">
+                    <input class="boton" type="submit" value="Registrar"/>
+                    <a href="{% url 'usuarios:listar_usuarios' %}">Cancelar</a>
+                </div>
             </form>
         {% endblock %}
     {% else %}

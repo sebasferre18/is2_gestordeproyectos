@@ -8,9 +8,11 @@
         {% block contenido %}
             <form id="formulario" method="post" action="">{% csrf_token %}
                 <table>{{ formulario }}
-                {{ formulario_miembro }}</table>
-                <p><input type="submit" value="Registrar"/></p>
+                {{ formulario_miembro }}</table><br>
+                <div class="enlace">
+                <input class="boton" type="submit" value="Registrar"/>
                 <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
+                </div>
             </form>
         {% endblock %}
     {% else %}

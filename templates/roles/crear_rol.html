@@ -2,11 +2,14 @@
 {% block titulo %}Crear rol{% endblock titulo %}
 {% block cuerpo %}
     {% if "Crear Rol" in permisos %}
+        <h1>Crear rol</h1>
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form }}
-            <input type="submit" name="OK">
+            <table>{{ form }}</table><br>
+            <div class="enlace">
+            <input class="boton" type="submit" name="OK">
             <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
+            </div><br><br>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

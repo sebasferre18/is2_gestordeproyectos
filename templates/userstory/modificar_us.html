@@ -1,24 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>
-        Modificar US
-    </title>
-</head>
-<body>
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Modificar US{% endblock titulo %}
+{% block cuerpo %}
     {% if "Modificar US" in permisos %}
+        <h2>Modificar User Story</h2>
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form }}
+            <table>{{ form }}</table>
             <br><br>
-            <input type="submit" value="Modificar">&nbsp;&nbsp;&nbsp;&nbsp;
-
+            <div class="enlace">
+            <input class="boton" type="submit" value="Modificar">
             <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
+            </div>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>
     {% endif %}
-</body>
-</html>
+{% endblock cuerpo %}

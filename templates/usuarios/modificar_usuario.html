@@ -3,15 +3,16 @@
 {% block cuerpo %}
     {% if 'Gestionar Usuarios' in permisos %}
         <h1> Modificar Usuario </h1>
-        <br><br>
         <form method="POST">
             {% csrf_token %}
             <table>
                 {{ usuario }}
                 {{ formulario }}
-            </table>
-            <button type="submit" class="save btn btn-default">Guardar</button>
+            </table><br>
+            <div class="enlace">
+            <button class="boton" type="submit" class="save btn btn-default">Guardar</button>
             <a href="{% url 'usuarios:listar_usuarios' %}">Cancelar</a>
+            </div>
         </form>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

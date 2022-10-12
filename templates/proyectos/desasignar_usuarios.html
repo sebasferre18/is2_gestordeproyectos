@@ -8,7 +8,7 @@
                 {% for m in miembros %}
                 <tr>
                     <td>{{ m.usuario.user.username }}</td>
-                    <td><a href="{% url 'proyectos:eliminar_miembro' proyecto_id m.id %}">Desasignar</a></td>
+                    <td><div class="enlace"><a href="{% url 'proyectos:eliminar_miembro' proyecto_id m.id %}">Desasignar</a></div></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -16,7 +16,9 @@
             <p>No hay usuarios que desasignar al proyecto.</p>
         {% endif %}
         <br>
+        <div class="enlace">
         <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

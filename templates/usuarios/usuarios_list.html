@@ -3,24 +3,33 @@
 {% block cuerpo %}
     {% if 'Gestionar Usuarios' in permisos %}
         <h1>Usuarios</h1>
-        <a href="{% url 'usuarios:nuevo_usuario' %}">Crear Usuario</a><br><br>
+        <div class="enlace">
+        <a href="{% url 'usuarios:nuevo_usuario' %}">Crear Usuario</a>
+        </div><br><br>
         {% if usuarios %}
+            <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Nombre de usuario</th>
+            <tr>
             {% for usuario in usuarios %}
             <tr>
                 <td>{{ usuario.user.last_name }}</td>
                 <td>{{ usuario.user.first_name }}</td>
                 <td>{{ usuario.user.username }}</td>
-                <td>{{ usuario.capacidadTrabajo }}</td>
-                <a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a>
-                <a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a>
-                <br>
+                <td><div class="enlace"><a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a></div></td>
+                <td><div class="enlace"><a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a></div></td>
             </tr>
             {% endfor %}
+            </table>
         {% else %}
             <h1>No hay usuarios</h1>
         {% endif %}
         <br><br>
+        <div class="enlace">
         <a href="{% url 'home' %}">Home</a><br>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

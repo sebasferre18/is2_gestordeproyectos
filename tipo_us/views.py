@@ -155,7 +155,8 @@ def importar_tipo_us(request, proyecto_id):
         'tipos_us': tipos_us,
         'miembros_tipos_us': miembros_tipo_us,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
     return render(request, "tipo_us/importar_tipo_us.html", context)
 

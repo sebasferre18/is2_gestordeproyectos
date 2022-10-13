@@ -13,6 +13,6 @@ class UserStory(models.Model):
     #Datos del sprint
     sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, Blank=True)
     usuario = models.OneToOneField('proyectos.Miembro', on_delete=models.PROTECT)
-
+    #xD
     def __str__(self):
         return self.nombre

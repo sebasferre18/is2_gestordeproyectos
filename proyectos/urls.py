@@ -19,5 +19,6 @@ urlpatterns = [
     path('end/<int:proyecto_id>/', views.finalizar_proyecto, name='finalizar_proyecto'),
     path('cancel/<int:proyecto_id>/', views.cancelar_proyecto, name='cancelar_proyecto'),
     path('denied', views.acceso_denegado, name='acceso_denegado'),
+    path('<int:proyecto_id>/decline', views.falta_de_permisos, name='falta_de_permisos'),
     path('members/<int:proyecto_id>/<int:miembro_id>', views.gestionar_roles, name='gestionar_roles'),
 ]

@@ -1,0 +1,13 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Sprints{% endblock titulo %}
+{% block cuerpo %}
+    <h1>Crear Sprint</h1>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table>{{ form }}</table><br>
+        <div class="enlace">
+            <input class="boton" type="submit" name="OK">
+            <a href="{% url 'sprints:index' proyecto.id %}">Cancelar</a>
+        </div><br><br>
+    </form>
+{% endblock cuerpo %}

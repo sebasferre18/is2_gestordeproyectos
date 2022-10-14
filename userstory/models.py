@@ -16,6 +16,10 @@ class UserStory(models.Model):
     aprobado = models.BooleanField(default=False)
     fecha_creacion = models.DateField(blank=True, null=True)
     proyecto = models.ForeignKey('proyectos.Proyecto', on_delete=models.CASCADE, null=True, blank=True)
+    #Datos del sprint
+    sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, blank=True)
+    usuario = models.OneToOneField('proyectos.Miembro', on_delete=models.PROTECT, null=True, blank=True)
+    #xD
 
     def __str__(self):
         """

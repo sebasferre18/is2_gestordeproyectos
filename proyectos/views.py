@@ -114,7 +114,8 @@ def asignar_usuarios(request, proyecto_id):
     context = {
         'usuarios': usuarios,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, "proyectos/asignar_usuarios.html", context)
 
@@ -140,7 +141,8 @@ def desasignar_usuarios(request, proyecto_id):
     context = {
         'miembros': miembros,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'proyectos/desasignar_usuarios.html', context)
 
@@ -283,4 +285,14 @@ def acceso_denegado(request):
     Clase de la vista de acceso denegado a un proyecto
     """
     return render(request, 'proyectos/acceso_denegado.html')
+
+@login_required
+def falta_de_permisos(request, proyecto_id):
+    """
+    Clase de la vista de acceso denegado generico por falta de permisos
+    """
+    context = {
+        'proyecto_id': proyecto_id,
+    }
+    return render(request, 'proyectos/falta_de_permisos.html', context)
 

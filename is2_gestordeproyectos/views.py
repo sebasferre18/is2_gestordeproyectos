@@ -22,3 +22,4 @@ def home(request):
         'permisos': permisos,
     }
     return render(request, 'base/home.html', context)
+

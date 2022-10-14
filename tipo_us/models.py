@@ -10,6 +10,7 @@ class Tipo_US(models.Model):
     nombre = models.CharField(max_length=50)
     fecha_creacion = models.DateField(blank=True, null=True)
     descripcion = models.CharField(max_length=50)
+    campos = models.TextField(blank=True, null=True)
 
     def __str__(self):
         """

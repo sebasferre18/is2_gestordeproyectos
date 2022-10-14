@@ -9,10 +9,12 @@ class Tipo_usForm(forms.ModelForm):
         fields = [
             'nombre',
             'descripcion',
+            'campos',
         ]
         labels = {
             'nombre':'Nombre',
             'descripcion':'Descripcion',
+            'campos':'Campos',
         }
         widgets = {
             'nombre' : forms.TextInput(attrs={'class':'form-control'}),

@@ -67,6 +67,7 @@
         {% if "Visualizar US" in permisos %}
         <a href="{%  url 'userstory:listar_us' proyecto.id %}">Product Backlog</a>
         {% endif %}
+        <a href="{%  url 'sprints:index' proyecto.id %}">Sprints</a>
     {% endif %}
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
     </div>

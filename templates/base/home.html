@@ -70,12 +70,26 @@
             font-family: inherit;
             cursor: pointer;
         }
+        .lista {
+            background-color: #333333;
+            position: relative;
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+        }
+        .lista p{
+            display: inline-block;
+            text-decoration: none;
+            margin: 1px;
+        }
         .menu a:hover {background-color: cornflowerblue;}
         .submenu-contenido a:hover {background-color: gray;}
         .submenu:hover .submenu-contenido {display: block;}
         .submenu:hover .botonsubmenu {background-color: cornflowerblue;}
         .enlace a:hover {background-color: cornflowerblue;}
         .boton:hover {background-color: cornflowerblue;}
+        .lista:hover {background-color: cornflowerblue;}
     </style>
     <meta charset="UTF-8">
     <title>{% block titulo %}Home{% endblock titulo %}</title>

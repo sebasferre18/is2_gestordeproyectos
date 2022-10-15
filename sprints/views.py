@@ -4,6 +4,7 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
 from proyectos.models import Proyecto, Miembro
+from userstory.models import UserStory
 from .forms import SprintForm
 from .models import Sprint
 
@@ -86,3 +87,99 @@ def crear_sprint(request, proyecto_id):
     }
     return render(request, 'sprints/crear_sprint.html', context)
 
+@login_required
+def sprint_backlog(request, sprint_id, proyecto_id):
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Visualizar Sprint Backlog" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
+    context = {
+        'proyecto': proyecto,
+        'permisos': permisos,
+        'sprint': sprint,
+        'UserStory': us
+    }
+    return render(request, 'sprints/sprint_backlog.html', context)
+
+
+@login_required
+def agregar_us(request, sprint_id, proyecto_id):
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    us = UserStory.objects.all().filter(proyecto_id=proyecto_id, aprobado=False).exclude(sprint_id=sprint_id).order_by('-prioridad')
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Agregar US Al Sprint Backlog" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
+    context = {
+        'proyecto': proyecto,
+        'permisos': permisos,
+        'sprint': sprint,
+        'UserStory': us
+    }
+    return render(request, 'sprints/agregar_us.html', context)
+
+@login_required
+def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    us = get_object_or_404(UserStory, pk=us_id)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Agregar US Al Sprint Backlog" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
+    us.sprint = sprint
+    us.save()
+    return redirect('sprints:agregar_us', sprint_id, proyecto_id)
+
+@login_required
+def quitar_us(request, sprint_id, proyecto_id, us_id):
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    us = get_object_or_404(UserStory, pk=us_id)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Quitar US Del Sprint Backlog" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
+    us.sprint = None
+    us.save()
+    return redirect('sprints:sprint_backlog', sprint_id, proyecto_id)
+
+
+@login_required
+def aprobar_us(request, sprint_id, proyecto_id, us_id):
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    us = get_object_or_404(UserStory, pk=us_id)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Aprobar US" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
+    us.aprobado = True
+    us.save()
+    return redirect('sprints:sprint_backlog', sprint_id, proyecto_id)

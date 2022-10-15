@@ -1,0 +1,43 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Agregar US{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Agregar User Stories al Sprint Backlog</h2>
+    {% if UserStory %}
+        <table>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Tipo</th>
+            <th>Horas estimadas</th>
+            <th>Fecha de creacion</th>
+            <th>PT</th>
+            <th>PN</th>
+            <th>Trabajo previo en Sprint</th>
+            <th>Prioridad</th>
+            <th>Autor</th>
+            <th>Aprobado</th>
+            {% for us in UserStory %}
+                <tr>
+                    <td style="text-align: left; width: 10%">{{ us.nombre }}</td>
+                    <td style="text-align: left; width: 25%">{{ us.descripcion }}</td>
+                    <td style="text-align: left">{{ us.tipo_us }}</td>
+                    <td style="text-align: left">{{ us.horas_estimadas }}</td>
+                    <td style="text-align: left">{{ us.fecha_creacion }}</td>
+                    <td style="text-align: left">{{ us.user_point }}</td>
+                    <td style="text-align: left">{{ us.business_value }}</td>
+                    <td style="text-align: left">{{ us.sprint_previo }}</td>
+                    <td style="text-align: left">{{ us.prioridad }}</td>
+                    <td style="text-align: left">{{ us.autor }}</td>
+                    <td style="text-align: left">{{ us.aprobado }}</td>
+                    <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:agregar_us_sprintbacklog' sprint.id proyecto.id us.id %}">Agregar</a></div></td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <h1>No hay User Stories para agregar al Sprint Backlog</h1>
+        {% endif %}
+        <br>
+        <div class="enlace">
+            <a href="{% url 'sprints:sprint_backlog' sprint.id proyecto.id %}">Volver</a>
+        </div>
+    <br>
+{% endblock cuerpo %}

@@ -1,5 +1,30 @@
 {% extends 'proyectos/proyecto_detalles.html' %}
 {% block titulo %}{{ sprint.nombre }}{% endblock titulo %}
+{% block sprint %}
+    <h2>Sprint: {{ sprint.nombre }}</h2>
+{% endblock sprint %}
 {% block cuerpo %}
-
+<h3>Informacion general</h3>
+    <table>
+        <tr>
+            <td>Estado: </td>
+            <td>{{ sprint.estado }}</td>
+        </tr>
+        <tr>
+            <td>Descripcion: </td>
+            <td>{{ sprint.descripcion }}</td>
+        </tr>
+        <tr>
+            <td>Fecha de inicio: </td>
+            <td>{{ sprint.fecha_inicio }}</td>
+        </tr>
+        <tr>
+            <td>Fecha final: </td>
+            <td>{{ sprint.fecha_fin }}</td>
+        </tr>
+    </table><br>
+    <div class="enlace">
+        <a href="{% url 'sprints:sprint_backlog' sprint.id proyecto.id %}">Sprint Backlog</a>
+        <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
+    </div>
 {% endblock cuerpo %}

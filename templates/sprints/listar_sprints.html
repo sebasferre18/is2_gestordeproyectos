@@ -16,7 +16,9 @@
     {% endif %}
     <br><br>
     <div class="enlace">
-        <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
+        {% if estado == "Finalizado" or estado == "Cancelado" or estado == "" %}
+            <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
+        {% endif %}
         <a href="{% url 'proyectos:ver_detalles' proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}

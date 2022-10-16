@@ -22,9 +22,27 @@
             <td>Fecha final: </td>
             <td>{{ sprint.fecha_fin }}</td>
         </tr>
+        <tr>
+            <td>Duracion: </td>
+            <td>{{ sprint.duracion }} dias</td>
+        </tr>
+        <tr>
+            <td>Capacidad de trabajo: </td>
+            <td>{{ sprint.capacidad }} horas</td>
+        </tr>
     </table><br>
     <div class="enlace">
+        {% if sprint.estado == 'Planificacion' %}
+            <button class="boton" onclick="location.href='{% url 'sprints:iniciar_proyecto' sprint.id proyecto.id %}'">Iniciar</button>
+        {% elif sprint.estado == 'En ejecucion' %}
+            <button class="boton" onclick="location.href='{% url 'sprints:finalizar_proyecto' sprint.id proyecto.id %}'">Finalizar</button>
+            <button class="boton" onclick="location.href='{% url 'sprints:cancelar_proyecto' sprint.id proyecto.id %}'">Cancelar</button>
+        {% endif %}
         <a href="{% url 'sprints:sprint_backlog' sprint.id proyecto.id %}">Sprint Backlog</a>
+        {% if sprint.estado == 'Planificacion' or sprint.estado == 'En ejecucion' %}
+            <a>US Asignados</a>
+            <a>Tablero Kanban</a>
+        {% endif %}
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}

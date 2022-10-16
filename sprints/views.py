@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from funciones import obtener_permisos, obtener_permisos_usuario
@@ -14,7 +16,7 @@ def index(request, proyecto_id):
     """
     Clase de la vista de la lista de User Stories
     """
-    sprints = Sprint.objects.all().filter(proyecto_id=proyecto_id).order_by('id')
+    sprints = Sprint.objects.all().filter(proyecto_id=proyecto_id).order_by('-id')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -25,10 +27,17 @@ def index(request, proyecto_id):
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
     proyecto = Proyecto.objects.get(id=proyecto_id)
+
+    try:
+        estado = sprints.latest('id').estado
+    except Sprint.DoesNotExist:
+        estado = ""
+
     context = {
         'sprints': sprints,
         'permisos': permisos,
         'proyecto': proyecto,
+        'estado': estado
     }
 
     return render(request, 'sprints/listar_sprints.html', context)
@@ -80,10 +89,17 @@ def crear_sprint(request, proyecto_id):
     if "Crear Sprint" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    try:
+        sprints = Sprint.objects.filter(proyecto_id=proyecto_id).order_by('id').latest('id')
+        estado = sprints.estado
+    except Sprint.DoesNotExist:
+        estado = ""
+
     context = {
         'form': form,
         'permisos': permisos,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'estado': estado
     }
     return render(request, 'sprints/crear_sprint.html', context)
 
@@ -183,3 +199,54 @@ def aprobar_us(request, sprint_id, proyecto_id, us_id):
     us.aprobado = True
     us.save()
     return redirect('sprints:sprint_backlog', sprint_id, proyecto_id)
+
+@login_required
+def iniciar_sprint(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la inicializacion de un sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    sprint.estado = 'En ejecucion'
+    sprint.fecha_inicio = date.today()
+    sprint.save()
+    return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
+
+
+@login_required
+def finalizar_sprint(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la finalizacion de un sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    sprint.estado = 'Finalizado'
+    sprint.fecha_fin = date.today()
+    sprint.save()
+
+    us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
+    for us in us_sinaprobar:
+        us.sprint = None
+        us.sprint_previo = 3
+        us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
+        us.save()
+
+    return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
+
+
+@login_required
+def cancelar_sprint(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la cancelacion de un sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    sprint.estado = 'Cancelado'
+    sprint.fecha_fin = date.today()
+    sprint.save()
+
+    us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
+    for us in us_sinaprobar:
+        us.sprint = None
+        us.sprint_previo = 3
+        us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
+        us.save()
+
+    return redirect('sprints:ver_detalles', sprint_id, proyecto_id)

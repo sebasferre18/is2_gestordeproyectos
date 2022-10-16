@@ -28,7 +28,13 @@
                     <td style="text-align: left">{{ us.sprint_previo }}</td>
                     <td style="text-align: left">{{ us.prioridad }}</td>
                     <td style="text-align: left">{{ us.autor }}</td>
-                    <td style="text-align: left">{{ us.aprobado }}</td>
+                    <td style="text-align: left">
+                        {% if us.aprobado %}
+                            Si
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
                     {% if "Modificar US" in permisos %}
                         <td style="text-align: left"><div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div></td>
                     {% endif %}

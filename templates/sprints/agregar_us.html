@@ -2,6 +2,7 @@
 {% block titulo %}Agregar US{% endblock titulo %}
 {% block cuerpo %}
     <h2>Agregar User Stories al Sprint Backlog</h2>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias</h3>
     {% if UserStory %}
         <table>
             <th>Nombre</th>

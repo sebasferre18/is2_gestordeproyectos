@@ -2,6 +2,7 @@
 {% block titulo %}Sprint Backlog{% endblock titulo %}
 {% block cuerpo %}
     <h2>Sprint Backlog</h2>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias</h3>
     {% if UserStory %}
         <table>
             <th>Nombre</th>
@@ -27,10 +28,20 @@
                     <td style="text-align: left">{{ us.sprint_previo }}</td>
                     <td style="text-align: left">{{ us.prioridad }}</td>
                     <td style="text-align: left">{{ us.autor }}</td>
-                    <td style="text-align: left">{{ us.aprobado }}</td>
+                    <td style="text-align: left">
+                        {% if us.aprobado %}
+                            Si
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
                     {% if not us.aprobado %}
-                        <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
-                        <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
+                        {% if sprint.estado == "En ejecucion" %}
+                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
+                        {% endif %}
+                        {% if sprint.estado == "Planificacion" %}
+                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -40,7 +51,9 @@
         {% endif %}
         <br>
         <div class="enlace">
-            <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+            {% if sprint.estado == "Planificacion" %}
+                <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+            {% endif %}
             <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
         </div>
     <br>

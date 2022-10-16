@@ -15,4 +15,7 @@ urlpatterns = [
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/sprintbacklog/add/<int:us_id>', views.agregar_us_sprintbacklog, name='agregar_us_sprintbacklog'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/sprintbacklog/remove/<int:us_id>', views.quitar_us, name='quitar_us'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/sprintbacklog/approve/<int:us_id>', views.aprobar_us, name='aprobar_us'),
+    path('start/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.iniciar_sprint, name='iniciar_proyecto'),
+    path('end/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.finalizar_sprint, name='finalizar_proyecto'),
+    path('cancel/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.cancelar_sprint, name='cancelar_proyecto'),
 ]

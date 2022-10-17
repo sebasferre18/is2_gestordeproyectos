@@ -33,7 +33,8 @@ def index(request, proyecto_id):
     context = {
         'role_list': roles,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'roles/index.html', context)
 
@@ -68,7 +69,8 @@ def crear_rol(request, proyecto_id):
     context = {
         'form': form,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'roles/crear_rol.html', context)
 
@@ -102,7 +104,8 @@ def modificar_rol(request, rol_id, proyecto_id):
     context = {
         'form': form,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'roles/modificar_rol.html', context)
 
@@ -130,7 +133,8 @@ def eliminar_rol(request, rol_id, proyecto_id):
     context = {
         'rol': rol,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'roles/eliminar_rol.html', context)
 
@@ -180,3 +184,4 @@ def crear_permiso(request):
         'permisos': p
     }
     return render(request, 'roles/permiso_form.html', context)
+

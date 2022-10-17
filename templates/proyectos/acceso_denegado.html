@@ -2,5 +2,7 @@
 {% block titulo %}Acceso denegado{% endblock titulo %}
 {% block cuerpo %}
     <h1>No perteneces a este proyecto</h1>
+    <div class="enlace">
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
+    </div>
 {% endblock cuerpo %}

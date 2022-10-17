@@ -3,20 +3,22 @@
 {% block cuerpo %}
     <h1>Proyectos</h1>
     {% if "Crear Proyecto" in permisos %}
-        <a href="http://localhost:8000/proyectos/create/">Crear Proyecto</a><br><br>
+        <div class="enlace">
+        <a href="{% url 'proyectos:crear_proyecto' %}">Crear Proyecto</a>
+        </div><br><br>
     {% endif %}
     {% if proyectos %}
         {% for proyecto in proyectos %}
-        <tr>
-            <td>{{ proyecto.id }}</td>
-            <td><a href="{% url 'proyectos:ver_detalles' proyecto.id %}">{{ proyecto.nombre }}</a></td>
-            <td>{{ proyecto.descripcion }}</td>
-            <br>
-        </tr>
+            <a href="{% url 'proyectos:ver_detalles' proyecto.id %}">
+                <div class="lista">
+                    <p>{{ proyecto.nombre }}</p>
+                    <p style="float: right">Estado: {{ proyecto.estado }}</p>
+                </div>
+            </a>
         {% endfor %}
     {% else %}
         <h1>No hay proyectos</h1>
     {% endif %}
     <br><br>
-    <a href="http://localhost:8000/">Home</a><br>
+    <div class="enlace"><a href="{% url 'home' %}">Home</a><br></div>
 {% endblock cuerpo %}

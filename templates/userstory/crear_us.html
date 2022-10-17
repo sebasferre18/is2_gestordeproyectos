@@ -1,0 +1,19 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Crear US{% endblock titulo %}
+{% block cuerpo %}
+    {% if "Crear US" in permisos %}
+        <h2>Crear nuevo User Story</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <table>{{ form }}</table>
+            <br><br>
+            <div class="enlace">
+            <input class="boton" type="submit" value="Crear">
+            <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
+            </div>
+        </form>
+    {% else %}
+        <h1>No tienes los permisos para visualizar la pagina de creacion de user story</h1>
+        <a href="{% url 'home' %}">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

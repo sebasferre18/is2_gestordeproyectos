@@ -9,6 +9,8 @@ from usuarios.models import Usuario
 from roles.models import Rol, Permiso
 from funciones import obtener_permisos
 
+from userstory import views
+
 """
 Vistas de la app de Proyectos.
 """
@@ -75,8 +77,8 @@ def crear_proyecto(request):
             for a in formulario_miembro.forms:
                 up = a.save(commit=False)
                 up.proyecto = form
-                up.rol = sm
                 up.save()
+                up.rol.set([sm])
             return HttpResponseRedirect('/proyectos/')
     else:
         formulario = ProyectoForm()
@@ -103,16 +105,17 @@ def asignar_usuarios(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
     context = {
         'usuarios': usuarios,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, "proyectos/asignar_usuarios.html", context)
 
@@ -129,16 +132,17 @@ def desasignar_usuarios(request, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
 
     miembro_aux = miembros_aux.get(usuario=usuario, proyecto=proyecto)
-    rol = miembro_aux.rol
+    rol = miembro_aux.rol.get_queryset()
     if rol:
-        permisos = obtener_permisos([rol])
+        permisos = obtener_permisos(rol)
     else:
         permisos = []
 
     context = {
         'miembros': miembros,
         'permisos': permisos,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto
     }
     return render(request, 'proyectos/desasignar_usuarios.html', context)
 
@@ -170,9 +174,9 @@ def gestionar_roles(request, proyecto_id, miembro_id):
             miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
         except Miembro.DoesNotExist:
             return redirect('proyectos:acceso_denegado')
-        rol = miembro_aux.rol
+        rol = miembro_aux.rol.get_queryset()
         if rol:
-            permisos = obtener_permisos([rol])
+            permisos = obtener_permisos(rol)
         else:
             permisos = []
 
@@ -180,7 +184,8 @@ def gestionar_roles(request, proyecto_id, miembro_id):
         'form': form,
         'permisos': permisos,
         'miembro': miembro,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'proyecto': proyecto,
     }
     return render(request, 'proyectos/gestionar_roles.html', context)
 
@@ -226,9 +231,9 @@ def ver_detalles(request, proyecto_id):
             miembro = miembros.get(usuario=usuario, proyecto=proyecto)
         except Miembro.DoesNotExist:
             return redirect('proyectos:acceso_denegado')
-        rol = miembro.rol
+        rol = miembro.rol.get_queryset()
         if rol:
-            permisos = obtener_permisos([rol])
+            permisos = obtener_permisos(rol)
         else:
             permisos = []
 
@@ -280,3 +285,14 @@ def acceso_denegado(request):
     Clase de la vista de acceso denegado a un proyecto
     """
     return render(request, 'proyectos/acceso_denegado.html')
+
+@login_required
+def falta_de_permisos(request, proyecto_id):
+    """
+    Clase de la vista de acceso denegado generico por falta de permisos
+    """
+    context = {
+        'proyecto_id': proyecto_id,
+    }
+    return render(request, 'proyectos/falta_de_permisos.html', context)
+

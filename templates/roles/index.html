@@ -1,16 +1,24 @@
-{% extends 'base/home.html' %}
+{% extends 'proyectos/proyecto_detalles.html' %}
 {% block titulo %}Roles{% endblock titulo %}
 {% block cuerpo %}
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
-        <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a><br><br>
+        <div class="enlace">
+        {% if "Crear Rol" in permisos %}
+        <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a>
+        {% endif %}
+        </div><br><br>
         {% if role_list %}
             <table>
                 {% for rol in role_list %}
                     <tr>
                         <td style="width:100%">{{ rol.nombre }}</td>
-                        <td><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></td>
-                        <td><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></td>
+                        {% if "Modificar Rol" in permisos %}
+                            <td><div class="enlace"><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></div></td>
+                        {% endif %}
+                        {% if "Eliminar Rol" in permisos %}
+                            <td><div class="enlace"><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></div></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </table>
@@ -21,5 +29,7 @@
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
     {% endif %}
+    <div class="enlace">
     <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a><br>
+    </div>
 {% endblock cuerpo %}

@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'usuarios',
     'proyectos',
     'tipo_us',
+    'userstory',
+    'sprints',
 ]
 
 SITE_ID = 1

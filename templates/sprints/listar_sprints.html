@@ -1,0 +1,24 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Sprints{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Sprints</h2>
+    {% if sprints %}
+        {% for s in sprints %}
+            <a href="{% url 'sprints:ver_detalles' s.id proyecto.id %}">
+                <div class="lista">
+                    <p>{{ s.nombre }}</p>
+                    <p style="float: right">Estado: {{ s.estado }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <h1>No existen Sprints</h1>
+    {% endif %}
+    <br><br>
+    <div class="enlace">
+        {% if estado == "Finalizado" or estado == "Cancelado" or estado == "" %}
+            <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
+        {% endif %}
+        <a href="{% url 'proyectos:ver_detalles' proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

@@ -10,6 +10,7 @@
                     <td style="width:100%">{{ rol.nombre }}</td>
                     <td><a href="{% url 'proyectos:asignar_usuarios' proyecto.id %}">Asignar Usuarios</a></td>
                     <td><a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Usuarios</a></td>
+                    <td><a href="{% url 'proyectos:administrar_roles' proyecto.id %}">Administrar Roles</a></td>
                 </tr>
             {% endfor %}
         </table>

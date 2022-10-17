@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from usuarios.models import Usuario
 
-'''
+
 class TestVistas:
     @pytest.mark.django_db
     def test_listar_usuario(self, client, django_user_model):
@@ -64,5 +64,5 @@ class TestModelos:
         password = "pass"
         user = django_user_model.objects.create_user(username=username, password=password)
         usuario = Usuario(user=user, ci=1234567, telefono="0444 444444", fecha_nac="01/01/1998")
-        
-'''
+        usuario.save()
+

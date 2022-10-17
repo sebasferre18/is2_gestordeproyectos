@@ -11,4 +11,6 @@ urlpatterns = [
     path('accounts/profile/', views.home, name='home'),
     path('proyectos/', include('proyectos.urls')),
     path('tipo_us/', include('tipo_us.urls')),
+    path('userstory/', include('userstory.urls')),
+    path('sprints/', include('sprints.urls')),
 ]

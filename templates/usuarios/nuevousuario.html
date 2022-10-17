@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Nuevo Usuario</title>
-</head>
-<body>
-{% block encabezado %}
-    <h1> Registrar nuevo usuario</h1>
-{%  endblock %}
-{% block contenido %}
-    <form id="formulario" method="post" action="">{% csrf_token %}
-        <table>{{ usuario }}
-            {{ formulario }}</table>
-        <br>
-        <input type="submit" value="Registrar"/> &nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="cancel-link btn btn-default" onclick="location.href='{% url 'usuarios:listar_usuarios' %}'">Cancelar</button>
-    </form>
-
-{% endblock %}
-</body>
-</html>
+{% extends 'base/home.html' %}
+{% block titulo %}Nuevo Usuario{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Gestionar Usuarios' in permisos %}
+        {% block encabezado %}
+            <h1> Registrar nuevo usuario</h1>
+        {%  endblock %}
+        {% block contenido %}
+            <form id="formulario" method="post" action="">{% csrf_token %}
+                <table>{{ usuario }}
+                    {{ formulario }}</table><br>
+                <div class="enlace">
+                    <input class="boton" type="submit" value="Registrar"/>
+                    <a href="{% url 'usuarios:listar_usuarios' %}">Cancelar</a>
+                </div>
+            </form>
+        {% endblock %}
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="{% url 'home' %}">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

@@ -9,28 +9,115 @@
         table {
             border-spacing: 1px;
         }
+        body {
+            font-family: Arial;
+            position: relative;
+            top: 50px;
+        }
+        .menu {
+            background-color: #333333;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 20px;
+            display: inline-block;
+        }
+        .botonsubmenu {
+            background-color: #333333;
+            color: white;
+            padding: 20px;
+            font-size: 16px;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .submenu {
+            position: relative;
+            display: inline-block;
+        }
+        .submenu-contenido {
+            display: none;
+            position: absolute;
+            background-color: #555555;
+            min-width: 200px;
+        }
+        .submenu-contenido a {
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            display: block;
+        }
+        .enlace {
+            background-color: #333333;
+            display: inline-block;
+        }
+        .enlace a {
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            display: inline-block;
+            font-family: inherit;
+        }
+        .boton {
+            background-color: #333333;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .lista {
+            background-color: #333333;
+            position: relative;
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+        }
+        .lista p{
+            display: inline-block;
+            text-decoration: none;
+            margin: 1px;
+        }
+        .menu a:hover {background-color: cornflowerblue;}
+        .submenu-contenido a:hover {background-color: gray;}
+        .submenu:hover .submenu-contenido {display: block;}
+        .submenu:hover .botonsubmenu {background-color: cornflowerblue;}
+        .enlace a:hover {background-color: cornflowerblue;}
+        .boton:hover {background-color: cornflowerblue;}
+        .lista:hover {background-color: cornflowerblue;}
     </style>
     <meta charset="UTF-8">
     <title>{% block titulo %}Home{% endblock titulo %}</title>
 </head>
 <body>
+    <header class="menu">
+        {% if user.is_authenticated %}
+            {% if 'Visualizar Usuarios' in permisos %}
+                <a href="{% url 'usuarios:listar_usuarios' %}">Usuarios</a>
+            {% endif %}
+            {% if 'Visualizar Permisos' in permisos %}
+                <a href="{% url 'roles:permiso_index' %}">Permisos</a>
+            {% endif %}
+            <a href="{% url 'proyectos:listar_proyectos' %}">Proyectos</a>
+            <div class="submenu" style="float: right;">
+                <button class="botonsubmenu">{{ user.username }}</button>
+                <div class="submenu-contenido" style="right: 0;">
+                    <a href="/accounts/logout/">Cerrar sesion</a>
+                </div>
+            </div>
+        {% else %}
+            <div style="float: right;"><a href="/accounts/login/">Iniciar sesion</a></div>
+        {% endif %}
+    </header>
+    {% block proyecto %}{% endblock proyecto %}
+    {% block sprint %}{% endblock sprint %}
     {% block cuerpo %}
-    <h1>Bienvenido al sistema de gestor de proyecto del Grupo 6</h1>
-
-    {% if user.is_authenticated %}
-        {% if 'Visualizar Usuarios' in permisos %}
-            <a href="/usuarios/listar_usuarios/">Usuarios</a><br>
-        {% endif %}
-        {% if 'Visualizar Permisos' in permisos %}
-            <a href="{% url 'roles:permiso_index' %}">Permisos</a><br>
-        {% endif %}
-        <a href="/proyectos/">Proyectos</a><br>
-        <a href="/accounts/logout/">Logout</a><br>
-
-        <h2>Usted se ha conectado como: {{ user.username }}</h2>
-    {% else %}
-        <a href="/accounts/login/">Login</a><br>
-    {% endif %}
+    <h1>Bienvenido al Sistema Gestor de Proyectos del Grupo 6</h1>
     {% endblock cuerpo %}
 </body>
 </html>

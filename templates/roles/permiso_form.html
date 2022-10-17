@@ -3,13 +3,17 @@
 {% block cuerpo %}
     <form action="" method="POST">
         {% if "Visualizar Permisos" in permisos %}
+        <h1>Crear Permiso</h1>
             {% csrf_token %}
-            {{ form }}
-            <input type="submit" name="OK">
+            <table>{{ form }}</table>
+            <br>
+            <div class="enlace">
+            <input class="boton" type="submit" value="Crear">
             <a href="{% url 'roles:permiso_index' %}">Cancelar</a>
+            </div>
         {% else %}
             <h1>No tienes los permisos para visualizar esta pagina</h1>
-            <a href="http://localhost:8000/">Home</a><br>
+            <a href="{% url 'home' %}">Home</a><br>
         {% endif %}
     </form>
 {% endblock cuerpo %}

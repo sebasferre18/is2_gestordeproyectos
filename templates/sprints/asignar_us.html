@@ -1,0 +1,29 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}{{ sprint.nombre }}{% endblock titulo %}
+{% block sprint %}
+    <h2>Sprint: {{ sprint.nombre }}</h2>
+{% endblock sprint %}
+{% block cuerpo %}
+    <h3>Asignar User Story</h3>
+    <h3>Miembros</h3>
+    <table>
+        <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+        </tr>
+        {% for m in miembros %}
+            <tr>
+                <td>{{ m.usuario }}</td>
+                <td>{% for r in m.rol.get_queryset %}
+                    {{ r }}<br>
+                {% endfor %}</td>
+                {% if 'Gestionar Roles De Un Usuario' in permisos %}
+                    <td class="enlace"><a href="{% url 'sprints:confirm_asignar_us' sprint.id proyecto.id m.id %}">Asignar US</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table><br>
+    <div class="enlace">
+    <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

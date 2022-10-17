@@ -1,0 +1,60 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Sprint Backlog{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Sprint Backlog</h2>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias</h3>
+    {% if UserStory %}
+        <table>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Tipo</th>
+            <th>Horas estimadas</th>
+            <th>Fecha de creacion</th>
+            <th>PT</th>
+            <th>PN</th>
+            <th>Trabajo previo en Sprint</th>
+            <th>Prioridad</th>
+            <th>Autor</th>
+            <th>Aprobado</th>
+            {% for us in UserStory %}
+                <tr>
+                    <td style="text-align: left; width: 10%">{{ us.nombre }}</td>
+                    <td style="text-align: left; width: 25%">{{ us.descripcion }}</td>
+                    <td style="text-align: left">{{ us.tipo_us }}</td>
+                    <td style="text-align: left">{{ us.horas_estimadas }}</td>
+                    <td style="text-align: left">{{ us.fecha_creacion }}</td>
+                    <td style="text-align: left">{{ us.user_point }}</td>
+                    <td style="text-align: left">{{ us.business_value }}</td>
+                    <td style="text-align: left">{{ us.sprint_previo }}</td>
+                    <td style="text-align: left">{{ us.prioridad }}</td>
+                    <td style="text-align: left">{{ us.autor }}</td>
+                    <td style="text-align: left">
+                        {% if us.aprobado %}
+                            Si
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    {% if not us.aprobado %}
+                        {% if sprint.estado == "En ejecucion" %}
+                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
+                        {% endif %}
+                        {% if sprint.estado == "Planificacion" %}
+                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
+                        {% endif %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            <h1>No hay User Stories en el Sprint Backlog</h1>
+        {% endif %}
+        <br>
+        <div class="enlace">
+            {% if sprint.estado == "Planificacion" %}
+                <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+            {% endif %}
+            <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+        </div>
+    <br>
+{% endblock cuerpo %}

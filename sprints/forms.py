@@ -2,6 +2,7 @@ from django import forms
 from .models import Sprint
 
 class SprintForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Sprint"""
     class Meta:
         model = Sprint
 

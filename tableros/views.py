@@ -12,9 +12,11 @@ from .models import Tablero
 
 @login_required
 def index(request, sprint_id, proyecto_id):
+    """
+        Clase de la vista de la lista de Tableros
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
-    us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
 
     tableros = Tablero.objects.filter(tipo_us__proyecto_id=proyecto_id)
 
@@ -38,9 +40,13 @@ def index(request, sprint_id, proyecto_id):
 
 @login_required
 def tablero_detalles(request, tablero_id, sprint_id, proyecto_id):
+    """
+        Clase de la vista para la visualizacion de un tablero
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     tablero = Tablero.objects.get(id=tablero_id)
+    us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id, tipo_us=tablero.tipo_us).order_by('-prioridad')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -57,6 +63,7 @@ def tablero_detalles(request, tablero_id, sprint_id, proyecto_id):
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
-        'campos': campos
+        'campos': campos,
+        'us': us
     }
     return render(request, 'tableros/tablero_detalles.html', context)

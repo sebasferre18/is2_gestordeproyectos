@@ -24,7 +24,22 @@ permisos_sm = [
     'Cancelar Proyecto',
     'Asignar Miembros',
     'Desasignar Miembros',
-    'Gestionar Roles De Un Usuario'
+    'Gestionar Roles De Un Usuario',
+    'Visualizar US',
+    'Modificar US',
+    'Crear US',
+    'Visualizar Tipo US',
+    'Crear Tipo US',
+    'Modificar Tipo US',
+    'Eliminar Tipo US',
+    'Importar Tipo US',
+    'Visualizar Sprints',
+    'Crear Sprint',
+    'Visualizar Sprint Backlog',
+    'Agregar US Al Sprint Backlog',
+    'Quitar US Del Sprint Backlog',
+    'Aprobar US',
+    'Visualizar Tablero',
 ]
 
 @login_required

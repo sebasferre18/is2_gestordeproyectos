@@ -14,7 +14,7 @@ from .models import Sprint
 @login_required
 def index(request, proyecto_id):
     """
-    Clase de la vista de la lista de User Stories
+    Clase de la vista de la lista de Sprints
     """
     sprints = Sprint.objects.all().filter(proyecto_id=proyecto_id).order_by('-id')
 
@@ -45,6 +45,9 @@ def index(request, proyecto_id):
 
 @login_required
 def ver_detalles(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la visualizacion de los detalles especificos de un sprint
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
@@ -105,6 +108,9 @@ def crear_sprint(request, proyecto_id):
 
 @login_required
 def sprint_backlog(request, sprint_id, proyecto_id):
+    """
+        Clase de la vista para la visualizacion del Sprint Backlog
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
@@ -128,6 +134,9 @@ def sprint_backlog(request, sprint_id, proyecto_id):
 
 @login_required
 def agregar_us(request, sprint_id, proyecto_id):
+    """
+        Clase de la vista para la visualizacion de User Stories a agregar en el Sprint Backlog
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, aprobado=False).exclude(sprint_id=sprint_id).order_by('-prioridad')
@@ -150,6 +159,9 @@ def agregar_us(request, sprint_id, proyecto_id):
 
 @login_required
 def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
+    """
+        Clase de la vista para agregar el User Story al Sprint Backlog
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -167,6 +179,9 @@ def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
 
 @login_required
 def quitar_us(request, sprint_id, proyecto_id, us_id):
+    """
+        Clase de la vista para quitar el User Story del Sprint Backlog
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -185,6 +200,9 @@ def quitar_us(request, sprint_id, proyecto_id, us_id):
 
 @login_required
 def aprobar_us(request, sprint_id, proyecto_id, us_id):
+    """
+        Clase de la vista para la aprobacion de un User Story
+    """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 

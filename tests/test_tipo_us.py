@@ -118,7 +118,6 @@ class TestVistasTipoUs:
         assert respuesta.status_code == 404
 
 
-'''
 class TestModelos:
     @pytest.mark.django_db
     def test_tipo_us(self):
@@ -134,4 +133,4 @@ class TestModelos:
         tipo_us = Tipo_US(nombre='pruebaus', fecha_creacion='20/04/2022', descripcion="si")
         assert tipo_us.nombre == 123
 
-'''
+

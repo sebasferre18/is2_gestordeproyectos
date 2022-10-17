@@ -9,6 +9,13 @@
             {% for c in campos %}
                 <div class="tablero-block" id="campo">
                     <strong>{{ c }}</strong>
+                    {% for u in us %}
+                        {% if c == u.campo %}
+                            <div class="tarea">
+                                <span>{{ u }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>

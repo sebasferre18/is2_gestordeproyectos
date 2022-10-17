@@ -40,7 +40,7 @@
         {% endif %}
         <a href="{% url 'sprints:sprint_backlog' sprint.id proyecto.id %}">Sprint Backlog</a>
         {% if sprint.estado == 'Planificacion' or sprint.estado == 'En ejecucion' %}
-            <a>US Asignados</a>
+            <a href="{% url 'sprints:asignar_us' sprint.id proyecto.id %}">Asignar US</a>
             <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Tablero Kanban</a>
         {% endif %}
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>

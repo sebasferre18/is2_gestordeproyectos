@@ -18,7 +18,6 @@ class UserStory(models.Model):
     proyecto = models.ForeignKey('proyectos.Proyecto', on_delete=models.CASCADE, null=True, blank=True)
     #Datos del sprint
     sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, blank=True)
-    usuario = models.OneToOneField('proyectos.Miembro', on_delete=models.PROTECT, null=True, blank=True)
     #xD
     campo = models.TextField(default="Pendiente")
 

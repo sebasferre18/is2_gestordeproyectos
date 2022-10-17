@@ -1,0 +1,16 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}{{ sprint.nombre }}{% endblock titulo %}
+{% block sprint %}
+    <h2>Sprint: {{ sprint.nombre }}</h2>
+{% endblock sprint %}
+{% block cuerpo %}
+        <h2>Asignar US al miembro {{ miembro.usuario.user.username }}</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <table>{{ form }}</table><br>
+            <div class="enlace">
+            <input class="boton" type="submit" name="OK" value="Confirmar">
+            <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Cancelar</a>
+            </div>
+        </form><br>
+{% endblock cuerpo %}

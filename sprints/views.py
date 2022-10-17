@@ -5,8 +5,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
+from proyectos.forms import AsignarUsForm
 from proyectos.models import Proyecto, Miembro
 from userstory.models import UserStory
+from usuarios.models import Usuario
 from .forms import SprintForm
 from .models import Sprint
 
@@ -268,3 +270,59 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
         us.save()
 
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
+
+@login_required
+def asignar_us(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la asignacion de User Stories a los usuarios
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
+    context = {
+        'proyecto': proyecto,
+        'miembros': miembros,
+        'permisos': permisos,
+        'sprint': sprint,
+    }
+    return render(request, 'sprints/asignar_us.html', context)
+
+@login_required
+def confirm_asignar_us (request, sprint_id, proyecto_id, miembro_id):
+    """
+        Clase de la vista para la confirmacion de la asignacion de User Stories a los usuarios
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembro = Miembro.objects.get(id=miembro_id)
+    form = AsignarUsForm(instance=miembro, sprint_id=sprint_id)
+
+    if request.method == 'POST':
+        form = AsignarUsForm(request.POST, instance=miembro, sprint_id=sprint_id)
+        if form.is_valid():
+            form.save()
+            return redirect('sprints:asignar_us', sprint_id, proyecto_id)
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
+    context = {
+        'form': form,
+        'permisos': permisos,
+        'miembro': miembro,
+        'proyecto': proyecto,
+        'sprint': sprint,
+    }
+    return render(request, 'sprints/confirm_asignar_us.html', context)

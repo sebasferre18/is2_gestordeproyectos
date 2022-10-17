@@ -40,4 +40,6 @@ class Miembro(models.Model):
     usuario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, null=True, blank=True)
     rol = models.ManyToManyField(Rol, blank=True)
     capacidad = models.IntegerField(default=0)
+    userstory = models.OneToOneField('userstory.UserStory', on_delete=models.PROTECT, null=True, blank=True)
+
 

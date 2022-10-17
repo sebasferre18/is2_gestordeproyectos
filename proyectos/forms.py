@@ -3,6 +3,8 @@ from proyectos.models import Proyecto, Miembro
 from roles.models import Rol
 from django.forms import inlineformset_factory
 
+from userstory.models import UserStory
+
 """
 Definicion de los formularios para la gestion de proyectos.
 """
@@ -58,3 +60,23 @@ class MiembroUsuarioForm(forms.ModelForm):
 
 
 MiembroFormSet = inlineformset_factory(Proyecto, Miembro, form=MiembroUsuarioForm, can_delete=False, extra=1)
+
+class AsignarUsForm(forms.ModelForm):
+    """Formulario generico con los campos del modelo Miembro"""
+    class Meta:
+        model = Miembro
+        fields = [
+            'userstory'
+        ]
+        labels = {
+            'userstory':'User Story'
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        """Funcion que filtra la seleccion de US.
+        Esto hace que solamente puedan elegirse los US del sprint backlog actual."""
+        self.sprint_id = kwargs.pop('sprint_id', None)
+        super(AsignarUsForm, self).__init__(*args, **kwargs)
+        self.fields['userstory'].queryset = UserStory.objects.filter(sprint_id=self.sprint_id)
+

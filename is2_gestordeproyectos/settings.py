@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'tipo_us',
     'userstory',
     'sprints',
+    'tableros',
 ]
 
 SITE_ID = 1

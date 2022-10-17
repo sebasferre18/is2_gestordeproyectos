@@ -13,4 +13,5 @@ urlpatterns = [
     path('tipo_us/', include('tipo_us.urls')),
     path('userstory/', include('userstory.urls')),
     path('sprints/', include('sprints.urls')),
+    path('tableros/', include('tableros.urls')),
 ]

@@ -20,6 +20,7 @@ class UserStory(models.Model):
     sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, blank=True)
     usuario = models.OneToOneField('proyectos.Miembro', on_delete=models.PROTECT, null=True, blank=True)
     #xD
+    campo = models.TextField(default="Pendiente")
 
     def __str__(self):
         """

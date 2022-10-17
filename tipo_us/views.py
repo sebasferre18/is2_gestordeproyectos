@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from datetime import date
 
+from tableros.models import Tablero
 from tipo_us.models import Tipo_US, MiembroTipoUs
 from tipo_us.forms import Tipo_usForm
 from proyectos.models import Proyecto, Miembro
@@ -66,6 +67,7 @@ def crear_tipo_us(request, proyecto_id):
     #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro = MiembroTipoUs()
+    tablero = Tablero()
     miembro.proyecto = proyecto
 
     form = Tipo_usForm()
@@ -76,6 +78,8 @@ def crear_tipo_us(request, proyecto_id):
             #tipo_us.fecha_creacion = date.today()
             miembro.tipo_us = tipo_us
             miembro.save()
+            tablero.tipo_us = miembro
+            tablero.save()
             return HttpResponseRedirect('/tipo_us/' + str(proyecto_id) + '/')
 
 

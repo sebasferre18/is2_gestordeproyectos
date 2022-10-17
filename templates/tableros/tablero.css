@@ -1,0 +1,16 @@
+
+.container {
+    width: 70%;
+    min-width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-kanban {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-family: Arial;
+}
+

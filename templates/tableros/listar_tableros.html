@@ -1,0 +1,23 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Tableros{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Tableros</h2>
+    {% if tableros %}
+        {% for t in tableros %}
+            <a href="{% url 'tableros:tablero_detalles' t.id sprint.id proyecto.id %}">
+                <div class="lista">
+                    <p>Tablero {{ t.tipo_us.tipo_us }}</p>
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <h1>No existen Tableros</h1>
+    {% endif %}
+    <br><br>
+    <div class="enlace">
+        {% if estado == "Finalizado" or estado == "Cancelado" or estado == "" %}
+            <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
+        {% endif %}
+        <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

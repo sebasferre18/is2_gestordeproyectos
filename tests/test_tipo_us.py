@@ -128,9 +128,5 @@ class TestModelos:
         tipo_us = Tipo_US(nombre='pruebaus', fecha_creacion='20/04/2022', descripcion="si")
         assert tipo_us.nombre == 'pruebaus'
 
-    @pytest.mark.django_db
-    def test_tipo_us_fallo(self):
-        tipo_us = Tipo_US(nombre='pruebaus', fecha_creacion='20/04/2022', descripcion="si")
-        assert tipo_us.nombre == 123
 
 

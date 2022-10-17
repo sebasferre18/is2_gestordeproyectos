@@ -37,10 +37,14 @@
                     </td>
                     {% if not us.aprobado %}
                         {% if sprint.estado == "En ejecucion" %}
-                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
+                            {% if "Aprobar US" in permisos %}
+                                <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
+                            {% endif %}
                         {% endif %}
                         {% if sprint.estado == "Planificacion" %}
-                            <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
+                            {% if "Quitar US Del Sprint Backlog" in permisos %}
+                                <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </tr>
@@ -52,7 +56,9 @@
         <br>
         <div class="enlace">
             {% if sprint.estado == "Planificacion" %}
-                <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+                {% if "Agregar US Al Sprint Backlog" in permisos %}
+                    <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+                {% endif %}
             {% endif %}
             <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
         </div>

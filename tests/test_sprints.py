@@ -12,7 +12,7 @@ from usuarios.models import Usuario
 class TestVistas:
 
     @pytest.mark.django_db
-    def test_listar_proyectos(self, client, django_user_model):
+    def test_listar_sprints(self, client, django_user_model):
         username = "usuario1"
         password = "pass"
         user = django_user_model.objects.create_user(username=username, password=password)
@@ -32,6 +32,27 @@ class TestVistas:
         url = reverse('sprints:index', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
         assert respuesta.status_code == 200
+
+    @pytest.mark.django_db
+    def test_listar_sprints_fail(self, client, django_user_model):
+        username = "usuario1"
+        password = "pass"
+        user = django_user_model.objects.create_user(username=username, password=password)
+
+        client.force_login(user)
+        proyecto = Proyecto(nombre='pruebaUnit', descripcion='pruebaUnit')
+        proyecto.save()
+
+        rol = Rol.objects.create(nombre="Scrum Master", proyecto=proyecto)
+        rol.save()
+
+        miembro = Miembro.objects.create(proyecto=proyecto, usuario=Usuario(user=user))
+        miembro.rol.add(rol)
+        miembro.save()
+
+        url = reverse('sprints:index', kwargs={'proyecto_id': proyecto.id})
+        respuesta = client.get(url)
+        assert respuesta.status_code == 302
 
 
 class TestModelos:

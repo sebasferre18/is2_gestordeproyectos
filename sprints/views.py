@@ -225,10 +225,19 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la inicializacion de un sprint
     """
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Iniciar Sprint" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     sprint.estado = 'En ejecucion'
     sprint.fecha_inicio = date.today()
     sprint.save()
+
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -237,6 +246,14 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la finalizacion de un sprint
     """
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Finalizar Sprint" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     sprint.estado = 'Finalizado'
     sprint.fecha_fin = date.today()
@@ -249,6 +266,10 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
         us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
         us.save()
 
+    miembros = Miembro.objects.all()
+    for m in miembros:
+        m.userstory.clear()
+
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -257,6 +278,14 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la cancelacion de un sprint
     """
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Cancelar Sprint" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     sprint.estado = 'Cancelado'
     sprint.fecha_fin = date.today()
@@ -269,6 +298,10 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
         us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
         us.save()
 
+    miembros = Miembro.objects.all()
+    for m in miembros:
+        m.userstory.clear()
+
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 @login_required
@@ -280,12 +313,10 @@ def asignar_us(request, sprint_id, proyecto_id):
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
 
-    user = request.user
-
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
 
     context = {
         'proyecto': proyecto,
@@ -311,12 +342,13 @@ def confirm_asignar_us (request, sprint_id, proyecto_id, miembro_id):
             form.save()
             return redirect('sprints:asignar_us', sprint_id, proyecto_id)
 
-    user = request.user
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
 
-    usuario = Usuario.objects.get(user_id=user.id)
-    rol = usuario.rol.all()
-
-    permisos = obtener_permisos(rol)
+    if "Asignar US A Usuario" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
 
     context = {
         'form': form,

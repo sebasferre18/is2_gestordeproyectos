@@ -10,7 +10,7 @@
             <table>{{ form }}</table><br>
             <div class="enlace">
             <input class="boton" type="submit" name="OK" value="Confirmar">
-            <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Cancelar</a>
+            <a href="{% url 'sprints:asignar_us' sprint.id proyecto.id %}">Cancelar</a>
             </div>
         </form><br>
 {% endblock cuerpo %}

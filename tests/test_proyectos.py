@@ -20,6 +20,22 @@ class TestVistas:
         respuesta = client.get(url)
         assert respuesta.status_code == 200
 
+    @pytest.mark.django_db
+    def test_proyecto_detalles(self, client, django_user_model):
+        username = "usuario1"
+        password = "pass"
+        user = django_user_model.objects.create_user(username=username, password=password)
+
+        client.force_login(user)
+        proyecto = Proyecto.objects.create(nombre='pruebaUnit', descripcion='pruebaUnit')
+        proyecto.save()
+        miembro = Miembro(proyecto=proyecto, usuario=Usuario(user=user))
+        miembro.save()
+
+        url = reverse('proyectos:ver_detalles', kwargs={'proyecto_id': proyecto.id})
+        respuesta = client.get(url)
+        assert respuesta.status_code == 200
+
 class TestModelos:
     @pytest.mark.django_db
     def test_proyecto(self, django_user_model):

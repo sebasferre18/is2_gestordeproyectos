@@ -71,6 +71,9 @@ class AsignarUsForm(forms.ModelForm):
         labels = {
             'userstory':'User Story'
         }
+        widgets = {
+            'userstory': forms.CheckboxSelectMultiple(),
+        }
 
 
     def __init__(self, *args, **kwargs):

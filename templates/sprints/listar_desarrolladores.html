@@ -1,0 +1,37 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}{{ sprint.nombre }}{% endblock titulo %}
+{% block sprint %}
+    <h2>Sprint: {{ sprint.nombre }}</h2>
+{% endblock sprint %}
+{% block cuerpo %}
+    <h3>Desarrolladores</h3>
+    {% if desarrolladores %}
+        <table>
+            <tr>
+                <th>Desarrolladores</th>
+                <th>Capacidad de trabajo por dia</th>
+                <th>Capacidad de trabajo total</th>
+                <th>User Story</th>
+            </tr>
+            {% for d in desarrolladores %}
+                <tr>
+                    <td>{{ d.usuario }}</td>
+                    <td>{{ d.capacidad_por_dia }} horas</td>
+                    <td>{{ d.capacidad_total }} horas</td>
+                    <td>{% for u in m.userstory.get_queryset %}
+                        {{ u }}<br>
+                    {% endfor %}</td>
+                    {% if "Asignar US A Usuario" in permisos %}
+                        <td class="enlace"><a href="{% url 'sprints:confirm_asignar_us' sprint.id proyecto.id m.id %}">Asignar US</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table><br>
+    {% else %}
+        <h1>No hay desarrolladores asignados</h1>
+    {% endif %}
+    <div class="enlace">
+    <a href="{% url 'sprints:asignar_desarrolladores' sprint.id proyecto.id %}">Asignar Desarrolladores</a>
+    <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

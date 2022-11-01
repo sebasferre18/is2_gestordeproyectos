@@ -10,7 +10,7 @@ from proyectos.models import Proyecto, Miembro
 from userstory.models import UserStory
 from usuarios.models import Usuario
 from .forms import SprintForm
-from .models import Sprint
+from .models import Sprint, Desarrollador
 
 
 @login_required
@@ -263,7 +263,7 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     for us in us_sinaprobar:
         us.sprint = None
         us.sprint_previo = 3
-        us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
+        us.prioridad = (0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo
         us.save()
 
     miembros = Miembro.objects.all()
@@ -295,7 +295,7 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
     for us in us_sinaprobar:
         us.sprint = None
         us.sprint_previo = 3
-        us.prioridad = round((0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo)
+        us.prioridad = (0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo
         us.save()
 
     miembros = Miembro.objects.all()
@@ -303,6 +303,30 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
         m.userstory.clear()
 
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
+
+
+@login_required
+def listar_desarrolladores(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista de la lista de Desarrolladores en un Sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    context = {
+        'proyecto': proyecto,
+        'desarrolladores': desarrolladores,
+        'permisos': permisos,
+        'sprint': sprint,
+    }
+    return render(request, 'sprints/listar_desarrolladores.html', context)
+
 
 @login_required
 def asignar_us(request, sprint_id, proyecto_id):
@@ -358,3 +382,32 @@ def confirm_asignar_us (request, sprint_id, proyecto_id, miembro_id):
         'sprint': sprint,
     }
     return render(request, 'sprints/confirm_asignar_us.html', context)
+
+@login_required
+def asignar_desarrolladores(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista para la asignacion de desarrolladores en un Sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    desarrolladores = Desarrollador.objects.filter(sprint=sprint)
+    ids = []
+
+    for a in desarrolladores:
+        ids.append(a.miembro.usuario.user_id)
+
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    context = {
+        'miembros': miembros,
+        'permisos': permisos,
+        'proyecto': proyecto,
+        'sprint': sprint,
+    }
+    return render(request, "sprints/asignar_desarrolladores.html", context)
+

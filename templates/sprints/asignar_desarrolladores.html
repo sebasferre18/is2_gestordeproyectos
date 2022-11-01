@@ -1,0 +1,26 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Asignar Miembros{% endblock titulo %}
+{% block cuerpo %}
+    {% if 'Asignar Miembros' in permisos %}
+        <h1>Asignar Desarrolladores</h1>
+        {% if miembros %}
+            <table>
+                {% for m in miembros %}
+                <tr>
+                    <td>{{ m }}</td>
+                    <td><div class="enlace"><a>Asignar</a></div></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No hay miembros que asignar al sprint.</p>
+        {% endif %}
+        <br>
+        <div class="enlace">
+        <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Volver</a>
+        </div>
+    {% else %}
+        <h1>No tienes los permisos para visualizar esta pagina</h1>
+        <a href="{% url 'home' %}">Home</a><br>
+    {% endif %}
+{% endblock cuerpo %}

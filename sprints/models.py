@@ -28,3 +28,16 @@ class Sprint(models.Model):
         """
         return self.nombre
 
+
+class Desarrollador(models.Model):
+    sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=False, blank=False)
+    miembro = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
+    capacidad_por_dia = models.IntegerField(default=0)
+    capacidad_total = models.IntegerField(default=0)
+    userstory = models.ManyToManyField('userstory.UserStory', blank=True)
+
+    def __str__(self):
+        """
+        Metodo que retorna el nombre del Desarrollador actual
+        """
+        return self.miembro.usuario.user.username

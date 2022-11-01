@@ -15,6 +15,7 @@
             <th>Trabajo previo en Sprint</th>
             <th>Prioridad</th>
             <th>Autor</th>
+            <th>Estado</th>
             <th>Aprobado</th>
             {% for us in UserStory %}
                 <tr>
@@ -28,6 +29,7 @@
                     <td style="text-align: left">{{ us.sprint_previo }}</td>
                     <td style="text-align: left">{{ us.prioridad }}</td>
                     <td style="text-align: left">{{ us.autor }}</td>
+                    <td style="text-align: left">{{ us.campo }}</td>
                     <td style="text-align: left">
                         {% if us.aprobado %}
                             Si

@@ -18,7 +18,7 @@ def index(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
 
-    tableros = Tablero.objects.filter(tipo_us__proyecto_id=proyecto_id)
+    tableros = Tablero.objects.filter(tipo_us__proyecto_id=proyecto_id).order_by('id')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -53,17 +53,14 @@ def tablero_detalles(request, tablero_id, sprint_id, proyecto_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
-    campos = tablero.campos.split(",")
-
-    if tablero.tipo_us.tipo_us.campos:
-        campos += tablero.tipo_us.tipo_us.campos.split(",")
+    campos = tablero.campos
 
     context = {
         'tablero': tablero,
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
-        'campos': campos,
+        'campos': campos.split(','),
         'us': us
     }
     return render(request, 'tableros/tablero_detalles.html', context)

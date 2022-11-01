@@ -25,6 +25,7 @@
                         {% if "Modificar Tipo US" in permisos %}
                             <td><div class="enlace"><a href="{% url 'tipo_us:modificar_tipo_us' proyecto.id m.id %}">Modificar</a></div></td>
                         {% endif %}
+                            <td><div class="enlace"><a href="{% url 'tipo_us:ordenar_campos' proyecto.id m.id %}">Ordenar</a></div></td>
                         {% if "Eliminar Tipo US" in permisos %}
                             <td><div class="enlace"><a href="{% url 'tipo_us:eliminar_tipo_us' proyecto.id m.id %}">Eliminar</a></div></td>
                         {% endif %}

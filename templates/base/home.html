@@ -41,6 +41,37 @@
             padding: 0.5rem;
         }
 
+        .cortina {
+            background-color: #333333;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            font-family: Arial;
+            padding: 12px;
+        }
+
+        .cortina p {
+            display: inline-block;
+            text-decoration: none;
+            margin: 1px;
+        }
+
+        .activo, .cortina:hover {
+            background-color: cornflowerblue;
+        }
+
+        .contenido {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: lightgray;
+            font-size: 14px;
+        }
+
         table, td {
             border: 1px solid black;
             padding: 1px;
@@ -111,7 +142,6 @@
         }
         .lista {
             background-color: #333333;
-            position: relative;
             display: block;
             color: white;
             text-decoration: none;

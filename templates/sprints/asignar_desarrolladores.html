@@ -1,15 +1,20 @@
-{% extends 'proyectos/proyecto_detalles.html' %}
+{% extends 'sprints/sprint_detalles.html' %}
 {% block titulo %}Asignar Miembros{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Asignar Miembros' in permisos %}
         <h1>Asignar Desarrolladores</h1>
         {% if miembros %}
             <table>
+                <th>Nombre de usuario</th>
                 {% for m in miembros %}
-                <tr>
-                    <td>{{ m }}</td>
-                    <td><div class="enlace"><a>Asignar</a></div></td>
-                </tr>
+                    <tr>
+                        <td>
+                            {{ m.usuario }}
+                        </td>
+                        <td><div class="enlace">
+                            <button class="boton" onclick="location.href='{% url 'sprints:asignar_capacidad_por_dia' sprint.id proyecto.id m.id %}'">Asignar</button>
+                        </div></td>
+                    </tr>
                 {% endfor %}
             </table>
         {% else %}

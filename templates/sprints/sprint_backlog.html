@@ -2,67 +2,83 @@
 {% block titulo %}Sprint Backlog{% endblock titulo %}
 {% block cuerpo %}
     <h2>Sprint Backlog</h2>
-    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias</h3>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias. Tiempo restante: {{ tiempo_restante }}</h3>
     {% if UserStory %}
-        <table>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Tipo</th>
-            <th>Horas estimadas</th>
-            <th>Fecha de creacion</th>
-            <th>PT</th>
-            <th>PN</th>
-            <th>Trabajo previo en Sprint</th>
-            <th>Prioridad</th>
-            <th>Autor</th>
-            <th>Estado</th>
-            <th>Aprobado</th>
-            {% for us in UserStory %}
-                <tr>
-                    <td style="text-align: left; width: 10%">{{ us.nombre }}</td>
-                    <td style="text-align: left; width: 25%">{{ us.descripcion }}</td>
-                    <td style="text-align: left">{{ us.tipo_us }}</td>
-                    <td style="text-align: left">{{ us.horas_estimadas }}</td>
-                    <td style="text-align: left">{{ us.fecha_creacion }}</td>
-                    <td style="text-align: left">{{ us.user_point }}</td>
-                    <td style="text-align: left">{{ us.business_value }}</td>
-                    <td style="text-align: left">{{ us.sprint_previo }}</td>
-                    <td style="text-align: left">{{ us.prioridad }}</td>
-                    <td style="text-align: left">{{ us.autor }}</td>
-                    <td style="text-align: left">{{ us.campo }}</td>
-                    <td style="text-align: left">
-                        {% if us.aprobado %}
-                            Si
-                        {% else %}
-                            No
-                        {% endif %}
-                    </td>
-                    {% if not us.aprobado %}
-                        {% if sprint.estado == "En ejecucion" %}
-                            {% if "Aprobar US" in permisos %}
-                                <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div></td>
-                            {% endif %}
-                        {% endif %}
-                        {% if sprint.estado == "Planificacion" %}
-                            {% if "Quitar US Del Sprint Backlog" in permisos %}
-                                <td style="text-align: left"><div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div></td>
-                            {% endif %}
+        {% for us in UserStory %}
+            <button type="button" class="cortina">
+                <p>{{ us.nombre }}</p>
+                <p style="float: right">Prioridad: {{ us.prioridad }}</p>
+            </button>
+            <div class="contenido">
+                <h3>Descripcion</h3>
+                <p>{{ us.descripcion }}</p>
+                <h3>Tipo de US</h3>
+                <p>{{ us.tipo_us }}</p>
+                <h3>Horas estimadas</h3>
+                <p>{{ us.horas_estimadas }} horas</p>
+                <h3>Prioridad tecnica</h3>
+                <p>{{ us.user_point }}</p>
+                <h3>Prioridad de negocio</h3>
+                <p>{{ us.business_value }}</p>
+                <h3>Trabajo previo en Sprint</h3>
+                <p>{{ us.sprint_previo }}</p>
+                <h3>Prioridad general</h3>
+                <p>{{ us.prioridad }}</p>
+                <h3>Fecha de creacion</h3>
+                <p>{{ us.fecha_creacion }}</p>
+                <h3>Autor</h3>
+                <p>{{ us.autor }}</p>
+                <h3>Estado</h3>
+                <p>{{ us.estado }}</p>
+                <h3>Aprobado</h3>
+                <p>
+                    {% if us.aprobado %}
+                        Si
+                    {% else %}
+                        No
+                    {% endif %}
+                </p>
+                {% if not us.aprobado %}
+                    {% if sprint.estado == "En ejecucion" %}
+                        {% if "Aprobar US" in permisos %}
+                            <div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div>
                         {% endif %}
                     {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-            <h1>No hay User Stories en el Sprint Backlog</h1>
-        {% endif %}
-        <br>
-        <div class="enlace">
-            {% if sprint.estado == "Planificacion" %}
-                {% if "Agregar US Al Sprint Backlog" in permisos %}
-                    <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
+                    {% if sprint.estado == "Planificacion" %}
+                        {% if "Quitar US Del Sprint Backlog" in permisos %}
+                            <div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div>
+                        {% endif %}
+                    {% endif %}<br><br>
                 {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <h1>No hay User Stories en el Sprint Backlog</h1>
+    {% endif %}
+    <br><br>
+    <div class="enlace">
+        {% if sprint.estado == "Planificacion" %}
+            {% if "Agregar US Al Sprint Backlog" in permisos %}
+                <a href="{% url 'sprints:agregar_us' sprint.id proyecto.id %}">Agregar US</a>
             {% endif %}
-            <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
-        </div>
-    <br>
+        {% endif %}
+        <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+    </div><br><br>
+
+    <script>
+        var cortina = document.getElementsByClassName("cortina")
+        var i;
+
+        for (i = 0; i < cortina.length; i++) {
+            cortina[i].addEventListener("click", function() {
+                this.classList.toggle("activo");
+                var contenido = this.nextElementSibling;
+                if (contenido.style.display === "block") {
+                    contenido.style.display = "none";
+                } else {
+                    contenido.style.display = "block";
+                }
+            })
+        }
+    </script>
 {% endblock cuerpo %}

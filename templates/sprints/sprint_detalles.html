@@ -5,32 +5,20 @@
 {% endblock sprint %}
 {% block cuerpo %}
 <h3>Informacion general</h3>
-    <table>
-        <tr>
-            <td>Estado: </td>
-            <td>{{ sprint.estado }}</td>
-        </tr>
-        <tr>
-            <td>Descripcion: </td>
-            <td>{{ sprint.descripcion }}</td>
-        </tr>
-        <tr>
-            <td>Fecha de inicio: </td>
-            <td>{{ sprint.fecha_inicio }}</td>
-        </tr>
-        <tr>
-            <td>Fecha final: </td>
-            <td>{{ sprint.fecha_fin }}</td>
-        </tr>
-        <tr>
-            <td>Duracion: </td>
-            <td>{{ sprint.duracion }} dias</td>
-        </tr>
-        <tr>
-            <td>Capacidad de trabajo: </td>
-            <td>{{ sprint.capacidad }} horas</td>
-        </tr>
-    </table><br>
+    <div class="contenido" style="display: block">
+        <h3>Estado</h3>
+        <p>{{ sprint.estado }}</p>
+        <h3>Descripcion</h3>
+        <p>{{ sprint.descripcion }}</p>
+        <h3>Fecha de inicio</h3>
+        <p>{{ sprint.fecha_inicio }}</p>
+        <h3>Fecha final</h3>
+        <p>{{ sprint.fecha_fin }}</p>
+        <h3>Duracion</h3>
+        <p>{{ sprint.duracion }} dias</p>
+        <h3>Capacidad de trabajo</h3>
+        <p>{{ sprint.capacidad }} horas</p>
+    </div><br>
     <div class="enlace">
         {% if sprint.estado == 'Planificacion' %}
             {% if "Iniciar Sprint" in permisos %}
@@ -54,5 +42,5 @@
             {% endif %}
         {% endif %}
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
-    </div>
+    </div><br><br>
 {% endblock cuerpo %}

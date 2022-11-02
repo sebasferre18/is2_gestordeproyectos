@@ -5,11 +5,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
-from proyectos.forms import AsignarUsForm
+from sprints.forms import AsignarUsForm
 from proyectos.models import Proyecto, Miembro
 from userstory.models import UserStory
 from usuarios.models import Usuario
-from .forms import SprintForm
+from .forms import SprintForm, DesarrolladorForm
 from .models import Sprint, Desarrollador
 
 
@@ -125,11 +125,16 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     if "Visualizar Sprint Backlog" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    tiempo_restante = sprint.capacidad
+    for u in us:
+        tiempo_restante -= u.horas_estimadas
+
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
         'sprint': sprint,
-        'UserStory': us
+        'UserStory': us,
+        'tiempo_restante': tiempo_restante
     }
     return render(request, 'sprints/sprint_backlog.html', context)
 
@@ -142,6 +147,7 @@ def agregar_us(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, aprobado=False).exclude(sprint_id=sprint_id).order_by('-prioridad')
+    sb = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -151,11 +157,16 @@ def agregar_us(request, sprint_id, proyecto_id):
     if "Agregar US Al Sprint Backlog" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    tiempo_restante = sprint.capacidad
+    for u in sb:
+        tiempo_restante -= u.horas_estimadas
+
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
         'sprint': sprint,
-        'UserStory': us
+        'UserStory': us,
+        'tiempo_restante': tiempo_restante
     }
     return render(request, 'sprints/agregar_us.html', context)
 
@@ -312,7 +323,7 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
     """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto).order_by('id')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -329,42 +340,20 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
 
 
 @login_required
-def asignar_us(request, sprint_id, proyecto_id):
+def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     """
-    Clase de la vista para la asignacion de User Stories a los usuarios
-    """
-    sprint = get_object_or_404(Sprint, pk=sprint_id)
-    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
-
-    try:
-        permisos = obtener_permisos_usuario(request.user, proyecto_id)
-    except Miembro.DoesNotExist:
-        return redirect('proyectos:acceso_denegado')
-
-    context = {
-        'proyecto': proyecto,
-        'miembros': miembros,
-        'permisos': permisos,
-        'sprint': sprint,
-    }
-    return render(request, 'sprints/asignar_us.html', context)
-
-@login_required
-def confirm_asignar_us (request, sprint_id, proyecto_id, miembro_id):
-    """
-        Clase de la vista para la confirmacion de la asignacion de User Stories a los usuarios
+        Clase de la vista para la confirmacion de la asignacion de User Stories a los desarrolladores
     """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    miembro = Miembro.objects.get(id=miembro_id)
-    form = AsignarUsForm(instance=miembro, sprint_id=sprint_id)
+    desarrollador = Desarrollador.objects.get(id=desarrollador_id)
+    form = AsignarUsForm(instance=desarrollador, sprint_id=sprint_id)
 
     if request.method == 'POST':
-        form = AsignarUsForm(request.POST, instance=miembro, sprint_id=sprint_id)
+        form = AsignarUsForm(request.POST, instance=desarrollador, sprint_id=sprint_id)
         if form.is_valid():
             form.save()
-            return redirect('sprints:asignar_us', sprint_id, proyecto_id)
+            return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -377,7 +366,7 @@ def confirm_asignar_us (request, sprint_id, proyecto_id, miembro_id):
     context = {
         'form': form,
         'permisos': permisos,
-        'miembro': miembro,
+        'desarrollador': desarrollador,
         'proyecto': proyecto,
         'sprint': sprint,
     }
@@ -396,7 +385,7 @@ def asignar_desarrolladores(request, sprint_id, proyecto_id):
     for a in desarrolladores:
         ids.append(a.miembro.usuario.user_id)
 
-    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+    miembros = Miembro.objects.filter(proyecto=proyecto).exclude(usuario__user_id__in=ids).order_by('id')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -410,4 +399,41 @@ def asignar_desarrolladores(request, sprint_id, proyecto_id):
         'sprint': sprint,
     }
     return render(request, "sprints/asignar_desarrolladores.html", context)
+
+
+@login_required
+def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
+    """
+    Clase de la vista para la asignacion de desarrolladores en un Sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembro = Miembro.objects.get(id=miembro_id)
+    form = DesarrolladorForm()
+
+    if request.method == 'POST':
+        form = DesarrolladorForm(request.POST)
+        if form.is_valid():
+            aux = form.save(commit=False)
+            aux.miembro = miembro
+            aux.sprint = sprint
+            aux.capacidad_total = aux.capacidad_por_dia * sprint.duracion
+            aux.save()
+            sprint.capacidad += aux.capacidad_total
+            sprint.save()
+            return redirect('sprints:asignar_desarrolladores', sprint_id, proyecto_id)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    context = {
+        'miembro': miembro,
+        'permisos': permisos,
+        'proyecto': proyecto,
+        'sprint': sprint,
+        'form': form
+    }
+    return render(request, "sprints/asignar_capacidad_por_dia.html", context)
 

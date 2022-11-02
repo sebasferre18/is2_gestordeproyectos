@@ -19,7 +19,8 @@ class UserStory(models.Model):
     #Datos del sprint
     sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, blank=True)
     #xD
-    campo = models.TextField(default="Pendiente")
+    estado = models.TextField(default="Pendiente")
+    asignado = models.BooleanField(default=False)
 
     def __str__(self):
         """
@@ -27,3 +28,17 @@ class UserStory(models.Model):
         :return: retorna el valor del campo nombre del objeto actual
         """
         return self.nombre
+
+
+class Nota(models.Model):
+    userstory = models.ForeignKey(UserStory, on_delete=models.CASCADE, null=False, blank=False)
+    creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
+    fecha = models.DateField(blank=True, null=True)
+    mensaje = models.TextField(null=True)
+
+
+class Tarea(models.Model):
+    userstory = models.ForeignKey(UserStory, on_delete=models.CASCADE, null=False, blank=False)
+    creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
+    horas_trabajadas = models.PositiveIntegerField(null=True)
+    mensaje = models.TextField(null=True)

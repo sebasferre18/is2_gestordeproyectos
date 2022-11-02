@@ -5,25 +5,36 @@
 {% endblock sprint %}
 {% block cuerpo %}
     <h3>Desarrolladores</h3>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas</h3>
     {% if desarrolladores %}
         <table>
             <tr>
                 <th>Desarrolladores</th>
-                <th>Capacidad de trabajo por dia</th>
-                <th>Capacidad de trabajo total</th>
-                <th>User Story</th>
+                <th>Capacidad por dia</th>
+                <th>Capacidad total</th>
+                <th>US asignados</th>
             </tr>
             {% for d in desarrolladores %}
                 <tr>
-                    <td>{{ d.usuario }}</td>
-                    <td>{{ d.capacidad_por_dia }} horas</td>
+                    <td>{{ d }}</td>
+                    <td>{% if d.capacidad_por_dia == 1 %}
+                        {{ d.capacidad_por_dia }} hora
+                    {% else %}
+                        {{ d.capacidad_por_dia }} horas
+                    {% endif %}</td>
                     <td>{{ d.capacidad_total }} horas</td>
-                    <td>{% for u in m.userstory.get_queryset %}
-                        {{ u }}<br>
-                    {% endfor %}</td>
+                    <td>
+                        {% if not d.userstory.get_queryset %}
+                            Vacio
+                        {% endif %}
+                        {% for u in d.userstory.get_queryset %}
+                            {{ u }}<br>
+                        {% endfor %}</td>
                     {% if "Asignar US A Usuario" in permisos %}
-                        <td class="enlace"><a href="{% url 'sprints:confirm_asignar_us' sprint.id proyecto.id m.id %}">Asignar US</a></td>
+                        <td><div class="enlace"><a href="{% url 'sprints:asignar_us' sprint.id proyecto.id d.id %}">Asignar US</a></div></td>
                     {% endif %}
+                    <td><div class="enlace"><a>Reasignar desarrollador</a></div></td>
+                    <td><div class="enlace"><a>Quitar desarrollador</a></div></td>
                 </tr>
             {% endfor %}
         </table><br>

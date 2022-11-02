@@ -106,6 +106,14 @@ def modificar_tipo_us(request, proyecto_id, tipo_us_id):
     tablero = Tablero.objects.get(tipo_us=miembro_tipo_us)
     form = Tipo_usForm(instance=tipo_us)
 
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Miembro.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    if "Modificar Tipo US" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
     if request.method == 'POST':
         form = Tipo_usForm(request.POST, instance=tipo_us)
         if form.is_valid():
@@ -215,6 +223,9 @@ def ordenar_campos(request, proyecto_id, tipo_us_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    if "Modificar Tipo US" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
+
     context = {
         'tipo_us': miembro_tipo_us,
         'permisos': permisos,
@@ -228,7 +239,7 @@ def ordenar_campos(request, proyecto_id, tipo_us_id):
 @login_required
 def ascender(request, proyecto_id, tipo_us_id, campo_id):
     """
-    Clase de la vista para agregar un tipo de US a un proyecto
+    Clase de la vista para cambiar el orden de los campos de forma ascendiente dentro de un tipo de US
     """
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, pk=tipo_us_id)
@@ -238,6 +249,9 @@ def ascender(request, proyecto_id, tipo_us_id, campo_id):
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
+
+    if "Modificar Tipo US" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
 
     campos = tablero.campos.split(",")
     campos[campo_id], campos[campo_id - 1] = campos[campo_id - 1], campos[campo_id]
@@ -265,6 +279,9 @@ def descender(request, proyecto_id, tipo_us_id, campo_id):
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
+
+    if "Modificar Tipo US" not in permisos:
+        return redirect('proyectos:falta_de_permisos', proyecto_id)
 
     campos = tablero.campos.split(",")
     campos[campo_id], campos[campo_id + 1] = campos[campo_id + 1], campos[campo_id]

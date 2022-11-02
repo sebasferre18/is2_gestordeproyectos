@@ -5,24 +5,16 @@
 {% endblock proyecto %}
 {% block cuerpo %}
     <h3>Informacion general</h3>
-    <table>
-        <tr>
-            <td>Estado: </td>
-            <td>{{ proyecto.estado }}</td>
-        </tr>
-        <tr>
-            <td>Descripcion: </td>
-            <td>{{ proyecto.descripcion }}</td>
-        </tr>
-        <tr>
-            <td>Fecha de inicio: </td>
-            <td>{{ proyecto.fecha_inicio }}</td>
-        </tr>
-        <tr>
-            <td>Fecha final: </td>
-            <td>{{ proyecto.fecha_fin }}</td>
-        </tr>
-    </table>
+    <div class="contenido" style="display: block">
+        <h3>Estado</h3>
+        <p>{{ proyecto.estado }}</p>
+        <h3>Descripcion</h3>
+        <p>{{ proyecto.descripcion }}</p>
+        <h3>Fecha de inicio</h3>
+        <p>{{ proyecto.fecha_inicio }}</p>
+        <h3>Fecha final</h3>
+        <p>{{ proyecto.fecha_fin }}</p>
+    </div>
     <h3>Miembros</h3>
     <table>
         <tr>
@@ -72,5 +64,5 @@
         {% endif %}
     {% endif %}
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
-    </div>
+    </div><br><br>
 {% endblock cuerpo %}

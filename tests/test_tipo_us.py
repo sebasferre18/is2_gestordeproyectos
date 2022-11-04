@@ -77,7 +77,7 @@ class TestVistasTipoUs:
 
         url = reverse('tipo_us:modificar_tipo_us', kwargs={'proyecto_id': proyecto.id, 'tipo_us_id': miembro_tipo_us.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200,"Página no encontrada"
+        assert respuesta.status_code == 200,"Error al modificar"
 
     def test_modificar_tipo_us_fail(self, client, django_user_model):
         username = "usuario1"

@@ -40,6 +40,27 @@ permisos_sm = [
     'Quitar US Del Sprint Backlog',
     'Aprobar US',
     'Visualizar Tablero',
+    'Asignar US A Usuario',
+    'Asignar Desarrolladores',
+    'Iniciar Sprint',
+    'Finalizar Sprint',
+    'Cancelar Sprint',
+    'Adjuntar Notas'
+]
+
+permisos_de = [
+    'Visualizar Roles',
+    'Visualizar US',
+    'Modificar US',
+    'Crear US',
+    'Visualizar Tipo US',
+    'Crear Tipo US',
+    'Modificar Tipo US',
+    'Eliminar Tipo US',
+    'Importar Tipo US',
+    'Visualizar Sprints',
+    'Visualizar Sprint Backlog',
+    'Visualizar Tablero'
 ]
 
 @login_required
@@ -78,16 +99,18 @@ def crear_proyecto(request):
 
     if request.method == 'POST':
         perm_sm = Permiso.objects.filter(nombre__in=permisos_sm)
+        perm_de = Permiso.objects.filter(nombre__in=permisos_de)
         formulario = ProyectoForm(request.POST)
         formulario_miembro = MiembroFormSet(request.POST)
         if formulario.is_valid() and formulario_miembro.is_valid():
             form = formulario.save()
 
-            sm = Rol(nombre="Developer", descripcion="Rol de Developer", proyecto=form)
-            sm.save()
             sm = Rol(nombre="Scrum Master", descripcion="Rol de Scrum Master", proyecto=form)
             sm.save()
             sm.permiso.set(perm_sm)
+            de = Rol(nombre="Developer", descripcion="Rol de Developer", proyecto=form)
+            de.save()
+            de.permiso.set(perm_de)
 
             for a in formulario_miembro.forms:
                 up = a.save(commit=False)

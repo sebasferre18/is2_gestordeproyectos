@@ -6,7 +6,7 @@
         <form action="{% url 'roles:eliminar_rol' rol.id proyecto_id %}" method="POST">
             {% csrf_token %}
             <div class="enlace">
-            <input class="boton" type="submit" name="Eliminar">
+            <input class="boton" type="submit" value="Eliminar">
             <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
             </div>
         </form>

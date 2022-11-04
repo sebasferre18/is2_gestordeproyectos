@@ -36,7 +36,7 @@
                         No
                     {% endif %}
                 </p>
-                <div class="enlace"><a href="{% url 'sprints:agregar_us_sprintbacklog' sprint.id proyecto.id us.id %}">Agregar</a></div>
+                <div class="enlace"><button class="boton" style="font-size: inherit" onclick="location.href='{% url 'sprints:agregar_us_sprintbacklog' sprint.id proyecto.id us.id %}'">Agregar</button></div>
                 <br><br>
             </div>
         {% endfor %}

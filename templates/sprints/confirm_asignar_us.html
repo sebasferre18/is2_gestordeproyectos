@@ -4,7 +4,7 @@
     <h2>Sprint: {{ sprint.nombre }}</h2>
 {% endblock sprint %}
 {% block cuerpo %}
-        <h2>Asignar US al miembro {{ miembro.usuario.user.username }}</h2>
+        <h2>Asignar US al desarrollador {{ desarrollador.miembro.usuario.user.username }}</h2>
         <form action="" method="POST">
             {% csrf_token %}
             <table>{{ form }}</table><br>

@@ -2,7 +2,11 @@
 {% block titulo %}Sprint Backlog{% endblock titulo %}
 {% block cuerpo %}
     <h2>Sprint Backlog</h2>
-    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias. Tiempo restante: {{ tiempo_restante }}</h3>
+    {% if sprint.estado == "Planificacion" %}
+        <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias. Tiempo estimado restante: {{ tiempo_restante }}</h3>
+    {% else %}
+        <h3>Capacidad restante: {{ capacidad_restante }} horas. Dias restantes: {{ sprint.duracion }} dias.</h3>
+    {% endif %}
     {% if UserStory %}
         {% for us in UserStory %}
             <button type="button" class="cortina">
@@ -40,15 +44,15 @@
                 </p>
                 {% if not us.aprobado %}
                     {% if sprint.estado == "En ejecucion" %}
-                        {% if "Aprobar US" in permisos %}
-                            <div class="enlace"><a href="{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}">Aprobar</a></div>
+                        {% if "Aprobar US" in permisos and us.estado == "Terminado" %}
+                            <div class="enlace"><button class="boton" style="font-size: inherit" onclick="location.href='{% url 'sprints:aprobar_us' sprint.id proyecto.id us.id %}'">Aprobar</button></div><br><br>
                         {% endif %}
                     {% endif %}
                     {% if sprint.estado == "Planificacion" %}
                         {% if "Quitar US Del Sprint Backlog" in permisos %}
-                            <div class="enlace"><a href="{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}">Quitar</a></div>
+                            <div class="enlace"><button class="boton" style="font-size: inherit" onclick="location.href='{% url 'sprints:quitar_us' sprint.id proyecto.id us.id %}'">Quitar</button></div><br><br>
                         {% endif %}
-                    {% endif %}<br><br>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endfor %}

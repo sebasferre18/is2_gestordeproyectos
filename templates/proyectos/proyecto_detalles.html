@@ -24,9 +24,14 @@
         {% for m in miembros %}
             <tr>
                 <td>{{ m.usuario }}</td>
-                <td>{% for r in m.rol.get_queryset %}
-                    {{ r }}<br>
-                {% endfor %}</td>
+                <td>
+                    {% if m.rol.get_queryset %}
+                        {% for r in m.rol.get_queryset %}
+                            {{ r }}<br>
+                        {% endfor %}
+                    {% else %}
+                        Sin roles
+                    {% endif %}</td>
                 {% if 'Gestionar Roles De Un Usuario' in permisos %}
                     <td class="enlace"><a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a></td>
                 {% endif %}
@@ -56,12 +61,12 @@
         {% if "Desasignar Miembros" in permisos %}
         <a href="{% url 'proyectos:desasignar_usuarios' proyecto.id %}">Desasignar Miembros</a>
         {% endif %}
-        {% if "Visualizar US" in permisos %}
+    {% endif %}
+    {% if "Visualizar US" in permisos %}
         <a href="{%  url 'userstory:listar_us' proyecto.id %}">Product Backlog</a>
-        {% endif %}
-        {% if "Visualizar Sprints" in permisos %}
-            <a href="{%  url 'sprints:index' proyecto.id %}">Sprints</a>
-        {% endif %}
+    {% endif %}
+    {% if "Visualizar Sprints" in permisos and not proyecto.estado == 'Planificacion' %}
+        <a href="{%  url 'sprints:index' proyecto.id %}">Sprints</a>
     {% endif %}
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
     </div><br><br>

@@ -33,7 +33,7 @@ class UserStory(models.Model):
 class Nota(models.Model):
     userstory = models.ForeignKey(UserStory, on_delete=models.CASCADE, null=False, blank=False)
     creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
-    fecha = models.DateField(blank=True, null=True)
+    fecha = models.DateTimeField(blank=True, null=True)
     mensaje = models.TextField(null=True)
 
 
@@ -42,3 +42,4 @@ class Tarea(models.Model):
     creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
     horas_trabajadas = models.PositiveIntegerField(null=True)
     mensaje = models.TextField(null=True)
+    fecha = models.DateTimeField(blank=True, null=True)

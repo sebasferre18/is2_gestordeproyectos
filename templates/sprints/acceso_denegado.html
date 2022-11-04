@@ -1,0 +1,8 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Acceso denegado{% endblock titulo %}
+{% block cuerpo %}
+    <h1>No eres desarrollador en este Sprint</h1>
+    <div class="enlace">
+    <a href="{% url 'sprints:ver_detalles' sprint_id proyecto_id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

@@ -11,9 +11,17 @@
                     <strong>{{ c }}</strong>
                     {% for u in us %}
                         {% if c == u.estado %}
-                            <div class="tarea">
-                                <span>{{ u }}</span>
-                            </div>
+                            <a href="{% url 'tableros:tablero_us_detalles' tablero.id sprint.id proyecto.id u.id %}">
+                                {% if desarrollador in u.desarrollador_set.get_queryset %}
+                                    <div class="tarea_asignada">
+                                        <p>{{ u }}</p>
+                                    </div>
+                                {% else %}
+                                    <div class="tarea">
+                                        <p>{{ u }}</p>
+                                    </div>
+                                {% endif %}
+                            </a>
                         {% endif %}
                     {% endfor %}
                 </div>

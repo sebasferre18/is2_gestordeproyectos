@@ -7,7 +7,7 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 # Create your views here.
 from sprints.forms import AsignarUsForm
 from proyectos.models import Proyecto, Miembro
-from userstory.models import UserStory
+from userstory.models import UserStory, Tarea
 from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
 from .models import Sprint, Desarrollador
@@ -83,6 +83,7 @@ def crear_sprint(request, proyecto_id):
         if form.is_valid():
             aux = form.save(commit=False)
             aux.proyecto = proyecto
+            aux.capacidad = 0
             aux.save()
             return redirect('sprints:index', proyecto_id)
 
@@ -116,6 +117,7 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
+    tareas = Tarea.objects.filter(userstory__sprint=sprint)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -129,12 +131,17 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     for u in us:
         tiempo_restante -= u.horas_estimadas
 
+    capacidad_restante = sprint.capacidad
+    for t in tareas:
+        capacidad_restante -= t.horas_trabajadas
+
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
         'sprint': sprint,
         'UserStory': us,
-        'tiempo_restante': tiempo_restante
+        'tiempo_restante': tiempo_restante,
+        'capacidad_restante': capacidad_restante
     }
     return render(request, 'sprints/sprint_backlog.html', context)
 
@@ -323,7 +330,7 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
     """
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto).order_by('id')
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint).order_by('id')
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -437,3 +444,13 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
     }
     return render(request, "sprints/asignar_capacidad_por_dia.html", context)
 
+@login_required
+def acceso_denegado(request, sprint_id, proyecto_id):
+    """
+    Clase de la vista de acceso denegado a un sprint
+    """
+    context = {
+        'sprint_id': sprint_id,
+        'proyecto_id': proyecto_id
+    }
+    return render(request, 'sprints/acceso_denegado.html', context)

@@ -22,10 +22,6 @@ class ProyectoForm(forms.ModelForm):
             'nombre':'Nombre',
             'descripcion':'Descripcion',
         }
-        widgets = {
-            'nombre' : forms.TextInput(attrs={'class':'form-control'}),
-            'descripcion' : forms.TextInput(attrs={'class':'form-control'}),
-        }
 
 
 class MiembroForm(forms.ModelForm):
@@ -44,7 +40,7 @@ class MiembroForm(forms.ModelForm):
         Esto hace que solamente puedan elegirse los roles del proyecto actual."""
         self.pro_id = kwargs.pop('pro_id', None)
         super(MiembroForm, self).__init__(*args, **kwargs)
-        self.fields['rol'].queryset = Rol.objects.filter(proyecto_id=self.pro_id)
+        self.fields['rol'].queryset = Rol.objects.filter(proyecto_id=self.pro_id).order_by('id')
 
 
 class MiembroUsuarioForm(forms.ModelForm):

@@ -11,9 +11,20 @@
         <h3>Descripcion</h3>
         <p>{{ sprint.descripcion }}</p>
         <h3>Fecha de inicio</h3>
-        <p>{{ sprint.fecha_inicio }}</p>
+        <p>
+            {% if sprint.fecha_inicio %}
+                {{ sprint.fecha_inicio }}
+            {% else %}
+                Por definir
+            {% endif %}
+        </p>
         <h3>Fecha final</h3>
-        <p>{{ sprint.fecha_fin }}</p>
+        <p>{% if sprint.fecha_fin %}
+                {{ sprint.fecha_fin }}
+            {% else %}
+                Por definir
+            {% endif %}
+        </p>
         <h3>Duracion</h3>
         <p>{{ sprint.duracion }} dias</p>
         <h3>Capacidad de trabajo</h3>
@@ -35,11 +46,9 @@
         {% if "Visualizar Sprint Backlog" in permisos %}
             <a href="{% url 'sprints:sprint_backlog' sprint.id proyecto.id %}">Sprint Backlog</a>
         {% endif %}
-        {% if sprint.estado == 'Planificacion' or sprint.estado == 'En ejecucion' %}
-            <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Desarrolladores</a>
-            {% if "Visualizar Tablero" in permisos %}
-                <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Tablero Kanban</a>
-            {% endif %}
+        <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Desarrolladores</a>
+        {% if "Visualizar Tablero" in permisos and not sprint.estado == 'Planificacion' %}
+            <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Tablero Kanban</a>
         {% endif %}
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
     </div><br><br>

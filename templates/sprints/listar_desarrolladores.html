@@ -42,7 +42,9 @@
         <h1>No hay desarrolladores asignados</h1>
     {% endif %}
     <div class="enlace">
-    <a href="{% url 'sprints:asignar_desarrolladores' sprint.id proyecto.id %}">Asignar Desarrolladores</a>
+    {% if "Asignar Desarrolladores" in permisos %}
+        <a href="{% url 'sprints:asignar_desarrolladores' sprint.id proyecto.id %}">Asignar Desarrolladores</a>
+    {% endif %}
     <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}

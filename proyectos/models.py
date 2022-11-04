@@ -21,7 +21,7 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=50)
     fecha_inicio = models.DateField(blank=True, null=True)
     fecha_fin = models.DateField(blank=True, null=True)
-    descripcion = models.CharField(max_length=50)
+    descripcion = models.TextField()
     estado = models.CharField(max_length=25, choices=ESTADOS_PROYECTO, default='Planificacion')
 
     def __str__(self):

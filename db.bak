@@ -1155,13 +1155,13 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
 15	pbkdf2_sha256$390000$uBbeGOpeHAmJDQW0TJcLoE$wKPaDCYiyt/Nw8oh1eUCUet2CfSSdtXmJt8XF5UsZ7k=	2022-11-04 00:08:32.43228-03	f	miguel			mdp@gmail.com	f	t	2022-11-03 20:44:06.545788-03
-3	!qV2xBuugrzOLn0pQBL62rVJQOVHA16PzPUdNMJqQ	2022-11-04 00:10:17.394319-03	f	angel_sebastian	Angel Sebastian	Ferreira Caballero		f	t	2022-09-08 22:38:55-04
 4	pbkdf2_sha256$390000$AhErgBFyf3bMOWmF1umNm2$2sexbLP/X115CropUBBiKMP50EAN+ugPhvwmXkSquOw=	2022-09-09 13:49:02.612741-04	f	test_usuario			test@gmail.com	f	t	2022-09-09 08:45:49.916672-04
 10	pbkdf2_sha256$390000$9XcWOepQerZQrn6XGJ81wA$TsS5j32h2FnKBshctWgV0QCNV2S6KXk4bFCDbi3b4Qw=	2022-11-03 21:57:22.104126-03	f	usuario_prueba				f	t	2022-09-29 14:47:09.62666-04
 16	pbkdf2_sha256$390000$VuWQ42LTFIeG5AJ0R544us$Wj4TbOhorRfOz3sYRIIRe/4TjXJeD+LkhX5x4/6W11Y=	2022-11-03 22:22:02.730748-03	f	marcelo			marcelo@gmail.com	f	t	2022-11-03 20:44:33.574769-03
-1	pbkdf2_sha256$390000$VZjdp9kxOQUTFPeaLN52RM$6eIqKTojsLP4vEByYdyKRhOI8eaJEK0yqj/3WgG/kFU=	2022-11-03 23:02:58.554046-03	t	admin			admin@gmail.com	t	t	2022-09-08 22:14:47-04
 2	pbkdf2_sha256$390000$gtkZRGncbZGAlK4eifAByt$sQmleNMyQH9R2+gENuB7wL+TP7NOjS1veRJ91VzpHNM=	2022-11-03 19:01:32.107088-03	f	carlitos	Carlos	Gimenez	tadeo@gmail.com	f	t	2022-09-08 22:23:55-04
 14	pbkdf2_sha256$390000$wWJGxqsm9uCt687wk6BVzy$c7j91LmcH09b3Eb2RNvpSjKie7cD/Q/SxEzoiXEokeg=	2022-11-03 23:57:08.690911-03	f	jose			jose@gmail.com	f	t	2022-11-03 20:43:33.241164-03
+1	pbkdf2_sha256$390000$VZjdp9kxOQUTFPeaLN52RM$6eIqKTojsLP4vEByYdyKRhOI8eaJEK0yqj/3WgG/kFU=	2022-11-04 10:27:24.874153-03	t	admin			admin@gmail.com	t	t	2022-09-08 22:14:47-04
+3	!qV2xBuugrzOLn0pQBL62rVJQOVHA16PzPUdNMJqQ	2022-11-04 10:30:09.320676-03	f	angel_sebastian	Angel Sebastian	Ferreira Caballero		f	t	2022-09-08 22:38:55-04
 \.
 
 
@@ -1387,6 +1387,7 @@ oicjn1swg23hdwpkll28hdxa2z28f6bc	.eJxVjMEOgyAQRP-Fc2OABVx6a3-ErLsQTQ0mFU9N_73aeG
 bss2q1plp9c6rplxp7n5sdcqspklf91l	.eJxVjEEOwiAQRe_C2pBChxa6dO8ZyMBMLWrAlDbRGO-uTbrQ7X_vv5fwuC6TXyvPPpEYhBaH3y1gvHLeAF0wn4uMJS9zCnJT5E6rPBXi23F3_wIT1un7bpxG1NqagACaGgJC7YiVVYSAHXNUrTEK2zgah2Ah9HbsCLhF7l23RSvXmkr2_Lin-SmG5v0Blgg_Zg:1oe7YG:exK13UywkTtvwFPsTU_G1OnrOsSAmsEyEg4NnmGoD7k	2022-10-14 01:23:04.581352-03
 1bcriewsyuzagvyg178ofp370im1gncu	.eJxVjEEOwiAQAP_C2RCQsoBH730DWdhVqgaS0p6MfzckPeh1ZjJvEXHfStw7r3EhcRFenH5ZwvzkOgQ9sN6bzK1u65LkSORhu5wb8et6tH-Dgr2MLZByGdizttY7zZSsdQpQuRAoBYMZAUO6EWXntT17PRnwCjUaniyIzxff5TeI:1ocgYz:_zR_ooJcwLgEhsZNuLI3v4tQ__jkYXHhrVYxraFgH9A	2022-10-10 02:21:53.673618-03
 xp3m0ca5q2p8o57kesl1gt9fmpa7scop	.eJxVjEEOwiAQRe_C2pBChxa6dO8ZyMBMLWrAlDbRGO-uTbrQ7X_vv5fwuC6TXyvPPpEYhBaH3y1gvHLeAF0wn4uMJS9zCnJT5E6rPBXi23F3_wIT1un7bpxG1NqagACaGgJC7YiVVYSAHXNUrTEK2zgah2Ah9HbsCLhF7l23RSvXmkr2_Lin-SmG5v0Blgg_Zg:1oicBd:2RdRgpu3nOO9hlIUQlJuZaDMBfGRHUnUDuMnSCrh2e4	2022-10-26 10:54:17.587587-03
+cveyyoci0xrewxnw778xp61htbzwbibb	.eJxVjMEOgyAQRP-Fc2OABVx6a3-ErLsQTQ0mFU9N_73aeGiP82bmvVSirY1pW_MzTaKuCtTllw3Ej1yPgub5wB0xL1tt3Xdz1mt321OubWJq01Lv5-tPNdI67h5bECRoLBAHI7Fnjl6XIBkoZN97LOSEnNEBwVpLGBhEmxgFkJ2O6v0Btns7yQ:1oqwlt:g6GLes-3n3IXW_yOBRM3-rrKYlF2jM__OCEiH_xSGj4	2022-11-18 10:30:09.326403-03
 \.
 
 
@@ -1490,6 +1491,7 @@ COPY public.roles_permiso (id, nombre, es_admin) FROM stdin;
 42	Cancelar Sprint	f
 43	Adjuntar Notas	f
 44	Asignar Desarrolladores	f
+45	Modificar Capacidad Por Dia	f
 \.
 
 
@@ -1505,10 +1507,10 @@ COPY public.roles_rol (id, nombre, descripcion, proyecto_id) FROM stdin;
 73	Developer	Rol de Developer	48
 75	Developer	Rol de Developer	49
 77	Gestor de roles	Rol para la gestion de roles	49
-74	Scrum Master	Rol de Scrum Master	49
-72	Scrum Master	Rol de Scrum Master	48
-78	Scrum Master	Rol de Scrum Master	50
 79	Developer	Rol de Developer	50
+72	Scrum Master	Rol de Scrum Master	48
+74	Scrum Master	Rol de Scrum Master	49
+78	Scrum Master	Rol de Scrum Master	50
 \.
 
 
@@ -1669,6 +1671,9 @@ COPY public.roles_rol_permiso (id, rol_id, permiso_id) FROM stdin;
 640	79	29
 641	79	30
 642	79	31
+643	72	45
+644	74	45
+645	78	45
 \.
 
 
@@ -1677,7 +1682,7 @@ COPY public.roles_rol_permiso (id, rol_id, permiso_id) FROM stdin;
 --
 
 COPY public.socialaccount_socialaccount (id, provider, uid, last_login, date_joined, extra_data, user_id) FROM stdin;
-1	google	103005632180463951929	2022-11-04 00:10:17.382172-03	2022-09-08 22:38:55.425056-04	{"id": "103005632180463951929", "name": "Angel Sebastian Ferreira Caballero", "given_name": "Angel Sebastian", "family_name": "Ferreira Caballero", "picture": "https://lh3.googleusercontent.com/a/ALm5wu2vGL85NENbNOcDV6mDxac8lzhViJWKQ8EllsAb=s96-c", "locale": "es"}	3
+1	google	103005632180463951929	2022-11-04 10:30:09.313122-03	2022-09-08 22:38:55.425056-04	{"id": "103005632180463951929", "name": "Angel Sebastian Ferreira Caballero", "given_name": "Angel Sebastian", "family_name": "Ferreira Caballero", "picture": "https://lh3.googleusercontent.com/a/ALm5wu2vGL85NENbNOcDV6mDxac8lzhViJWKQ8EllsAb=s96-c", "locale": "es"}	3
 \.
 
 
@@ -1863,12 +1868,12 @@ COPY public.userstory_userstory (id, nombre, descripcion, horas_estimadas, user_
 COPY public.usuarios_usuario (ci, telefono, fecha_nac, user_id) FROM stdin;
 \N	\N	\N	14
 \N	\N	\N	15
-\N	\N	\N	3
 333333	2323342	2022-09-07	2
 \N	\N	\N	4
 \N	\N	\N	10
 \N	\N	\N	16
 \N	\N	\N	1
+\N	\N	\N	3
 \.
 
 
@@ -1998,7 +2003,7 @@ SELECT pg_catalog.setval('public.proyectos_proyecto_id_seq', 50, true);
 -- Name: roles_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.roles_permission_id_seq', 44, true);
+SELECT pg_catalog.setval('public.roles_permission_id_seq', 45, true);
 
 
 --
@@ -2012,7 +2017,7 @@ SELECT pg_catalog.setval('public.roles_rol_id_seq', 79, true);
 -- Name: roles_rol_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.roles_rol_permission_id_seq', 642, true);
+SELECT pg_catalog.setval('public.roles_rol_permission_id_seq', 645, true);
 
 
 --

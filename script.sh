@@ -72,7 +72,7 @@ WSGIPythonPath $path/is2_gestordeproyectos
             ;;
         "Pruebas Unitarias")
             echo "Eligio desplegar las pruebas unitarias."
-            pytest
+            pytest --tb=short
             break
             ;;
         "Documentacion")

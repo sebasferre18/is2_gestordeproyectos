@@ -18,7 +18,7 @@ class TestVistas:
         client.force_login(user)
         url = reverse('proyectos:listar_proyectos')
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200, f"El usuario no inicio sesion. Codigo de estado: {respuesta.status_code}"
 
     @pytest.mark.django_db
     def test_proyecto_detalles(self, client, django_user_model):
@@ -34,7 +34,7 @@ class TestVistas:
 
         url = reverse('proyectos:ver_detalles', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200, f"Error al entrar al proyecto, el usuario no es miembro del proyecto. Codigo de estado: {respuesta.status_code}"
 
 class TestModelos:
     @pytest.mark.django_db
@@ -44,4 +44,5 @@ class TestModelos:
         user = django_user_model.objects.create_user(username=username, password=password)
         proyecto = Proyecto(nombre='pruebaUnit', descripcion='pruebaUnit')
         proyecto.save()
+        assert proyecto, "Error al crear el proyecto"
 

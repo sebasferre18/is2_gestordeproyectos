@@ -1,5 +1,7 @@
 import pytest
 from django.urls import reverse
+
+from tableros.models import Tablero
 from tipo_us.models import Tipo_US, MiembroTipoUs
 from usuarios.models import Usuario
 from proyectos.models import Proyecto, Miembro
@@ -74,10 +76,12 @@ class TestVistasTipoUs:
         tipo_us.save()
         miembro_tipo_us = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us)
         miembro_tipo_us.save()
+        tablero = Tablero.objects.create(tipo_us=miembro_tipo_us)
+        tablero.save()
 
         url = reverse('tipo_us:modificar_tipo_us', kwargs={'proyecto_id': proyecto.id, 'tipo_us_id': miembro_tipo_us.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200,"Error al modificar"
+        assert respuesta.status_code == 200, f"Error al modificar, no tienes los permisos para modificar un tipo de US. Codigo de estado: {respuesta.status_code}"
 
     def test_modificar_tipo_us_fail(self, client, django_user_model):
         username = "usuario1"

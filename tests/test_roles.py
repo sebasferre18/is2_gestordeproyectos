@@ -71,6 +71,6 @@ class TestModelos:
 
     @pytest.mark.django_db
     def test_permiso_fallo(self):
-        permiso = Permiso(nombre='pruebapermiso', es_admin=True)
-        assert permiso.es_admin != 1 ,"El permiso no corresponde a admin"
+        permiso = Permiso(nombre='pruebapermiso', es_admin=False)
+        assert permiso.es_admin != False, "El permiso no es administrativo"
 

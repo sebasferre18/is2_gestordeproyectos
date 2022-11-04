@@ -1,0 +1,20 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Actualizar estado del US: {{ us }}{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Tablero {{ tablero.tipo_us.tipo_us }}</h2>
+    <div class="contenido" style="display: block">
+        <h1>Actualizar estado del US: {{ us }}</h1>
+        <h3>Estado actual</h3>
+        <p>{{ us.estado }}</p>
+        <h3>Estado a asignarse</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <p>{{ form.estado }}</p>
+            <div class="enlace">
+            <input class="boton" style="font-size: inherit" type="submit" value="Actualizar">
+            </div><br><br>
+        </form>
+    </div><br>
+    <div class="enlace"><a href="{% url 'tableros:tablero_us_detalles' tablero.id sprint.id proyecto.id us.id %}">Volver</a></div>
+    <br><br>
+{% endblock cuerpo %}

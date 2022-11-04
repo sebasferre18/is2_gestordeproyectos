@@ -1,0 +1,34 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Tablero {{ tablero.tipo_us.tipo_us }}{% endblock titulo %}
+{% block cuerpo %}
+    <div class="container">
+        <div class="header-kanban">
+            <strong class="texto-header-kanban">Tablero {{ tablero.tipo_us.tipo_us }}</strong>
+        </div>
+        <div class="tablero">
+            {% for c in campos %}
+                <div class="tablero-block" id="campo">
+                    <strong>{{ c }}</strong>
+                    {% for u in us %}
+                        {% if c == u.estado %}
+                            <a href="{% url 'tableros:tablero_us_detalles' tablero.id sprint.id proyecto.id u.id %}">
+                                {% if desarrollador in u.desarrollador_set.get_queryset %}
+                                    <div class="tarea_asignada">
+                                        <p>{{ u }}</p>
+                                    </div>
+                                {% else %}
+                                    <div class="tarea">
+                                        <p>{{ u }}</p>
+                                    </div>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div><br>
+    <div class="enlace">
+        <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

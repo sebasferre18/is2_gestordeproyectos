@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'is2_gestordeproyectos.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'is2_gestordeproyectos.settings_produccion')
 
 application = get_wsgi_application()

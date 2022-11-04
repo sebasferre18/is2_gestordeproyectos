@@ -1,5 +1,5 @@
 {% extends 'proyectos/proyecto_detalles.html' %}
-{% block titulo %}Sprints{% endblock titulo %}
+{% block titulo %}Crear Sprint{% endblock titulo %}
 {% block cuerpo %}
     {% if estado == "Planificacion" or estado == "En ejecucion" %}
         <h1>No es posible crear un Sprint teniendo ya un Sprint en progreso</h1>
@@ -12,7 +12,7 @@
             {% csrf_token %}
             <table>{{ form }}</table><br>
             <div class="enlace">
-                <input class="boton" type="submit" name="OK">
+                <input class="boton" type="submit" value="Crear">
                 <a href="{% url 'sprints:index' proyecto.id %}">Cancelar</a>
             </div><br><br>
         </form>

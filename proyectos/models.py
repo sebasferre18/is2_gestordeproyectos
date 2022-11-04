@@ -21,7 +21,7 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=50)
     fecha_inicio = models.DateField(blank=True, null=True)
     fecha_fin = models.DateField(blank=True, null=True)
-    descripcion = models.CharField(max_length=50)
+    descripcion = models.TextField()
     estado = models.CharField(max_length=25, choices=ESTADOS_PROYECTO, default='Planificacion')
 
     def __str__(self):
@@ -39,5 +39,4 @@ class Miembro(models.Model):
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, null=False, blank=False)
     usuario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, null=True, blank=True)
     rol = models.ManyToManyField(Rol, blank=True)
-    capacidad = models.IntegerField(default=0)
-    userstory = models.OneToOneField('userstory.UserStory', on_delete=models.PROTECT, null=True, blank=True)
+    userstory = models.ManyToManyField('userstory.UserStory', blank=True)

@@ -29,7 +29,6 @@ class US_Form(forms.ModelForm):
         widgets = {
             'nombre' : forms.TextInput(attrs={'class':'form-control'}),
             #'tipo_us' : forms.TextInput(attrs={'class':'form-control'}),
-            'descripcion' : forms.TextInput(attrs={'class':'form-control'}),
             'horas_estimadas' : forms.TextInput(attrs={'class':'form-control'}),
             'user_point' : forms.TextInput(attrs={'class':'form-control'}),
             'business_value' : forms.TextInput(attrs={'class':'form-control'}),

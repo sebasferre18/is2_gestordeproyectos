@@ -1,0 +1,53 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}{{ sprint.nombre }}{% endblock titulo %}
+{% block sprint %}
+    <h2>Sprint: {{ sprint.nombre }}</h2>
+{% endblock sprint %}
+{% block cuerpo %}
+    <h3>Desarrolladores</h3>
+    <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas</h3>
+    {% if desarrolladores %}
+        <table>
+            <tr>
+                <th>Desarrolladores</th>
+                <th>Capacidad por dia</th>
+                <th>Capacidad total</th>
+                <th>US asignados</th>
+            </tr>
+            {% for d in desarrolladores %}
+                <tr>
+                    <td>{{ d }}</td>
+                    <td>{% if d.capacidad_por_dia == 1 %}
+                        {{ d.capacidad_por_dia }} hora
+                    {% else %}
+                        {{ d.capacidad_por_dia }} horas
+                    {% endif %}</td>
+                    <td>{{ d.capacidad_total }} horas</td>
+                    <td>
+                        {% if not d.userstory.get_queryset %}
+                            Vacio
+                        {% endif %}
+                        {% for u in d.userstory.get_queryset %}
+                            {{ u }}<br>
+                        {% endfor %}</td>
+                    {% if "Asignar US A Usuario" in permisos %}
+                        <td><div class="enlace"><a href="{% url 'sprints:asignar_us' sprint.id proyecto.id d.id %}">Asignar US</a></div></td>
+                    {% endif %}
+                    <td><div class="enlace"><a>Reasignar desarrollador</a></div></td>
+                    {% if "Modificar Capacidad Por Dia" in permisos %}
+                        <td><div class="enlace"><a href="{% url 'sprints:modificar_capacidad_dia' sprint.id proyecto.id d.id %}">Modificar capacidad horaria</a></div></td>
+                    {% endif %}
+                    <td><div class="enlace"><a>Quitar desarrollador</a></div></td>
+                </tr>
+            {% endfor %}
+        </table><br>
+    {% else %}
+        <h1>No hay desarrolladores asignados</h1>
+    {% endif %}
+    <div class="enlace">
+    {% if "Asignar Desarrolladores" in permisos %}
+        <a href="{% url 'sprints:asignar_desarrolladores' sprint.id proyecto.id %}">Asignar Desarrolladores</a>
+    {% endif %}
+    <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

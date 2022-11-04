@@ -18,6 +18,10 @@ urlpatterns = [
     path('start/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.iniciar_sprint, name='iniciar_proyecto'),
     path('end/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.finalizar_sprint, name='finalizar_proyecto'),
     path('cancel/<int:sprint_id>/proyectos/<int:proyecto_id>/', views.cancelar_sprint, name='cancelar_proyecto'),
-    path('<int:sprint_id>/proyectos/<int:proyecto_id>/asignar_us', views.asignar_us, name='asignar_us'),
-    path('<int:sprint_id>/proyectos/<int:proyecto_id>/asignar_us/<int:miembro_id>', views.confirm_asignar_us, name='confirm_asignar_us'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers', views.listar_desarrolladores, name='listar_desarrolladores'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/assign', views.asignar_desarrolladores, name='asignar_desarrolladores'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/assign/<int:miembro_id>', views.asignar_capacidad_por_dia, name='asignar_capacidad_por_dia'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/<int:desarrollador_id>/modificar_capacidad_dia', views.modificar_capacidad_dia, name='modificar_capacidad_dia'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/<int:desarrollador_id>/asignar_us', views.asignar_us, name='asignar_us'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/denied', views.acceso_denegado, name='acceso_denegado'),
 ]

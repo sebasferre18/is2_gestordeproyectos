@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.urls import reverse
 
@@ -63,6 +65,5 @@ class TestModelos:
         username = "usuario1"
         password = "pass"
         user = django_user_model.objects.create_user(username=username, password=password)
-        usuario = Usuario(user=user, ci=1234567, telefono="0444 444444", fecha_nac="01/01/1998")
+        usuario = Usuario(user=user, ci=1234567, telefono="0444 444444", fecha_nac=date.today())
         usuario.save()
-

@@ -6,12 +6,12 @@ class UserStory(models.Model):
     """
     nombre = models.CharField(max_length=50)
     tipo_us = models.ForeignKey('tipo_us.MiembroTipoUs', on_delete=models.PROTECT)
-    descripcion = models.CharField(max_length=50)
+    descripcion = models.TextField(null=True)
     horas_estimadas = models.PositiveIntegerField(null=True)
     user_point = models.PositiveIntegerField(null=True)
     business_value = models.PositiveIntegerField(null=True)
     sprint_previo = models.IntegerField(null=True, default=0)
-    prioridad = models.PositiveIntegerField(null=True)
+    prioridad = models.DecimalField(null=True, max_digits=5, decimal_places=2)
     autor = models.TextField(null=True)
     aprobado = models.BooleanField(default=False)
     fecha_creacion = models.DateField(blank=True, null=True)
@@ -19,6 +19,8 @@ class UserStory(models.Model):
     #Datos del sprint
     sprint = models.ForeignKey('sprints.Sprint', on_delete=models.PROTECT, null=True, blank=True)
     #xD
+    estado = models.TextField(default="Pendiente")
+    asignado = models.BooleanField(default=False)
 
     def __str__(self):
         """
@@ -26,3 +28,18 @@ class UserStory(models.Model):
         :return: retorna el valor del campo nombre del objeto actual
         """
         return self.nombre
+
+
+class Nota(models.Model):
+    userstory = models.ForeignKey(UserStory, on_delete=models.CASCADE, null=False, blank=False)
+    creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
+    fecha = models.DateTimeField(blank=True, null=True)
+    mensaje = models.TextField(null=True)
+
+
+class Tarea(models.Model):
+    userstory = models.ForeignKey(UserStory, on_delete=models.CASCADE, null=False, blank=False)
+    creador = models.ForeignKey('proyectos.Miembro', on_delete=models.CASCADE, null=True, blank=True)
+    horas_trabajadas = models.PositiveIntegerField(null=True)
+    mensaje = models.TextField(null=True)
+    fecha = models.DateTimeField(blank=True, null=True)

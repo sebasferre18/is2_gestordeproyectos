@@ -1,0 +1,18 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}Adjuntar nota{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Tablero {{ tablero.tipo_us.tipo_us }}</h2>
+    <div class="contenido" style="display: block">
+        <h1>Adjuntar nota en el US: {{ us }}</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h3>Comentario</h3>
+            <p>{{ form.mensaje }}</p>
+            <div class="enlace">
+            <input class="boton" style="font-size: inherit" type="submit" value="Registrar">
+            </div><br><br>
+        </form>
+    </div><br>
+    <div class="enlace"><a href="{% url 'tableros:tablero_us_detalles' tablero.id sprint.id proyecto.id us.id %}">Volver</a></div>
+    <br><br>
+{% endblock cuerpo %}

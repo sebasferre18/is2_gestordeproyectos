@@ -5,7 +5,7 @@ from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
 from proyectos.models import Proyecto, Miembro
 from funciones import obtener_permisos
-
+from django.contrib import messages
 """
 Vistas de la app de Roles.
 """
@@ -165,6 +165,9 @@ def crear_permiso(request):
     """
     Clase de la vista para la creacion de un nuevo Permiso.
     """
+
+    if 2==2:
+        messages.success(request, "El código del producto debe tener 5 carácteres")
     form = PermisoForm()
     if request.method == 'POST':
         form = PermisoForm(request.POST)
@@ -184,4 +187,3 @@ def crear_permiso(request):
         'permisos': p
     }
     return render(request, 'roles/permiso_form.html', context)
-

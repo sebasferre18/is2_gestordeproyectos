@@ -9,15 +9,15 @@
     <table>
         <tr>
             <th>Usuario</th>
-            <th>Rol</th>
+            <th>User Story</th>
         </tr>
         {% for m in miembros %}
             <tr>
                 <td>{{ m.usuario }}</td>
-                <td>{% for r in m.rol.get_queryset %}
-                    {{ r }}<br>
+                <td>{% for u in m.userstory.get_queryset %}
+                    {{ u }}<br>
                 {% endfor %}</td>
-                {% if 'Gestionar Roles De Un Usuario' in permisos %}
+                {% if "Asignar US A Usuario" in permisos %}
                     <td class="enlace"><a href="{% url 'sprints:confirm_asignar_us' sprint.id proyecto.id m.id %}">Asignar US</a></td>
                 {% endif %}
             </tr>

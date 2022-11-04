@@ -1,0 +1,20 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Ordenar Campos de US{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Ordenar Campos del Tipo de US: {{ tipo_us.tipo_us }}</h2>
+    <table>
+        {% for c in campos %}
+            <tr>
+                <td>{{ c }}</td>
+                {% if forloop.counter != 1 %}
+                    <td><div class="enlace" style="font-size: 25px"><a href="{% url 'tipo_us:ascender' proyecto.id tipo_us.id forloop.counter0 %}">&uarr;</a></div></td>
+                {% endif %}
+                {% if forloop.counter != len %}
+                    <td><div class="enlace" style="font-size: 25px"><a href="{% url 'tipo_us:descender' proyecto.id tipo_us.id forloop.counter0 %}">&darr;</a></div></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table><br>
+    <div class="enlace"><a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">Volver</a></div>
+    <br>
+{% endblock cuerpo %}

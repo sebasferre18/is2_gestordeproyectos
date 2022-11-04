@@ -12,7 +12,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permissions/')
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200, "Error, el usuario no cuenta con los permisos requeridos"
 
     @pytest.mark.django_db
     def test_listar_permisos_fail(self, client, django_user_model):
@@ -22,7 +22,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permiso/')
-        assert respuesta.status_code == 404
+        assert respuesta.status_code == 404, "Error, el usuario no cuenta con los permisos requeridos"
 
     @pytest.mark.django_db
     def test_crear_permisos(self, client, django_user_model):
@@ -32,7 +32,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permissions/create/')
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200, "Error, el usuario no tiene permitido crear Permisos"
 
     @pytest.mark.django_db
     def test_crear_permisos_fail(self, client, django_user_model):
@@ -42,7 +42,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permiso/crear/')
-        assert respuesta.status_code == 404
+        assert respuesta.status_code == 404, "Error, el usuario no tiene permitido crear Permisos"
 
 
 class TestModelos:
@@ -53,12 +53,12 @@ class TestModelos:
     @pytest.mark.django_db
     def test_rol_comparacion(self):
         rol = Rol(nombre='pruebarol', descripcion="si")
-        assert rol.nombre == 'pruebarol'
+        assert rol.nombre == 'pruebarol', "Error, el nombre del rol no coincide con el establecido"
 
     @pytest.mark.django_db
     def test_rol_fallo(self):
         rol = Rol(nombre='pruebarol', descripcion="si")
-        assert rol.nombre != 27
+        assert rol.nombre != 27, "Error, el nombre del rol no coincide con el establecido"
 
     @pytest.mark.django_db
     def test_permiso(self):
@@ -67,9 +67,9 @@ class TestModelos:
     @pytest.mark.django_db
     def test_permiso_comparacion(self):
         permiso = Permiso(nombre='pruebapermiso', es_admin=True)
-        assert permiso.nombre == 'pruebapermiso'
+        assert permiso.nombre == 'pruebapermiso', "Error, el nombre del permiso no coincide con el determinado"
 
     @pytest.mark.django_db
     def test_permiso_fallo(self):
         permiso = Permiso(nombre='pruebapermiso', es_admin=True)
-        assert permiso.es_admin != 2
+        assert permiso.es_admin != 2, "Error, el nombre del permiso no coincide con el determinado"

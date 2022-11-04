@@ -49,7 +49,7 @@ def crear_us(request, proyecto_id):
             aux.proyecto = proyecto
             aux.fecha_creacion = date.today()
             aux.autor = user.username
-            aux.prioridad = round((0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo)
+            aux.prioridad = (0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo
             aux.save()
 
             return redirect('userstory:listar_us', proyecto_id)
@@ -84,7 +84,7 @@ def modificar_us(request,proyecto_id, us_id):
         form = US_Form(request.POST, instance=us, pro_id=proyecto_id)
         if form.is_valid():
             aux = form.save(commit=False)
-            aux.prioridad = round((0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo)
+            aux.prioridad = (0.6 * aux.business_value + 0.4 * aux.user_point) + aux.sprint_previo
             aux.save()
             return redirect('userstory:listar_us', proyecto_id)
 

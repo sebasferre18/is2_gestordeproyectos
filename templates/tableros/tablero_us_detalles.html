@@ -1,0 +1,92 @@
+{% extends 'sprints/sprint_detalles.html' %}
+{% block titulo %}US: {{ us }}{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Tablero {{ tablero.tipo_us.tipo_us }}</h2>
+    <div class="contenido" style="display: block">
+        <h1>{{ us }}</h1>
+        <h3>Estado</h3>
+        <p>{{ us.estado }}</p>
+        <h3>Horas trabajadas</h3>
+        <p>{{ horas_trabajadas }} horas</p>
+        <h3>Horas restantes</h3>
+        <p>{{ horas_restantes }} horas</p>
+        <h3>Prioridad</h3>
+        <p>{{ us.prioridad }}</p>
+        <h3>Aprobado</h3>
+        <p>
+            {% if us.aprobado %}
+                Si
+            {% else %}
+                No
+            {% endif %}
+        </p>
+        <button type="button" class="cortina" style="font-size: inherit">
+            <p>Tareas</p>
+        </button>
+        <div class="contenido" style="background-color: white">
+            {% if tareas %}
+                <p>
+                    {% for t in tareas %}
+                        <p style="margin: 1px">
+                            ({{ t.fecha }}) <b>[{{ t.creador.usuario.user.username }}]</b> {{ t.mensaje }} - {{ t.horas_trabajadas }} horas
+                        </p>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <h3>Registro de tareas vacio</h3>
+            {% endif %}
+        </div><br><br>
+        <button type="button" class="cortina" style="font-size: inherit">
+            <p>Notas</p>
+        </button>
+        <div class="contenido" style="background-color: white">
+            {% if notas %}
+                <p>
+                    {% for n in notas %}
+                        <p style="margin: 1px">
+                            ({{ n.fecha }}) <b>[{{ n.creador.usuario.user.username }}]</b> {{ n.mensaje }}
+                        </p>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <h3>Registro de notas vacio</h3>
+            {% endif %}
+        </div><br><br>
+        {% if not us.aprobado %}
+            {% if sprint.estado == "En ejecucion" %}
+                {% if us in desarrollador.userstory.get_queryset or "Adjuntar Notas" in permisos %}
+                    <div class="enlace"><a href="{% url 'tableros:adjuntar_nota' tablero.id sprint.id proyecto.id us.id %}">Adjuntar nota</a></div>
+                {% endif %}
+                {% if us in desarrollador.userstory.get_queryset %}
+                    {% if horas_restantes > 0 %}
+                        <div class="enlace"><a href="{% url 'tableros:registrar_tarea' tablero.id sprint.id proyecto.id us.id %}">Registrar tarea</a></div>
+                    {% endif %}
+                    <div class="enlace"><a href="{% url 'tableros:actualizar_estado' tablero.id sprint.id proyecto.id us.id %}">Actualizar estado</a></div>
+                {% endif %}
+                {% if "Aprobar US" in permisos and us.estado == "Terminado" %}
+                    <div class="enlace"><button class="boton" style="font-size: inherit" onclick="location.href='{% url 'tableros:aprobar_us' tablero.id sprint.id proyecto.id us.id %}'">Aprobar</button></div>
+                {% endif %}
+            {% endif %}
+        {% endif %}<br><br>
+    </div>
+    <h3>Tu capacidad diaria: {{ capacidad_dia_desarrollador }} horas. Tu capacidad total de trabajo: {{ capacidad_desarrollador }} horas</h3>
+    <div class="enlace"><a href="{% url 'tableros:tablero_detalles' tablero.id sprint.id proyecto.id %}">Volver</a></div>
+    <br><br>
+
+    <script>
+        var cortina = document.getElementsByClassName("cortina")
+        var i;
+
+        for (i = 0; i < cortina.length; i++) {
+            cortina[i].addEventListener("click", function() {
+                this.classList.toggle("activo");
+                var contenido = this.nextElementSibling;
+                if (contenido.style.display === "block") {
+                    contenido.style.display = "none";
+                } else {
+                    contenido.style.display = "block";
+                }
+            })
+        }
+    </script>
+{% endblock cuerpo %}

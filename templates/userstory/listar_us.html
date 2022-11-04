@@ -4,47 +4,47 @@
     {% if "Visualizar US" in permisos %}
         <h2>Product Backlog</h2>
         {% if UserStory %}
-            <table>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Tipo de US</th>
-                <th>Horas estimadas</th>
-                <th>Fecha de creacion</th>
-                <th>Prioridad tecnica</th>
-                <th>Prioridad de negocio</th>
-                <th>Trabajo previo en Sprint</th>
-                <th>Prioridad real</th>
-                <th>Autor</th>
-                <th>Aprobado</th>
-                {% for us in UserStory %}
-                <tr>
-                    <td style="text-align: left">{{ us.nombre }}</td>
-                    <td style="text-align: left">{{ us.descripcion }}</td>
-                    <td style="text-align: left">{{ us.tipo_us }}</td>
-                    <td style="text-align: left">{{ us.horas_estimadas }}</td>
-                    <td style="text-align: left">{{ us.fecha_creacion }}</td>
-                    <td style="text-align: left">{{ us.user_point }}</td>
-                    <td style="text-align: left">{{ us.business_value }}</td>
-                    <td style="text-align: left">{{ us.sprint_previo }}</td>
-                    <td style="text-align: left">{{ us.prioridad }}</td>
-                    <td style="text-align: left">{{ us.autor }}</td>
-                    <td style="text-align: left">
+            {% for us in UserStory %}
+                <button type="button" class="cortina">
+                    <p>{{ us.nombre }}</p>
+                </button>
+                <div class="contenido">
+                    <h3>Descripcion</h3>
+                    <p>{{ us.descripcion }}</p>
+                    <h3>Tipo de US</h3>
+                    <p>{{ us.tipo_us }}</p>
+                    <h3>Horas estimadas</h3>
+                    <p>{{ us.horas_estimadas }} horas</p>
+                    <h3>Prioridad tecnica</h3>
+                    <p>{{ us.user_point }}</p>
+                    <h3>Prioridad de negocio</h3>
+                    <p>{{ us.business_value }}</p>
+                    <h3>Trabajo previo en Sprint</h3>
+                    <p>{{ us.sprint_previo }}</p>
+                    <h3>Prioridad general</h3>
+                    <p>{{ us.prioridad }}</p>
+                    <h3>Fecha de creacion</h3>
+                    <p>{{ us.fecha_creacion }}</p>
+                    <h3>Autor</h3>
+                    <p>{{ us.autor }}</p>
+                    <h3>Aprobado</h3>
+                    <p>
                         {% if us.aprobado %}
                             Si
                         {% else %}
                             No
                         {% endif %}
-                    </td>
+                    </p>
                     {% if "Modificar US" in permisos %}
-                        <td style="text-align: left"><div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div></td>
+                        <div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div>
+                        <br><br>
                     {% endif %}
-                </tr>
-                {% endfor %}
-            </table>
+                </div>
+            {% endfor %}
         {% else %}
             <h1>No existen User Story</h1>
         {% endif %}
-        <br>
+        <br><br>
         <div class="enlace">
         {% if "Crear US" in permisos %}
             <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
@@ -60,4 +60,21 @@
     {% endif %}
     <br><br>
     <br>
+
+    <script>
+        var cortina = document.getElementsByClassName("cortina")
+        var i;
+
+        for (i = 0; i < cortina.length; i++) {
+            cortina[i].addEventListener("click", function() {
+                this.classList.toggle("activo");
+                var contenido = this.nextElementSibling;
+                if (contenido.style.display === "block") {
+                    contenido.style.display = "none";
+                } else {
+                    contenido.style.display = "block";
+                }
+            })
+        }
+    </script>
 {% endblock cuerpo %}

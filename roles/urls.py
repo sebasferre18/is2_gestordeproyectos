@@ -14,4 +14,3 @@ urlpatterns = [
     path('permissions/', views.permiso_index, name='permiso_index'),
     path('permissions/create/', views.crear_permiso, name='crear_permiso')
 ]
-

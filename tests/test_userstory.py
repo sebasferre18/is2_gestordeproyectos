@@ -56,7 +56,7 @@ class TestVistas:
         tipo_us.save()
         miembro_tipo_us = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us)
         miembro_tipo_us.save()
-        us = UserStory(nombre="US 1", tipo_us=tipo_us, descripcion="E")
+        us = UserStory(nombre="US 1", tipo_us=miembro_tipo_us, descripcion="E")
         us.save()
 
         url = reverse('userstory:modificar_us', kwargs={'proyecto_id': proyecto.id, 'us_id': us.id})
@@ -80,6 +80,5 @@ class TestModelos:
         tipo_us.save()
         miembro_tipo_us = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us)
         miembro_tipo_us.save()
-        us = UserStory(nombre="US 1", tipo_us=tipo_us, descripcion="E")
+        us = UserStory(nombre="US 1", tipo_us=miembro_tipo_us, descripcion="E")
         us.save()
-

@@ -42,7 +42,7 @@ class TestVistas:
 
         url = reverse('tableros:index', kwargs={'sprint_id': sprint.id, 'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200,"Enlace incorrecto"
 
     @pytest.mark.django_db
     def test_listar_tableros_fail(self, client, django_user_model):
@@ -70,7 +70,7 @@ class TestVistas:
 
         url = reverse('tableros:index', kwargs={'sprint_id': sprint.id, 'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 302
+        assert respuesta.status_code == 302,"Enlace incorrecto"
 
 class TestModelos:
     @pytest.mark.django_db

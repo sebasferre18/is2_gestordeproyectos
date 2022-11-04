@@ -23,7 +23,7 @@ class TestVistas:
 
         url = reverse('userstory:listar_us', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200 ,"Página no encontrada"
 
     @pytest.mark.django_db
     def test_crear_us(self, client, django_user_model):
@@ -39,7 +39,7 @@ class TestVistas:
 
         url = reverse('userstory:crear_us', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200,"Página no encontrada"
 
     @pytest.mark.django_db
     def test_modificar_us(self, client, django_user_model):
@@ -61,7 +61,7 @@ class TestVistas:
 
         url = reverse('userstory:modificar_us', kwargs={'proyecto_id': proyecto.id, 'us_id': us.id})
         respuesta = client.get(url, follow=True)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200,"Página no encontrada"
 
 
 class TestModelos:

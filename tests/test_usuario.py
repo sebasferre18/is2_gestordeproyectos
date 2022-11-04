@@ -21,7 +21,7 @@ class TestVistas:
     @pytest.mark.django_db
     def test_listar_usuario_fail(self, client, django_user_model):
         respuesta = client.get('/usuarios/listar_usuarios/')
-        assert respuesta.status_code == 302
+        assert respuesta.status_code == 302 , "Enlace incorrecto"
 
     @pytest.mark.django_db
     def test_nuevo_usuario(self, client, django_user_model):
@@ -31,7 +31,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/usuarios/nuevo_usuario/')
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200 , "Error al crear usuario"
 
     @pytest.mark.django_db
     def test_modificar_usuario(self, client, django_user_model):
@@ -43,7 +43,7 @@ class TestVistas:
         usuario = Usuario(user=user)
         url = reverse('usuarios:modificar_usuario', kwargs={'id_usuario': usuario.user_id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200, "Error al modificar usuario"
 
     @pytest.mark.django_db
     def test_eliminar_usuario(self, client, django_user_model):
@@ -56,7 +56,7 @@ class TestVistas:
         usuario = Usuario(user=dummy)
         url = reverse('usuarios:eliminar_usuario', kwargs={'id_usuario': usuario.user_id})
         respuesta = client.get(url, follow=True)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200 , "Error al eliminar usuario"
 
 
 class TestModelos:

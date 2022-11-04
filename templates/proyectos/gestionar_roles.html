@@ -7,7 +7,7 @@
             {% csrf_token %}
             <table>{{ form }}</table><br>
             <div class="enlace">
-            <input class="boton" type="submit" value="Guardar">
+            <input class="boton" type="submit" name="OK" value="Confirmar">
             <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
             </div>
         </form><br>

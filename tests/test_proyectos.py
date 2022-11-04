@@ -44,3 +44,4 @@ class TestModelos:
         user = django_user_model.objects.create_user(username=username, password=password)
         proyecto = Proyecto(nombre='pruebaUnit', descripcion='pruebaUnit')
         proyecto.save()
+

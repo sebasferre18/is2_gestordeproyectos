@@ -35,3 +35,4 @@ class MiembroTipoUs(models.Model):
         :return: retorna el valor del campo nombre del objeto actual
         """
         return self.tipo_us.nombre
+

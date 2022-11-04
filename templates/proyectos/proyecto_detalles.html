@@ -11,9 +11,20 @@
         <h3>Descripcion</h3>
         <p>{{ proyecto.descripcion }}</p>
         <h3>Fecha de inicio</h3>
-        <p>{{ proyecto.fecha_inicio }}</p>
+        <p>
+            {% if proyecto.fecha_inicio %}
+                {{ proyecto.fecha_inicio }}
+            {% else %}
+                Por definir
+            {% endif %}
+        </p>
         <h3>Fecha final</h3>
-        <p>{{ proyecto.fecha_fin }}</p>
+        <p>{% if proyecto.fecha_fin %}
+                {{ proyecto.fecha_fin }}
+            {% else %}
+                Por definir
+            {% endif %}
+        </p>
     </div>
     <h3>Miembros</h3>
     <table>
@@ -65,7 +76,7 @@
     {% if "Visualizar US" in permisos %}
         <a href="{%  url 'userstory:listar_us' proyecto.id %}">Product Backlog</a>
     {% endif %}
-    {% if "Visualizar Sprints" in permisos and not proyecto.estado == 'Planificacion' %}
+    {% if "Visualizar Sprints" in permisos %}
         <a href="{%  url 'sprints:index' proyecto.id %}">Sprints</a>
     {% endif %}
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>

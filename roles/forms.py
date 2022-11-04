@@ -43,4 +43,3 @@ class PermisoForm(forms.ModelForm):
             'nombre': 'Nombre',
             'es_admin': 'Es permiso administrativo',
         }
-

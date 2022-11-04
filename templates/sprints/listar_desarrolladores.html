@@ -33,8 +33,9 @@
                     {% if "Asignar US A Usuario" in permisos %}
                         <td><div class="enlace"><a href="{% url 'sprints:asignar_us' sprint.id proyecto.id d.id %}">Asignar US</a></div></td>
                     {% endif %}
-                    <td><div class="enlace"><a>Reasignar desarrollador</a></div></td>
-                    <td><div class="enlace"><a>Quitar desarrollador</a></div></td>
+                    {% if "Modificar Capacidad Por Dia" in permisos %}
+                        <td><div class="enlace"><a href="{% url 'sprints:modificar_capacidad_dia' sprint.id proyecto.id d.id %}">Modificar capacidad horaria</a></div></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table><br>
@@ -48,3 +49,4 @@
     <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}
+

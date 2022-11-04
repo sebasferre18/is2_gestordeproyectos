@@ -12,6 +12,8 @@ from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
 from .models import Sprint, Desarrollador
 
+from django.contrib import messages
+
 
 @login_required
 def index(request, proyecto_id):
@@ -167,6 +169,9 @@ def agregar_us(request, sprint_id, proyecto_id):
     tiempo_restante = sprint.capacidad
     for u in sb:
         tiempo_restante -= u.horas_estimadas
+
+    if tiempo_restante < 0:
+        messages.warning(request, "Se sobrepaso la capacidad horaria de los desarrolladores!! ")
 
     context = {
         'proyecto': proyecto,
@@ -443,6 +448,41 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
         'form': form
     }
     return render(request, "sprints/asignar_capacidad_por_dia.html", context)
+
+@login_required
+def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
+    """
+    Clase de la vista para la modificacion de la capacidad de horas por dia de los desarrolladores en un Sprint
+    """
+    sprint = get_object_or_404(Sprint, pk=sprint_id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembro = Desarrollador.objects.get(id=desarrollador_id)
+    form = DesarrolladorForm(instance=miembro)
+
+    if request.method == 'POST':
+        form = DesarrolladorForm(request.POST, instance=miembro)
+        if form.is_valid():
+            aux = form.save(commit=False)
+            sprint.capacidad -= aux.capacidad_total
+            aux.capacidad_total = aux.capacidad_por_dia * sprint.duracion
+            aux.save()
+            sprint.capacidad += aux.capacidad_total
+            sprint.save()
+            return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
+
+    try:
+        permisos = obtener_permisos_usuario(request.user, proyecto_id)
+    except Desarrollador.DoesNotExist:
+        return redirect('proyectos:acceso_denegado')
+
+    context = {
+        'miembro': miembro,
+        'permisos': permisos,
+        'proyecto': proyecto,
+        'sprint': sprint,
+        'form': form
+    }
+    return render(request, "sprints/modificar_capacidad_dia.html", context)
 
 @login_required
 def acceso_denegado(request, sprint_id, proyecto_id):

@@ -35,4 +35,3 @@ class Rol(models.Model):
         :return: retorna el valor del campo nombre del objeto actual
         """
         return self.nombre
-

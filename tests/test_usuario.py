@@ -68,3 +68,4 @@ class TestModelos:
         usuario = Usuario(user=user, ci=1234567, telefono="0444 444444", fecha_nac=date.today())
         usuario.save()
 
+

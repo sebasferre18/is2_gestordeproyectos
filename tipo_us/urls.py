@@ -14,3 +14,4 @@ urlpatterns = [
     path('ordenar_campos/<int:proyecto_id>/<int:tipo_us_id>/ascender/<int:campo_id>', views.ascender, name='ascender'),
     path('ordenar_campos/<int:proyecto_id>/<int:tipo_us_id>/descender/<int:campo_id>', views.descender, name='descender'),
 ]
+

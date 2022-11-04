@@ -294,3 +294,5 @@ def descender(request, proyecto_id, tipo_us_id, campo_id):
     tablero.save()
 
     return redirect('tipo_us:ordenar_campos', proyecto_id, tipo_us_id)
+
+

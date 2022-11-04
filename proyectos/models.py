@@ -41,4 +41,3 @@ class Miembro(models.Model):
     rol = models.ManyToManyField(Rol, blank=True)
     userstory = models.ManyToManyField('userstory.UserStory', blank=True)
 
-

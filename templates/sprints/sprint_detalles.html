@@ -32,7 +32,7 @@
     </div><br>
     <div class="enlace">
         {% if sprint.estado == 'Planificacion' %}
-            {% if "Iniciar Sprint" in permisos %}
+            {% if "Iniciar Sprint" in permisos and not proyecto.estado == "Planificacion" %}
                 <button class="boton" onclick="location.href='{% url 'sprints:iniciar_proyecto' sprint.id proyecto.id %}'">Iniciar</button>
             {% endif %}
         {% elif sprint.estado == 'En ejecucion' %}

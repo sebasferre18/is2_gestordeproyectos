@@ -21,6 +21,7 @@ urlpatterns = [
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers', views.listar_desarrolladores, name='listar_desarrolladores'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/assign', views.asignar_desarrolladores, name='asignar_desarrolladores'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/assign/<int:miembro_id>', views.asignar_capacidad_por_dia, name='asignar_capacidad_por_dia'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/<int:desarrollador_id>/modificar_capacidad_dia', views.modificar_capacidad_dia, name='modificar_capacidad_dia'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/<int:desarrollador_id>/asignar_us', views.asignar_us, name='asignar_us'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/denied', views.acceso_denegado, name='acceso_denegado'),
 ]

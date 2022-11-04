@@ -333,4 +333,3 @@ def falta_de_permisos(request, proyecto_id):
         'proyecto_id': proyecto_id,
     }
     return render(request, 'proyectos/falta_de_permisos.html', context)
-

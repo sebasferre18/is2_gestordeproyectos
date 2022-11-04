@@ -6,7 +6,6 @@ from usuarios.models import Usuario
 
 def obtener_permisos(rol):
     """Funcion de obtener los permisos de un rol
-
         Retorna todos los permisos de un rol en especifico"""
     pe = []
     for r in rol:
@@ -18,7 +17,6 @@ def obtener_permisos(rol):
 
 def obtener_permisos_usuario(user, proyecto_id):
     """Funcion de obtener los permisos de un usuario
-
         Retorna todos los permisos que tiene un usuario en especifico"""
     miembros = Miembro.objects.filter(proyecto_id=proyecto_id)
     usuario = Usuario.objects.get(user_id=user.id)
@@ -31,4 +29,5 @@ def obtener_permisos_usuario(user, proyecto_id):
         permisos = []
 
     return permisos
+
 

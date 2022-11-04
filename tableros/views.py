@@ -312,4 +312,3 @@ def aprobar_us(request, tablero_id, sprint_id, proyecto_id, us_id):
     us.aprobado = True
     us.save()
     return redirect('tableros:tablero_us_detalles', tablero_id, sprint_id, proyecto_id, us_id)
-

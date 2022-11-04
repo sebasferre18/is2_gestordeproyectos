@@ -15,3 +15,4 @@ urlpatterns = [
     path('<int:tablero_id>/sprints/<int:sprint_id>/proyectos/<int:proyecto_id>/us/<int:us_id>/adjuntar', views.adjuntar_nota, name='adjuntar_nota'),
     path('<int:tablero_id>/sprints/<int:sprint_id>/proyectos/<int:proyecto_id>/us/<int:us_id>/aprobar', views.aprobar_us, name='aprobar_us'),
 ]
+

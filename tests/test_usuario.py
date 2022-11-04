@@ -56,7 +56,7 @@ class TestVistas:
         usuario = Usuario(user=dummy)
         url = reverse('usuarios:eliminar_usuario', kwargs={'id_usuario': usuario.user_id})
         respuesta = client.get(url, follow=True)
-        assert respuesta.status_code == 200 , "Error al eliminar usuario"
+        assert respuesta.status_code == 200 , "Error al eliminar usuario ."
 
 
 class TestModelos:

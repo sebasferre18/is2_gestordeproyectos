@@ -21,7 +21,7 @@ class TestVistasTipoUs:
 
         url = reverse('tipo_us:listar_tipo_us', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200, "No se cuentan con permisos para visualizar Tipo de US"
+        assert respuesta.status_code == 200 ,"Enlace incorrecto"
 
     @pytest.mark.django_db
     def test_listar_tipo_us_fail(self, client, django_user_model):
@@ -31,7 +31,7 @@ class TestVistasTipoUs:
 
         client.force_login(user)
         respuesta = client.get('/tipo_us/listar_tipo_us/')
-        assert respuesta.status_code == 404, "No se cuentan con permisos para visualizar Tipo de US"
+        assert respuesta.status_code == 404 ,"Página no encontrada"
 
     def test_crear_tipo_us(self, client, django_user_model):
         username = "usuario1"
@@ -46,7 +46,7 @@ class TestVistasTipoUs:
 
         url = reverse('tipo_us:crear_tipo_us', kwargs={'proyecto_id': proyecto.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200, "No se cuentan con permisos para crear Tipo de US"
+        assert respuesta.status_code == 200,"Página no encontrada"
 
     @pytest.mark.django_db
     def test_crear_tipo_us_fail(self, client, django_user_model):
@@ -57,7 +57,7 @@ class TestVistasTipoUs:
         client.force_login(user)
         #proyecto = Proyecto(nombre='pruebaUnit')
         respuesta = client.get('/tipo_us/crear_tipo_us/')
-        assert respuesta.status_code == 404, "No se cuentan con permisos para crear Tipo de US"
+        assert respuesta.status_code == 404,"Página no encontrada"
 
     @pytest.mark.django_db
     def test_modificar_tipo_us(self, client, django_user_model):
@@ -77,7 +77,7 @@ class TestVistasTipoUs:
 
         url = reverse('tipo_us:modificar_tipo_us', kwargs={'proyecto_id': proyecto.id, 'tipo_us_id': miembro_tipo_us.id})
         respuesta = client.get(url)
-        assert respuesta.status_code == 200, "No se cuentan con permisos para modificar Tipo de US"
+        assert respuesta.status_code == 200,"Error al modificar"
 
     def test_modificar_tipo_us_fail(self, client, django_user_model):
         username = "usuario1"
@@ -86,7 +86,7 @@ class TestVistasTipoUs:
 
         client.force_login(user)
         respuesta = client.get('/tipo_us/modificar_tipo_us/')
-        assert respuesta.status_code == 404, "No se cuentan con permisos para modificar Tipo de US"
+        assert respuesta.status_code == 404,"Página no encontrada"
 
     @pytest.mark.django_db
     def test_eliminar_tipo_us(self, client, django_user_model):
@@ -115,8 +115,7 @@ class TestVistasTipoUs:
 
         client.force_login(user)
         respuesta = client.get('/tipo_us/eliminar_tipo_us/')
-        assert respuesta.status_code == 404, "No se cuentan con permisos para eliminar Tipo de US"
-
+        assert respuesta.status_code == 404,"Página no encontrada"
 
 
 class TestModelos:
@@ -133,5 +132,6 @@ class TestModelos:
     def test_tipo_us_fallo(self):
         tipo_us = Tipo_US(nombre='pruebaus', fecha_creacion='20/04/2022', descripcion="si")
         assert tipo_us.nombre == 123, "Error al comprobar el nombre del Tipo de US"
+
 
 

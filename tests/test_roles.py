@@ -12,7 +12,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permissions/')
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200,"Enlace incorrecto"
 
     @pytest.mark.django_db
     def test_listar_permisos_fail(self, client, django_user_model):
@@ -22,7 +22,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permiso/')
-        assert respuesta.status_code == 404
+        assert respuesta.status_code == 404,"Enlace incorrecto"
 
     @pytest.mark.django_db
     def test_crear_permisos(self, client, django_user_model):
@@ -32,7 +32,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permissions/create/')
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200 ,"Fallo al crear usuario"
 
     @pytest.mark.django_db
     def test_crear_permisos_fail(self, client, django_user_model):
@@ -42,7 +42,7 @@ class TestVistas:
 
         client.force_login(user)
         respuesta = client.get('/roles/permiso/crear/')
-        assert respuesta.status_code == 404
+        assert respuesta.status_code == 404 ,"Página no encontrada"
 
 
 class TestModelos:
@@ -58,7 +58,7 @@ class TestModelos:
     @pytest.mark.django_db
     def test_rol_fallo(self):
         rol = Rol(nombre='pruebarol', descripcion="si")
-        assert rol.nombre != 27
+        assert rol.nombre != 27 ,"Rol incorrecto"
 
     @pytest.mark.django_db
     def test_permiso(self):
@@ -67,9 +67,10 @@ class TestModelos:
     @pytest.mark.django_db
     def test_permiso_comparacion(self):
         permiso = Permiso(nombre='pruebapermiso', es_admin=True)
-        assert permiso.nombre == 'pruebapermiso'
+        assert permiso.nombre == 'pruebapermiso',"Nombre de permiso incorrecto"
 
     @pytest.mark.django_db
     def test_permiso_fallo(self):
         permiso = Permiso(nombre='pruebapermiso', es_admin=True)
-        assert permiso.es_admin != 2
+        assert permiso.es_admin != 1 ,"El permiso no corresponde a admin"
+

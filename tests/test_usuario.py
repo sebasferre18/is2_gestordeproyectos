@@ -16,7 +16,7 @@ class TestVistas:
         client.force_login(user)
         url = reverse('usuarios:listar_usuarios')
         respuesta = client.get(url)
-        assert respuesta.status_code == 200
+        assert respuesta.status_code == 200 , "Error al listar usuario"
 
     @pytest.mark.django_db
     def test_listar_usuario_fail(self, client, django_user_model):

@@ -333,3 +333,40 @@ def falta_de_permisos(request, proyecto_id):
         'proyecto_id': proyecto_id,
     }
     return render(request, 'proyectos/falta_de_permisos.html', context)
+
+@login_required
+def notificaciones(request):
+    """
+    Clase de la vista de las notificaciones de un Proyecto
+    """
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
+    context = {
+        'permisos': permisos
+    }
+    return render(request, 'proyectos/notificaciones.html', context)
+
+@login_required
+def historial_modificaciones(request, proyecto_id):
+    """
+    Clase de la vista del historial de modificaciones de un proyecto
+    """
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+
+    user = request.user
+
+    usuario = Usuario.objects.get(user_id=user.id)
+    rol = usuario.rol.all()
+
+    permisos = obtener_permisos(rol)
+
+    context = {
+        'proyecto': proyecto,
+        'permisos': permisos
+    }
+    return render(request, 'proyectos/historial_modificaciones.html', context)

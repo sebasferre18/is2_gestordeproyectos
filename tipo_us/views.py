@@ -196,8 +196,9 @@ def agregar_tipo_us(request, proyecto_id, tipo_us_id):
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     tipo_us = get_object_or_404(Tipo_US, id=tipo_us_id)
     tablero = Tablero()
+    tablero_aux = Tablero.objects.get(tipo_us__tipo_us=tipo_us)
 
-    tipo_us_aux = Tipo_US(nombre=tipo_us.nombre, fecha_creacion=tipo_us.fecha_creacion, descripcion=tipo_us.descripcion)
+    tipo_us_aux = Tipo_US(nombre=tipo_us.nombre, fecha_creacion=tipo_us.fecha_creacion, descripcion=tipo_us.descripcion, campos=tipo_us.campos)
     tipo_us_aux.save()
 
     miembro = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us_aux)
@@ -205,7 +206,7 @@ def agregar_tipo_us(request, proyecto_id, tipo_us_id):
 
     tablero.tipo_us = miembro
     if miembro.tipo_us.campos:
-        tablero.campos += "," + miembro.tipo_us.campos
+        tablero.campos = tablero_aux.campos
     tablero.save()
     return redirect('tipo_us:importar_tipo_us', proyecto_id)
 

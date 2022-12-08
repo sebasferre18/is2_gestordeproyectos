@@ -21,4 +21,6 @@ urlpatterns = [
     path('denied', views.acceso_denegado, name='acceso_denegado'),
     path('<int:proyecto_id>/decline', views.falta_de_permisos, name='falta_de_permisos'),
     path('members/<int:proyecto_id>/<int:miembro_id>', views.gestionar_roles, name='gestionar_roles'),
+    path('notificaciones/', views.notificaciones, name='notificaciones'),
+    path('<int:proyecto_id>/historial', views.historial_modificaciones, name='historial_modificaciones')
 ]

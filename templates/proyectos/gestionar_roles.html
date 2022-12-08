@@ -2,15 +2,19 @@
 {% block titulo %}Gestionar Roles{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Gestionar Roles De Un Usuario' in permisos %}
-        <h2>Gestionar roles del miembro {{ miembro.usuario.user.username }}</h2>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <table>{{ form }}</table><br>
-            <div class="enlace">
-            <input class="boton" type="submit" name="OK" value="Confirmar">
-            <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
-            </div>
-        </form><br>
+        <div class="contenido" style="display: block">
+            <h1>Gestionar roles del miembro {{ miembro.usuario.user.username }}</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <p>{{ form.rol }}</p>
+                <div class="enlace">
+                    <input class="boton" type="submit" style="font-size: inherit" name="OK" value="Confirmar">
+                </div>
+                <div class="enlace">
+                    <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Cancelar</a>
+                </div><br><br>
+            </form>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

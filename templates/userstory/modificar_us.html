@@ -2,18 +2,33 @@
 {% block titulo %}Modificar US{% endblock titulo %}
 {% block cuerpo %}
     {% if "Modificar US" in permisos %}
-        <h2>Modificar User Story</h2>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <table>{{ form }}</table>
-            <br><br>
-            <div class="enlace">
-            <input class="boton" type="submit" value="Modificar">
-            <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
-            </div>
-        </form>
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h2>Modificar User Story</h2>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h3>Nombre</h3>
+                <p>{{ form.nombre }}</p>
+                <h3>Tipo de US</h3>
+                <p>{{ form.tipo_us }}</p>
+                <h3>Descripcion</h3>
+                <p>{{ form.descripcion }}</p>
+                <h3>Horas estimadas</h3>
+                <p>{{ form.horas_estimadas }}</p>
+                <h3>Prioridad tecnica</h3>
+                <p>{{ form.user_point }}</p>
+                <h3>Prioridad de negocio</h3>
+                <p>{{ form.business_value }}</p>
+                <div class="enlace">
+                    <input class="boton" style="font-size: inherit" type="submit" value="Modificar">
+                </div>
+                <div class="enlace">
+                    <a href="{% url 'userstory:listar_us' proyecto_id %}">Cancelar</a>
+                </div>
+            </form>
+        </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
-        <a href="{% url 'home' %}">Home</a><br>
+        <a href="{% url 'home' %}">Home</a>
     {% endif %}
+    <br>
 {% endblock cuerpo %}

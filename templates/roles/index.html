@@ -3,25 +3,27 @@
 {% block cuerpo %}
     {% if "Visualizar Roles" in permisos %}
         <h1>Roles</h1>
-        <div class="enlace">
         {% if "Crear Rol" in permisos %}
-        <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a>
+            <div class="enlace">
+                <a href="{% url 'roles:crear_rol' proyecto_id %}">Crear</a>
+            </div><br><br>
         {% endif %}
-        </div><br><br>
         {% if role_list %}
-            <table>
-                {% for rol in role_list %}
-                    <tr>
-                        <td style="width:100%">{{ rol.nombre }}</td>
-                        {% if "Modificar Rol" in permisos %}
-                            <td><div class="enlace"><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></div></td>
-                        {% endif %}
-                        {% if "Eliminar Rol" in permisos %}
-                            <td><div class="enlace"><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></div></td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            </table>
+            {% for rol in role_list %}
+                <button type="button" class="cortina">
+                    <p>{{ rol.nombre }}</p>
+                </button>
+                <div class="contenido" style="padding-bottom: 18px">
+                    <h3>Descripcion</h3>
+                    <p>{{ rol.descripcion }}</p>
+                    {% if "Modificar Rol" in permisos %}
+                        <div class="enlace"><a href="{% url 'roles:modificar_rol' rol.id proyecto_id %}">Modificar</a></div>
+                    {% endif %}
+                    {% if "Eliminar Rol" in permisos %}
+                        <div class="enlace"><a href="{% url 'roles:eliminar_rol' rol.id proyecto_id %}">Eliminar</a></div>
+                    {% endif %}
+                </div>
+            {% endfor %}
         {% else %}
             <p>No hay roles disponibles.</p>
         {% endif %}
@@ -32,4 +34,21 @@
     <div class="enlace">
     <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a><br>
     </div>
+
+    <script>
+        var cortina = document.getElementsByClassName("cortina")
+        var i;
+
+        for (i = 0; i < cortina.length; i++) {
+            cortina[i].addEventListener("click", function() {
+                this.classList.toggle("activo");
+                var contenido = this.nextElementSibling;
+                if (contenido.style.display === "block") {
+                    contenido.style.display = "none";
+                } else {
+                    contenido.style.display = "block";
+                }
+            })
+        }
+    </script>
 {% endblock cuerpo %}

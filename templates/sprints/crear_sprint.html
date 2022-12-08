@@ -7,14 +7,21 @@
             <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
         </div>
     {% else %}
-        <h1>Crear Sprint</h1>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <table>{{ form }}</table><br>
-            <div class="enlace">
-                <input class="boton" type="submit" value="Crear">
-                <a href="{% url 'sprints:index' proyecto.id %}">Cancelar</a>
-            </div><br><br>
-        </form>
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h1>Crear Sprint</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h3>Nombre</h3>
+                <p>{{ form.nombre }}</p>
+                <h3>Descripcion del Sprint</h3>
+                <p>{{ form.descripcion }}</p>
+                <h3>Duracion del Sprint (en dias)</h3>
+                <p>{{ form.duracion }}</p>
+                <div class="enlace">
+                    <input class="boton" style="font-size: inherit" type="submit" value="Crear">
+                    <a href="{% url 'sprints:index' proyecto.id %}">Cancelar</a>
+                </div>
+            </form>
+        </div>
     {% endif %}
 {% endblock cuerpo %}

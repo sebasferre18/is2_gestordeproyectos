@@ -55,5 +55,5 @@ class AsignarUsForm(forms.ModelForm):
         Esto hace que solamente puedan elegirse los US del sprint backlog actual."""
         self.sprint_id = kwargs.pop('sprint_id', None)
         super(AsignarUsForm, self).__init__(*args, **kwargs)
-        self.fields['userstory'].queryset = UserStory.objects.filter(sprint_id=self.sprint_id).order_by('prioridad')
+        self.fields['userstory'].queryset = UserStory.objects.filter(sprint_id=self.sprint_id).order_by('-prioridad')
 

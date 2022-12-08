@@ -1,15 +1,18 @@
 {% extends 'sprints/sprint_detalles.html' %}
 {% block titulo %}Gestionar Roles{% endblock titulo %}
 {% block cuerpo %}
-    <h2>Introduzca la capacidad laboral por dia del desarrollador: {{ miembro.usuario.user.username }}</h2>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <table>{{ form }}</table><br>
-        <div class="enlace">
-            <input class="boton" type="submit" value="Modificar">
-        </div>
-        <div class="enlace">
-            <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Cancelar</a>
-        </div>
-    </form><br>
+    <div class="contenido" style="display: block; padding-bottom: 18px">
+        <h1>Introduzca la capacidad laboral por dia del desarrollador {{ miembro }}</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h3>Capacidad por dia (en horas)</h3>
+            <p>{{ form.capacidad_por_dia }}</p>
+            <div class="enlace">
+                <input class="boton" style="font-size: inherit" type="submit" value="Modificar">
+            </div>
+            <div class="enlace">
+                <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Cancelar</a>
+            </div>
+        </form>
+    </div><br>
 {% endblock cuerpo %}

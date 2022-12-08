@@ -18,7 +18,7 @@
             </div><br><br>
         </form>
     </div>
-    <h3>Tu capacidad diaria: {{ capacidad_dia_desarrollador }} horas. Tu capacidad total de trabajo: {{ capacidad_desarrollador }} horas</h3>
+    <h3>Tu capacidad diaria: {{ capacidad_dia_desarrollador }} horas. Tu capacidad total de trabajo restante: {{ capacidad_desarrollador }} horas</h3>
     <div class="enlace"><a href="{% url 'tableros:tablero_us_detalles' tablero.id sprint.id proyecto.id us.id %}">Volver</a></div>
     <br><br>
 {% endblock cuerpo %}

@@ -55,6 +55,8 @@ def ver_detalles(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint)
+    tareas = Tarea.objects.filter(userstory__sprint=sprint)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -64,11 +66,21 @@ def ver_detalles(request, sprint_id, proyecto_id):
     if "Visualizar Sprints" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    capacidad_trabajo = 0
+    for d in desarrolladores:
+        capacidad_trabajo += d.capacidad_total
+
+    capacidad_trabajo_restante = capacidad_trabajo
+    for t in tareas:
+        capacidad_trabajo_restante -= t.horas_trabajadas
+
     context = {
         'proyecto': proyecto,
         'miembros': miembros,
         'permisos': permisos,
         'sprint': sprint,
+        'capacidad_trabajo': capacidad_trabajo,
+        'capacidad_trabajo_restante': capacidad_trabajo_restante
     }
     return render(request, 'sprints/sprint_detalles.html', context)
 
@@ -120,6 +132,7 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
     tareas = Tarea.objects.filter(userstory__sprint=sprint)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -133,9 +146,15 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     for u in us:
         tiempo_restante -= u.horas_estimadas
 
-    capacidad_restante = sprint.capacidad
+    capacidad_restante = 0
+    for d in desarrolladores:
+        capacidad_restante += d.capacidad_total
+
     for t in tareas:
         capacidad_restante -= t.horas_trabajadas
+
+    if tiempo_restante < 0:
+        messages.warning(request, "Se sobrepaso la capacidad de trabajo.")
 
     context = {
         'proyecto': proyecto,
@@ -169,9 +188,6 @@ def agregar_us(request, sprint_id, proyecto_id):
     tiempo_restante = sprint.capacidad
     for u in sb:
         tiempo_restante -= u.horas_estimadas
-
-    if tiempo_restante < 0:
-        messages.warning(request, "Se sobrepaso la capacidad horaria de los desarrolladores!! ")
 
     context = {
         'proyecto': proyecto,
@@ -342,11 +358,16 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    capacidad_trabajo = 0
+    for d in desarrolladores:
+        capacidad_trabajo += d.capacidad_total
+
     context = {
         'proyecto': proyecto,
         'desarrolladores': desarrolladores,
         'permisos': permisos,
         'sprint': sprint,
+        'capacidad_trabajo': capacidad_trabajo
     }
     return render(request, 'sprints/listar_desarrolladores.html', context)
 
@@ -494,3 +515,15 @@ def acceso_denegado(request, sprint_id, proyecto_id):
         'proyecto_id': proyecto_id
     }
     return render(request, 'sprints/acceso_denegado.html', context)
+
+@login_required
+def burndown_chart(request, proyecto_id):
+    """
+        Clase de la vista del Burndown Chart de los sprints
+    """
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+
+    context = {
+        'proyecto': proyecto
+    }
+    return render(request, 'sprints/burndown_chart.html', context)

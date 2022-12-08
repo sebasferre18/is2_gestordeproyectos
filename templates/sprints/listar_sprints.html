@@ -14,13 +14,14 @@
     {% else %}
         <h1>No existen Sprints</h1>
     {% endif %}
-    <br><br>
+    <br>
     <div class="enlace">
         {% if estado == "Finalizado" or estado == "Cancelado" or estado == "" %}
             {% if "Crear Sprint" in permisos %}
                 <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
             {% endif %}
         {% endif %}
+        <a href="{% url 'sprints:burndown_chart' proyecto.id %}">Burndown Chart</a>
         <a href="{% url 'proyectos:ver_detalles' proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}

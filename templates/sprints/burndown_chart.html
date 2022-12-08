@@ -1,0 +1,8 @@
+{% extends 'proyectos/proyecto_detalles.html' %}
+{% block titulo %}Burndown Chart{% endblock titulo %}
+{% block cuerpo %}
+    <h2>Burndown Chart</h2>
+    <div class="enlace">
+        <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
+    </div>
+{% endblock cuerpo %}

@@ -98,12 +98,22 @@
             font-size: 14px;
         }
 
-        table, td {
-            border: 1px solid black;
-            padding: 1px;
-        }
+
         table {
-            border-spacing: 1px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #aaa;
+            background-color: white;
+            padding: 1px 4px;
+        }
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #333333;
+            color: white;
         }
         body {
             font-family: Arial;
@@ -205,6 +215,7 @@
                     <a href="/accounts/logout/">Cerrar sesion</a>
                 </div>
             </div>
+            <a style="float: right;" href="{% url 'proyectos:notificaciones' %}">Notificaciones</a>
         {% else %}
             <div style="float: right;"><a href="/accounts/login/">Iniciar sesion</a></div>
         {% endif %}

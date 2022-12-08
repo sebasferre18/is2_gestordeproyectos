@@ -2,15 +2,24 @@
 {% block titulo %}Crear rol{% endblock titulo %}
 {% block cuerpo %}
     {% if "Crear Rol" in permisos %}
-        <h1>Crear rol</h1>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <table>{{ form }}</table><br>
-            <div class="enlace">
-            <input class="boton" type="submit" value="Crear">
-            <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
-            </div><br><br>
-        </form>
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h1>Crear rol</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <h3>Nombre</h3>
+                <p>{{ form.nombre }}</p>
+                <h3>Descripcion</h3>
+                <p>{{ form.descripcion }}</p>
+                <h3>Permisos</h3>
+                <p>{{ form.permiso }}</p>
+                <div class="enlace">
+                    <input class="boton" style="font-size: inherit" type="submit" value="Crear">
+                </div>
+                <div class="enlace">
+                    <a href="{% url 'roles:index' proyecto_id %}">Cancelar</a>
+                </div>
+            </form>
+        </div><br>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

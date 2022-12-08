@@ -2,19 +2,22 @@
 {% block titulo %}Asignar Miembros{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Asignar Miembros' in permisos %}
-        <h1>Asignar Miembros</h1>
-        {% if usuarios %}
-            <table>
-                {% for u in usuarios %}
-                <tr>
-                    <td>{{ u.user.username }}</td>
-                    <td><div class="enlace"><a href="{% url 'proyectos:agregar_miembro' proyecto_id u.user_id %}">Asignar</a></div></td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>No hay usuarios que asignar al proyecto.</p>
-        {% endif %}
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h1>Asignar Miembros</h1>
+            {% if usuarios %}
+                <table>
+                    <th>Usuario</th>
+                    {% for u in usuarios %}
+                    <tr>
+                        <td style="width: 100%">{{ u.user.username }}</td>
+                        <td style="padding: 0px"><div class="enlace"><a href="{% url 'proyectos:agregar_miembro' proyecto_id u.user_id %}">Asignar</a></div></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No hay usuarios que asignar al proyecto.</p>
+            {% endif %}
+        </div>
         <br>
         <div class="enlace">
         <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>

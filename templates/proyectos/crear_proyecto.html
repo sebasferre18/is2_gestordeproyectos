@@ -6,14 +6,18 @@
             <h1> Registrar nuevo proyecto </h1>
         {%  endblock %}
         {% block contenido %}
-            <form id="formulario" method="post" action="">{% csrf_token %}
-                <table>{{ formulario }}
-                {{ formulario_miembro }}</table><br>
-                <div class="enlace">
-                <input class="boton" type="submit" value="Registrar"/>
-                <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
-                </div>
-            </form>
+            <div class="contenido" style="display: block; padding: 18px">
+                <form id="formulario" method="post" action="">{% csrf_token %}
+                    <table>{{ formulario }}
+                    {{ formulario_miembro }}</table><br>
+                    <div class="enlace">
+                        <input class="boton" style="font-size: inherit" type="submit" value="Registrar"/>
+                    </div>
+                    <div class="enlace">
+                        <a href="{% url 'proyectos:listar_proyectos' %}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
         {% endblock %}
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

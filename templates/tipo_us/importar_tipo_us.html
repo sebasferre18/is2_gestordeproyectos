@@ -2,27 +2,26 @@
 {% block titulo %}Importar Tipos de US{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Importar Tipo US' in permisos %}
+        <div class="contenido" style="display: block; padding-bottom: 18px">
         <h2>Importar Tipo de US</h2>
         {% if tipos_us %}
             <table>
                 <tr>
-                    <th>ID</th>
                     <th>Tipo de US</th>
                     <th>Proyecto</th>
                 </tr>
                 {% for tipo in miembros_tipos_us %}
                 <tr>
-                    <td>{{ tipo.id }}</td>
-                    <td>{{ tipo.tipo_us }}</td>
-                    <td>{{ tipo.proyecto }}</td>
-                    <td class="enlace"><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.tipo_us.id %}">Importar</a></td>
+                    <td style="width: 30%">{{ tipo.tipo_us }}</td>
+                    <td style="width: 100%">{{ tipo.proyecto }}</td>
+                    <td class="enlace" style="padding: 0px"><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.tipo_us.id %}">Importar</a></td>
                 </tr>
                 {% endfor %}
             </table>
         {% else %}
             <p>No hay tipos de us que importar al proyecto.</p>
         {% endif %}
-        <br>
+        </div><br>
         <div class="enlace">
         <a href="{% url 'tipo_us:listar_tipo_us' proyecto_id %}">Volver</a>
         </div>

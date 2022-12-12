@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Proyecto, Miembro
+from .models import Proyecto, Miembro, Historial
 # Register your models here.
 
 
@@ -13,3 +13,4 @@ class ProyectoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Proyecto, ProyectoAdmin)
+admin.site.register(Historial)

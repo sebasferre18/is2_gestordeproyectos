@@ -12,8 +12,8 @@
             {% endif %}
         </div><br><br>
         {% if UserStory %}
-            {% for us in UserStory %}
-                <div>
+            <div style="max-height: 320px; overflow: scroll">
+                {% for us in UserStory %}
                     <button type="button" class="cortina">
                         <p>{{ us.nombre }}</p>
                     </button>
@@ -49,8 +49,8 @@
                             <br><br>
                         {% endif %}
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         {% else %}
             <h1>No existen User Story</h1>
         {% endif %}

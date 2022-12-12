@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial
 from funciones import obtener_permisos
 from django.contrib import messages
 """
@@ -45,20 +47,28 @@ def crear_rol(request, proyecto_id):
     Clase de la vista para la creacion de un nuevo Rol.
     """
     proyecto = Proyecto.objects.get(id=proyecto_id)
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+
     form = RolForm()
     if request.method == 'POST':
         form = RolForm(request.POST)
         if form.is_valid():
+            perm = recolectar_permisos(form.cleaned_data['permiso'])
+
             aux = form.save(commit=False)
             aux.proyecto = proyecto
             aux.save()
             form.save_m2m()
+
+            informacion = "ID: " + str(aux.id) + "; Nombre: " + aux.nombre + "; Descripcion: " + aux.descripcion + \
+                          "; Permisos: " + perm
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Creacion',
+                                  elemento='Roles', informacion=informacion)
+            historial.save()
             return redirect('roles:index', proyecto_id)
 
-    user = request.user
     miembros = Miembro.objects.filter(proyecto=proyecto)
-    usuario = Usuario.objects.get(user_id=user.id)
-
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
     rol = miembro_aux.rol.get_queryset()
     if rol:
@@ -82,18 +92,25 @@ def modificar_rol(request, rol_id, proyecto_id):
     """
     proyecto = Proyecto.objects.get(id=proyecto_id)
     rol = get_object_or_404(Rol, pk=rol_id)
-    form = RolForm(instance=rol)
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
 
+    form = RolForm(instance=rol)
     if request.method == 'POST':
         form = RolForm(request.POST, instance=rol)
         if form.is_valid():
+            perm = recolectar_permisos(form.cleaned_data['permiso'])
+            informacion = "ID: " + str(rol_id) + "; Nombre: " + form.cleaned_data['nombre'] + "; Descripcion: " + \
+                          form.cleaned_data['descripcion'] + "; Permisos: " + perm
+
             form.save()
+
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Roles', informacion=informacion)
+            historial.save()
             return redirect('roles:index', proyecto_id)
 
-    user = request.user
     miembros = Miembro.objects.filter(proyecto=proyecto)
-    usuario = Usuario.objects.get(user_id=user.id)
-
     miembro_aux = miembros.get(usuario=usuario, proyecto=proyecto)
     rol = miembro_aux.rol.get_queryset()
     if rol:
@@ -127,7 +144,14 @@ def eliminar_rol(request, rol_id, proyecto_id):
 
     rol = get_object_or_404(Rol, pk=rol_id)
     if request.method == 'POST':
+        perm = recolectar_permisos(rol.permiso.get_queryset())
+        informacion = "ID: " + str(rol_id) + "; Nombre: " + rol.nombre + "; Descripcion: " + \
+                      rol.descripcion + "; Permisos: " + perm
+
         rol.delete()
+        historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Eliminacion',
+                              elemento='Roles', informacion=informacion)
+        historial.save()
         return redirect('roles:index', proyecto_id)
 
     context = {
@@ -187,3 +211,16 @@ def crear_permiso(request):
         'permisos': p
     }
     return render(request, 'roles/permiso_form.html', context)
+
+
+def recolectar_permisos(permisos):
+    perm = ""
+    if permisos:
+        for i, p in enumerate(permisos, start=1):
+            perm += p.nombre
+            if i < len(permisos):
+                perm += ", "
+    else:
+        perm = "No tiene permisos"
+
+    return perm

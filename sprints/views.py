@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,7 +6,7 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
 from sprints.forms import AsignarUsForm
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial
 from userstory.models import UserStory, Tarea
 from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
@@ -203,6 +203,9 @@ def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
     """
         Clase de la vista para agregar el User Story al Sprint Backlog
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -216,6 +219,12 @@ def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
 
     us.sprint = sprint
     us.save()
+
+    informacion = "Se ha agregado el User Story: '" + us.nombre + "' al Sprint Backlog del sprint '" + \
+                  sprint.nombre + "'"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:agregar_us', sprint_id, proyecto_id)
 
 @login_required
@@ -223,6 +232,9 @@ def quitar_us(request, sprint_id, proyecto_id, us_id):
     """
         Clase de la vista para quitar el User Story del Sprint Backlog
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -236,6 +248,12 @@ def quitar_us(request, sprint_id, proyecto_id, us_id):
 
     us.sprint = None
     us.save()
+
+    informacion = "Se ha quitado el User Story: '" + us.nombre + "' del Sprint Backlog del sprint '" + \
+                  sprint.nombre + "'"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:sprint_backlog', sprint_id, proyecto_id)
 
 
@@ -377,6 +395,8 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     """
         Clase de la vista para la confirmacion de la asignacion de User Stories a los desarrolladores
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     desarrollador = Desarrollador.objects.get(id=desarrollador_id)
@@ -385,7 +405,18 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     if request.method == 'POST':
         form = AsignarUsForm(request.POST, instance=desarrollador, sprint_id=sprint_id)
         if form.is_valid():
+            us = recolectar_us(form.cleaned_data['userstory'])
             form.save()
+
+            if form.cleaned_data['userstory']:
+                informacion = "Al desarrollador '" + desarrollador.miembro.usuario.user.username + "' del sprint '" + \
+                              sprint.nombre + "' se le fue asignado los siguientes US: " + us
+            else:
+                informacion = "El desarrollador '" + desarrollador.miembro.usuario.user.username + "' del sprint '" + \
+                              sprint.nombre + "' ya no tiene US asignados"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -439,6 +470,8 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
     """
     Clase de la vista para la asignacion de desarrolladores en un Sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = Miembro.objects.get(id=miembro_id)
@@ -454,6 +487,13 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
             aux.save()
             sprint.capacidad += aux.capacidad_total
             sprint.save()
+
+            informacion = "El miembro '" + miembro.usuario.user.username + \
+                          "' fue asignado como Desarrollador en el sprint '" + sprint.nombre + \
+                          "' con una capacidad por dia de " + str(aux.capacidad_por_dia) + " horas"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
             return redirect('sprints:asignar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -475,6 +515,8 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
     """
     Clase de la vista para la modificacion de la capacidad de horas por dia de los desarrolladores en un Sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = Desarrollador.objects.get(id=desarrollador_id)
@@ -489,6 +531,12 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
             aux.save()
             sprint.capacidad += aux.capacidad_total
             sprint.save()
+
+            informacion = "La capacidad por dia del Desarrollador '" + miembro.miembro.usuario.user.username + \
+                          "' del sprint '" + sprint.nombre + "' ahora es de " + str(aux.capacidad_por_dia) + " horas"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -527,3 +575,16 @@ def burndown_chart(request, proyecto_id):
         'proyecto': proyecto
     }
     return render(request, 'sprints/burndown_chart.html', context)
+
+
+def recolectar_us(usquery):
+    us = ""
+    if usquery:
+        for i, p in enumerate(usquery, start=1):
+            us += p.nombre
+            if i < len(usquery):
+                us += ", "
+    else:
+        us = "No tiene US asignado"
+
+    return us

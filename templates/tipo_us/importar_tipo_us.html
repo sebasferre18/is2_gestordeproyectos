@@ -14,7 +14,7 @@
                 <tr>
                     <td style="width: 30%">{{ tipo.tipo_us }}</td>
                     <td style="width: 100%">{{ tipo.proyecto }}</td>
-                    <td class="enlace" style="padding: 0px"><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.tipo_us.id %}">Importar</a></td>
+                    <td class="enlace" style="padding: 0px"><a href="{% url 'tipo_us:agregar_tipo_us' proyecto_id tipo.id %}">Importar</a></td>
                 </tr>
                 {% endfor %}
             </table>

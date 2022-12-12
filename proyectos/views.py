@@ -1,9 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from datetime import date
+from datetime import date, datetime
 
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial
 from proyectos.forms import ProyectoForm, MiembroForm, MiembroFormSet
 from usuarios.models import Usuario
 from roles.models import Rol, Permiso
@@ -189,6 +189,8 @@ def gestionar_roles(request, proyecto_id, miembro_id):
     """
     Clase de la vista para la gestion de roles de un usuario
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = Miembro.objects.get(id=miembro_id)
     form = MiembroForm(instance=miembro, pro_id=proyecto_id)
@@ -196,13 +198,21 @@ def gestionar_roles(request, proyecto_id, miembro_id):
     if request.method == 'POST':
         form = MiembroForm(request.POST, instance=miembro, pro_id=proyecto_id)
         if form.is_valid():
+            roles = recolectar_roles(form.cleaned_data['rol'])
             form.save()
+
+            if form.cleaned_data['rol']:
+                informacion = "Al miembro '" + miembro.usuario.user.username + \
+                              "' se le fue asignado los siguientes roles: " + roles
+            else:
+                informacion = "El miembro '" + miembro.usuario.user.username + "' ya no tiene roles asignados"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Proyectos', informacion=informacion)
+            historial.save()
             return redirect('proyectos:ver_detalles', proyecto_id)
 
-    user = request.user
     miembros = Miembro.objects.filter(proyecto=proyecto)
 
-    usuario = Usuario.objects.get(user_id=user.id)
     rol = usuario.rol.all()
 
     permisos = obtener_permisos(rol)
@@ -232,11 +242,19 @@ def agregar_miembro(request, proyecto_id, user_id):
     """
     Clase de la vista para eliminar a un miembro de un proyecto
     """
+    user = request.user
+    usuario_aux = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     usuario = get_object_or_404(Usuario, user_id=user_id)
 
     miembro = Miembro(proyecto=proyecto, usuario=usuario)
     miembro.save()
+
+    informacion = "El usuario '" + usuario.user.username + \
+                  "' fue asignado como Miembro de este proyecto"
+    historial = Historial(proyecto=proyecto, responsable=usuario_aux, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Proyectos', informacion=informacion)
+    historial.save()
     return redirect('proyectos:asignar_usuarios', proyecto_id)
 
 @login_required
@@ -244,8 +262,17 @@ def eliminar_miembro(request, proyecto_id, miembro_id):
     """
     Clase de la vista para eliminar a un miembro de un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = get_object_or_404(Miembro, id=miembro_id)
     miembro.delete()
+
+    informacion = "El usuario '" + miembro.usuario.user.username + \
+                  "' fue desasignado como Miembro de este proyecto"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Proyectos', informacion=informacion)
+    historial.save()
     return redirect('proyectos:desasignar_usuarios', proyecto_id)
 
 
@@ -287,10 +314,17 @@ def iniciar_proyecto(request, proyecto_id):
     """
     Clase de la vista para la inicializacion de un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto.estado = 'En ejecucion'
     proyecto.fecha_inicio = date.today()
     proyecto.save()
+
+    informacion = "El proyecto fue iniciado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Proyectos', informacion=informacion)
+    historial.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 
@@ -299,10 +333,17 @@ def finalizar_proyecto(request, proyecto_id):
     """
     Clase de la vista para la finalizacion de un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto.estado = 'Finalizado'
     proyecto.fecha_fin = date.today()
     proyecto.save()
+
+    informacion = "El proyecto fue finalizado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Proyectos', informacion=informacion)
+    historial.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 
@@ -311,10 +352,17 @@ def cancelar_proyecto(request, proyecto_id):
     """
     Clase de la vista para la cancelacion de un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto.estado = 'Cancelado'
     proyecto.fecha_fin = date.today()
     proyecto.save()
+
+    informacion = "El proyecto fue cancelado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Proyectos', informacion=informacion)
+    historial.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 @login_required
@@ -357,6 +405,7 @@ def historial_modificaciones(request, proyecto_id):
     Clase de la vista del historial de modificaciones de un proyecto
     """
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    historial = Historial.objects.filter(proyecto=proyecto).order_by('-id')
 
     user = request.user
 
@@ -367,6 +416,20 @@ def historial_modificaciones(request, proyecto_id):
 
     context = {
         'proyecto': proyecto,
-        'permisos': permisos
+        'permisos': permisos,
+        'historial': historial
     }
     return render(request, 'proyectos/historial_modificaciones.html', context)
+
+
+def recolectar_roles(rolquery):
+    roles = ""
+    if rolquery:
+        for i, p in enumerate(rolquery, start=1):
+            roles += p.nombre
+            if i < len(rolquery):
+                roles += ", "
+    else:
+        roles = "No tiene roles asignados"
+
+    return roles

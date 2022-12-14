@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from proyectos.models import Proyecto, Miembro, Historial
 from usuarios.models import Usuario
-from userstory.models import UserStory
+from userstory.models import UserStory, Tarea
 from userstory.forms import US_Form
 from funciones import obtener_permisos
 

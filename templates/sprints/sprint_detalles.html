@@ -54,6 +54,7 @@
         {% if "Visualizar Tablero" in permisos and not sprint.estado == 'Planificacion' %}
             <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Tablero Kanban</a>
         {% endif %}
+        <a href="{% url 'sprints:burndown_chart_redux' sprint.id proyecto.id %}">Burndown Chart</a>
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
     </div><br><br>
 {% endblock cuerpo %}

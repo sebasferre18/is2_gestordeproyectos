@@ -39,6 +39,7 @@ class Proyecto(models.Model):
     fecha_fin = models.DateField(blank=True, null=True)
     descripcion = models.TextField()
     estado = models.CharField(max_length=25, choices=ESTADOS_PROYECTO, default='Planificacion')
+    story_points = models.IntegerField(default=0)
 
     def __str__(self):
         """

@@ -25,4 +25,5 @@ urlpatterns = [
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/developers/<int:desarrollador_id>/asignar_us', views.asignar_us, name='asignar_us'),
     path('<int:sprint_id>/proyectos/<int:proyecto_id>/denied', views.acceso_denegado, name='acceso_denegado'),
     path('proyectos/<int:proyecto_id>/burndownchart', views.burndown_chart, name='burndown_chart'),
+    path('<int:sprint_id>/proyectos/<int:proyecto_id>/burndownchart', views.burndown_chart_redux, name='burndown_chart_redux'),
 ]

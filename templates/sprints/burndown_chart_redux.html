@@ -1,11 +1,11 @@
-{% extends 'proyectos/proyecto_detalles.html' %}
+{% extends 'sprints/sprint_detalles.html' %}
 {% block script %}{% endblock script %}
 {% block titulo %}Burndown Chart{% endblock titulo %}
 {% block cuerpo %}
     <h2>Burndown Chart</h2>
     <div style="width:800px; margin-left: auto; margin-right: auto"><canvas id="burndown43"></canvas></div><br>
     <div class="enlace">
-        <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
+        <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>

@@ -5,6 +5,7 @@ from datetime import date, datetime
 
 from proyectos.models import Proyecto, Miembro, Historial
 from proyectos.forms import ProyectoForm, MiembroForm, MiembroFormSet
+from userstory.models import UserStory
 from usuarios.models import Usuario
 from roles.models import Rol, Permiso
 from funciones import obtener_permisos
@@ -319,6 +320,13 @@ def iniciar_proyecto(request, proyecto_id):
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     proyecto.estado = 'En ejecucion'
     proyecto.fecha_inicio = date.today()
+
+    userstories = UserStory.objects.filter(proyecto=proyecto)
+
+    story_points_totales = 0
+    for u in userstories:
+        story_points_totales += u.horas_estimadas
+    proyecto.story_points = story_points_totales
     proyecto.save()
 
     informacion = "El proyecto fue iniciado"

@@ -20,6 +20,9 @@ class Sprint(models.Model):
     proyecto = models.ForeignKey('proyectos.Proyecto', on_delete=models.CASCADE, null=True, blank=True)
     capacidad = models.PositiveIntegerField(null=True)
     estado = models.CharField(max_length=25, choices=ESTADOS_SPRINT, default='Planificacion')
+    story_points = models.IntegerField(default=0)
+    horas_aprobadas = models.IntegerField(default=0)
+    story_points_iniciales = models.IntegerField(default=0)
 
     def __str__(self):
         """

@@ -1,4 +1,5 @@
-from datetime import date, datetime
+import json
+from datetime import date, datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -293,6 +294,14 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     sprint.estado = 'En ejecucion'
     sprint.fecha_inicio = date.today()
+
+    sb = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id)
+    horas_sb = 0
+
+    for u in sb:
+        horas_sb += u.horas_estimadas
+
+    sprint.story_points_iniciales = horas_sb
     sprint.save()
 
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
@@ -314,6 +323,27 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     sprint.estado = 'Finalizado'
     sprint.fecha_fin = date.today()
+
+    userstories = UserStory.objects.filter(proyecto_id=proyecto_id)
+
+    story_points_totales = 0
+    for u in userstories:
+        story_points_totales += u.horas_estimadas
+
+    us_aprobados = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id, aprobado=True)
+    horas_aprobadas = 0
+
+    for u in us_aprobados:
+        horas_aprobadas += u.horas_estimadas
+
+    sprint.horas_aprobadas += horas_aprobadas
+    story_points_totales -= horas_aprobadas
+    sprints_finalizados = Sprint.objects.filter(proyecto_id=proyecto_id, estado='Finalizado').exclude(id=sprint_id)
+
+    for s in sprints_finalizados:
+        story_points_totales -= s.horas_aprobadas
+
+    sprint.story_points = story_points_totales
     sprint.save()
 
     us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
@@ -569,13 +599,53 @@ def burndown_chart(request, proyecto_id):
     """
         Clase de la vista del Burndown Chart de los sprints
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
+    sprints = Sprint.objects.filter(proyecto=proyecto, estado='Finalizado').order_by('id')
+
+    x_data = [" "]
+    y_data = [proyecto.story_points]
+
+    for i, s in enumerate(sprints, start=1):
+        x_data.append(s.nombre)
+        y_data.append(s.story_points)
+
+    x_data.append(" ")
 
     context = {
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'x_data': json.dumps(x_data),
+        'y_data': y_data
     }
     return render(request, 'sprints/burndown_chart.html', context)
 
+
+@login_required
+def burndown_chart_redux(request, sprint_id, proyecto_id):
+    """
+        Clase de la vista del Burndown Chart de un Sprint
+    """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    sprint = Sprint.objects.get(id=sprint_id)
+
+    x_data = [" "]
+    y_data = [sprint.story_points_iniciales]
+
+    for i in range(sprint.duracion):
+        x_data.append(str(sprint.fecha_inicio + timedelta(days=i)))
+
+    x_data.append(" ")
+
+    context = {
+        'proyecto': proyecto,
+        'sprint': sprint,
+        'x_data': json.dumps(x_data),
+        'y_data': y_data
+    }
+    return render(request, 'sprints/burndown_chart_redux.html', context)
 
 def recolectar_us(usquery):
     us = ""

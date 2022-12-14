@@ -234,6 +234,8 @@ def registrar_tarea(request, tablero_id, sprint_id, proyecto_id, us_id):
                 mensaje = "Capacidad del dia excedido"
             elif aux.horas_trabajadas <= 0:
                 mensaje = "Las horas trabajadas tienen que ser mayor que 0"
+            elif us.horas_estimadas - aux.horas_trabajadas < 0:
+                mensaje = "Las horas trabajadas fueron excedidas."
             else:
                 aux.userstory = us
                 aux.creador = desarrollador.miembro

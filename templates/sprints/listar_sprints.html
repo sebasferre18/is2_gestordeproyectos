@@ -21,7 +21,9 @@
                 <a href="{% url 'sprints:crear_sprint' proyecto.id %}">Crear Sprint</a>
             {% endif %}
         {% endif %}
-        <a href="{% url 'sprints:burndown_chart' proyecto.id %}">Burndown Chart</a>
+        {% if not proyecto.estado == "Planificacion" %}
+            <a href="{% url 'sprints:burndown_chart' proyecto.id %}">Burndown Chart</a>
+        {% endif %}
         <a href="{% url 'proyectos:ver_detalles' proyecto.id %}">Volver</a>
     </div>
 {% endblock cuerpo %}

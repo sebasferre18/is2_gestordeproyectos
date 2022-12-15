@@ -29,14 +29,14 @@
         <p>{{ sprint.duracion }} dias</p>
         <h3>Capacidad de trabajo</h3>
         <p>{{ capacidad_trabajo }} horas</p>
-        <h3>Dias restantes</h3>
-        <p>{{ sprint.duracion }} dias</p>
-        <h3>Capacidad restante</h3>
-        <p>{{ capacidad_trabajo_restante }} horas</p>
+        {% if sprint.estado == "Planificacion" or sprint.estado == "En ejecucion" %}
+            <h3>Capacidad restante</h3>
+            <p>{{ capacidad_trabajo_restante }} horas</p>
+        {% endif %}
     </div><br>
     <div class="enlace">
-        {% if sprint.estado == 'Planificacion' %}
-            {% if "Iniciar Sprint" in permisos and not proyecto.estado == "Planificacion" %}
+        {% if sprint.estado == 'Planificacion' and not proyecto.estado == 'Planificacion'  %}
+            {% if "Iniciar Sprint" in permisos %}
                 <button class="boton" onclick="location.href='{% url 'sprints:iniciar_proyecto' sprint.id proyecto.id %}'">Iniciar</button>
             {% endif %}
         {% elif sprint.estado == 'En ejecucion' %}
@@ -54,7 +54,9 @@
         {% if "Visualizar Tablero" in permisos and not sprint.estado == 'Planificacion' %}
             <a href="{% url 'tableros:index' sprint.id proyecto.id %}">Tablero Kanban</a>
         {% endif %}
-        <a href="{% url 'sprints:burndown_chart_redux' sprint.id proyecto.id %}">Burndown Chart</a>
+        {% if not sprint.estado == 'Planificacion' %}
+            <a href="{% url 'sprints:burndown_chart_redux' sprint.id proyecto.id %}">Burndown Chart</a>
+        {% endif %}
         <a href="{% url 'sprints:index' proyecto.id %}">Volver</a>
     </div><br><br>
 {% endblock cuerpo %}

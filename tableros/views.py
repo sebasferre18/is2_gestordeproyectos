@@ -5,10 +5,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from datetime import datetime
 
 from funciones import obtener_permisos_usuario
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial
 from sprints.models import Sprint, Desarrollador
 from tipo_us.models import MiembroTipoUs
-from userstory.models import UserStory, Tarea, Nota
+from userstory.models import UserStory, Tarea, Nota, TareaAux
+from usuarios.models import Usuario
 from .forms import ActualizarEstadoForm, TareaForm, NotaForm
 from .models import Tablero
 
@@ -108,12 +109,12 @@ def tablero_us_detalles(request, tablero_id, sprint_id, proyecto_id, us_id):
         horas_restantes -= t.horas_trabajadas
 
     tareas_desarrollador_dia = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day,
-                                                    fecha__month=datetime.now().month, fecha__year=datetime.now().year)
+                                                    fecha__month=datetime.now().month, fecha__year=datetime.now().year, userstory__sprint=sprint)
     capacidad_dia_desarrollador = desarrollador.capacidad_por_dia
     for t in tareas_desarrollador_dia:
         capacidad_dia_desarrollador -= t.horas_trabajadas
 
-    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro)
+    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro, userstory__sprint=sprint)
     capacidad_desarrollador = desarrollador.capacidad_total
     for t in tarea_desarrollador:
         capacidad_desarrollador -= t.horas_trabajadas
@@ -216,12 +217,14 @@ def registrar_tarea(request, tablero_id, sprint_id, proyecto_id, us_id):
     for t in tareas:
         horas_restantes -= t.horas_trabajadas
 
-    tareas_desarrollador_dia = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day, fecha__month=datetime.now().month, fecha__year=datetime.now().year)
+    tareas_desarrollador_dia = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day,
+                                                    fecha__month=datetime.now().month, fecha__year=datetime.now().year,
+                                                    userstory__sprint=sprint)
     capacidad_dia_desarrollador = desarrollador.capacidad_por_dia
     for t in tareas_desarrollador_dia:
         capacidad_dia_desarrollador -= t.horas_trabajadas
 
-    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro)
+    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro, userstory__sprint=sprint)
     capacidad_desarrollador = desarrollador.capacidad_total
     for t in tarea_desarrollador:
         capacidad_desarrollador -= t.horas_trabajadas
@@ -308,6 +311,9 @@ def aprobar_us(request, tablero_id, sprint_id, proyecto_id, us_id):
     """
         Clase de la vista para la aprobacion de un User Story dentro de un tablero
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
     try:
@@ -320,4 +326,9 @@ def aprobar_us(request, tablero_id, sprint_id, proyecto_id, us_id):
 
     us.aprobado = True
     us.save()
+
+    informacion = "El US '" + us.nombre + "' fue aprobado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='US', informacion=informacion)
+    historial.save()
     return redirect('tableros:tablero_us_detalles', tablero_id, sprint_id, proyecto_id, us_id)

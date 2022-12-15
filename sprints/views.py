@@ -8,7 +8,7 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 # Create your views here.
 from sprints.forms import AsignarUsForm
 from proyectos.models import Proyecto, Miembro, Historial
-from userstory.models import UserStory, Tarea
+from userstory.models import UserStory, Tarea, TareaAux
 from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
 from .models import Sprint, Desarrollador
@@ -58,6 +58,7 @@ def ver_detalles(request, sprint_id, proyecto_id):
     miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
     desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint)
     tareas = Tarea.objects.filter(userstory__sprint=sprint)
+    sb = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -283,6 +284,10 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la inicializacion de un sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
@@ -299,11 +304,18 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     horas_sb = 0
 
     for u in sb:
+        tareas = Tarea.objects.filter(userstory=u)
+        for t in tareas:
+            horas_sb -= t.horas_trabajadas
         horas_sb += u.horas_estimadas
 
     sprint.story_points_iniciales = horas_sb
     sprint.save()
 
+    informacion = "El sprint '" + sprint.nombre + "' fue iniciado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -312,6 +324,10 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la finalizacion de un sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
@@ -343,20 +359,28 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     for s in sprints_finalizados:
         story_points_totales -= s.horas_aprobadas
 
-    sprint.story_points = story_points_totales
-    sprint.save()
-
     us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
     for us in us_sinaprobar:
+        tarea = Tarea.objects.filter(userstory=us)
+        for t in tarea:
+            tarea_aux = TareaAux(sprint=sprint, fecha=t.fecha, horas_trabajadas=t.horas_trabajadas)
+            tarea_aux.save()
         us.sprint = None
         us.sprint_previo = 3
         us.prioridad = (0.6 * us.business_value + 0.4 * us.user_point) + us.sprint_previo
         us.save()
 
+    sprint.story_points = story_points_totales
+    sprint.save()
+
     miembros = Miembro.objects.all()
     for m in miembros:
         m.userstory.clear()
 
+    informacion = "El sprint '" + sprint.nombre + "' fue finalizado"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -630,20 +654,46 @@ def burndown_chart_redux(request, sprint_id, proyecto_id):
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     sprint = Sprint.objects.get(id=sprint_id)
+    sb = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id)
 
     x_data = [" "]
     y_data = [sprint.story_points_iniciales]
+    y_data_ideal = []
+    horas_totales_sprint = y_data[0]
+    horas_ideales_dia = horas_totales_sprint / sprint.duracion
+    horas_quemadas = 0
 
-    for i in range(sprint.duracion):
-        x_data.append(str(sprint.fecha_inicio + timedelta(days=i)))
+    i = 0
+    j = 0
+    while i - j < sprint.duracion:
+        dia = sprint.fecha_inicio + timedelta(days=i)
+        if dia.isoweekday() == 6 or dia.isoweekday() == 7:
+            i += 1
+            j += 1
+        else:
+            x_data.append(str(dia.strftime("%d-%m-%Y")))
+            y_data_ideal.append(round(horas_totales_sprint - (horas_ideales_dia * (i-j))))
+            for u in sb:
+                tareas = Tarea.objects.filter(userstory=u, fecha__day=dia.day, fecha__month=dia.month, fecha__year=dia.year)
+                for t in tareas:
+                    horas_quemadas += t.horas_trabajadas
+            tarea_aux = TareaAux.objects.filter(sprint=sprint, fecha__day=dia.day, fecha__month=dia.month, fecha__year=dia.year)
+            for ta in tarea_aux:
+                horas_quemadas += ta.horas_trabajadas
+            if datetime.now().date() >= dia:
+                y_data.append(horas_totales_sprint - horas_quemadas)
+            i += 1
 
+    print(horas_quemadas)
     x_data.append(" ")
+    y_data_ideal.append(0)
 
     context = {
         'proyecto': proyecto,
         'sprint': sprint,
         'x_data': json.dumps(x_data),
-        'y_data': y_data
+        'y_data': y_data,
+        'y_data_ideal': y_data_ideal
     }
     return render(request, 'sprints/burndown_chart_redux.html', context)
 

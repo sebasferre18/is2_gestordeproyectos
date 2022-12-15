@@ -72,3 +72,4 @@ class Historial(models.Model):
     accion = models.CharField(max_length=25, choices=ACCION_HISTORIAL, null=True)
     elemento = models.CharField(max_length=25, choices=ELEMENTOS, null=True)
     informacion = models.TextField(null=True)
+    userstory = models.ForeignKey('userstory.UserStory', on_delete=models.CASCADE, null=True, blank=True)

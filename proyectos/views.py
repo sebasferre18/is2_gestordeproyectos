@@ -413,7 +413,7 @@ def historial_modificaciones(request, proyecto_id):
     Clase de la vista del historial de modificaciones de un proyecto
     """
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    historial = Historial.objects.filter(proyecto=proyecto).order_by('-id')
+    historial = Historial.objects.filter(proyecto=proyecto).order_by('-fecha')
 
     user = request.user
 

@@ -63,7 +63,7 @@
                     {% endif %}
                     <div class="enlace"><a href="{% url 'tableros:actualizar_estado' tablero.id sprint.id proyecto.id us.id %}">Actualizar estado</a></div>
                 {% endif %}
-                {% if "Aprobar US" in permisos and us.estado == "Terminado" %}
+                {% if "Aprobar US" in permisos and us.estado == "Terminado" and horas_restantes == 0 %}
                     <div class="enlace"><button class="boton" style="font-size: inherit" onclick="location.href='{% url 'tableros:aprobar_us' tablero.id sprint.id proyecto.id us.id %}'">Aprobar</button></div>
                 {% endif %}
             {% endif %}

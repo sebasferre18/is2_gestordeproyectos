@@ -6,7 +6,7 @@
     <div style="width:800px; margin-left: auto; margin-right: auto"><canvas id="burndown43"></canvas></div><br>
     <div class="enlace">
         <a href="{% url 'sprints:ver_detalles' sprint.id proyecto.id %}">Volver</a>
-    </div>
+    </div><br><br>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <script>
@@ -38,7 +38,7 @@
         labels: JSON.parse("{{ x_data|escapejs }}"),
         datasets: [
           {
-            label: "Burndown",
+            label: "Horas quemadas",
             data: burndownData,
             fill: false,
             borderColor: "#EE6868",
@@ -46,24 +46,13 @@
             lineTension: 0,
           },
           {
-            label: "Ideal",
+            label: "Horas quemadas ideales",
             borderColor: "#6C8893",
             backgroundColor: "#6C8893",
             lineTension: 0,
             borderDash: [5, 5],
             fill: false,
-            data: [
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 0)), // 1
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 1)), // 2
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 2)), // 3
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 3)), // 4
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 4)), // 5
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 5)), // 6
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 6)), // 7
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 7)), // 8
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 8)), // 9
-              Math.round(totalHoursInSprint - (idealHoursPerDay * i++) + sumArrayUpTo(scopeChange, 9))  // 10
-            ]
+            data: {{ y_data_ideal }}
           },
         ]
       };

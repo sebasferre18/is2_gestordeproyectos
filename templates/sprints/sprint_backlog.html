@@ -10,11 +10,12 @@
         {% endfor %}
     {% endif %}
     {% if sprint.estado == "Planificacion" %}
-        <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias. Tiempo estimado restante: {{ tiempo_restante }}</h3>
+        <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Tiempo estimado restante: {{ tiempo_restante }}</h3>
     {% elif sprint.estado == "En ejecucion" %}
-        <h3>Capacidad restante: {{ capacidad_restante }} horas. Dias restantes: {{ sprint.duracion }} dias.</h3>
+        <h3>Capacidad restante: {{ capacidad_restante }} horas.</h3>
     {% endif %}
     {% if UserStory %}
+        <div style="max-height: 320px; overflow: scroll">
         {% for us in UserStory %}
             <button type="button" class="cortina">
                 <p>{{ us.nombre }}</p>
@@ -63,6 +64,7 @@
                 {% endif %}
             </div>
         {% endfor %}
+        </div>
     {% else %}
         <h1>No hay User Stories en el Sprint Backlog</h1>
     {% endif %}

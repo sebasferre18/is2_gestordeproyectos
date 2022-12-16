@@ -99,7 +99,7 @@ def tablero_us_detalles(request, tablero_id, sprint_id, proyecto_id, us_id):
     try:
         desarrollador = Desarrollador.objects.get(miembro__usuario__user=request.user, sprint=sprint)
     except Desarrollador.DoesNotExist:
-        desarrollador = []
+        desarrollador = Desarrollador()
 
     if "Visualizar Tablero" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)

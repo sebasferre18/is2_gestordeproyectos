@@ -4,10 +4,10 @@
     {% if "Visualizar Tipo US" in permisos %}
         <h2>Tipos de User Story</h2>
         <div class="enlace">
-        {% if "Crear Tipo US" in permisos %}
+        {% if "Crear Tipo US" in permisos and not proyecto.estado == "Finalizado" %}
             <a href="{% url 'tipo_us:crear_tipo_us' proyecto.id %}">Crear Tipo</a>
         {% endif %}
-        {% if "Importar Tipo US" in permisos %}
+        {% if "Importar Tipo US" in permisos and not proyecto.estado == "Finalizado" %}
         <a href="{% url 'tipo_us:importar_tipo_us' proyecto.id %}">Importar Tipo</a>
         {% endif %}
         </div>
@@ -31,11 +31,11 @@
                                     No tiene
                                 {% endif %}
                             </td>
-                            {% if "Modificar Tipo US" in permisos %}
+                            {% if "Modificar Tipo US" in permisos and not proyecto.estado == "Finalizado" %}
                                 <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:modificar_tipo_us' proyecto.id m.id %}">Modificar</a></div></td>
                                 <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:ordenar_campos' proyecto.id m.id %}">Ordenar</a></div></td>
                             {% endif %}
-                            {% if "Eliminar Tipo US" in permisos %}
+                            {% if "Eliminar Tipo US" in permisos and not proyecto.estado == "Finalizado" %}
                                 <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:eliminar_tipo_us' proyecto.id m.id %}">Eliminar</a></div></td>
                             {% endif %}
                         </tr>

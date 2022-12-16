@@ -4,24 +4,28 @@
     <h2>Historial de modificaciones</h2>
     <div class="contenido" style="display: block; padding: 18px">
         <div style="max-height: 320px; overflow: scroll">
-            <table>
-                <tr>
-                    <th style="width: 100px">Fecha</th>
-                    <th style="width: 100px">Accion</th>
-                    <th style="width: 100px">Elemento</th>
-                    <th style="width: 750px">Informacion</th>
-                    <th>Responsable</th>
-                </tr>
-                {% for h in historial %}
+            {% if historial %}
+                <table>
                     <tr>
-                        <td>{{ h.fecha }}</td>
-                        <td>{{ h.accion }}</td>
-                        <td>{{ h.elemento }}</td>
-                        <td>{{ h.informacion }}</td>
-                        <td>{{ h.responsable }}</td>
+                        <th style="width: 100px">Fecha</th>
+                        <th style="width: 100px">Accion</th>
+                        <th style="width: 100px">Elemento</th>
+                        <th style="width: 750px">Informacion</th>
+                        <th>Responsable</th>
                     </tr>
-                {% endfor %}
-            </table>
+                    {% for h in historial %}
+                        <tr>
+                            <td>{{ h.fecha }}</td>
+                            <td>{{ h.accion }}</td>
+                            <td>{{ h.elemento }}</td>
+                            <td>{{ h.informacion }}</td>
+                            <td>{{ h.responsable }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h1>No hay modificaciones por el momento</h1>
+            {% endif %}
         </div>
     </div><br>
     <div class="enlace">

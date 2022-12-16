@@ -69,7 +69,11 @@
             {% endif %}
         {% endif %}<br><br>
     </div>
-    <h3>Tu capacidad diaria: {{ capacidad_dia_desarrollador }} horas. Tu capacidad total de trabajo restante: {{ capacidad_desarrollador }} horas</h3>
+    {% if desarrollador.sprint and not sprint.estado == "Finalizado" %}
+        <h3>Tu capacidad diaria: {{ capacidad_dia_desarrollador }} horas. Tu capacidad total de trabajo restante: {{ capacidad_desarrollador }} horas</h3>
+    {% else %}
+        <br>
+    {% endif %}
     <div class="enlace"><a href="{% url 'tableros:tablero_detalles' tablero.id sprint.id proyecto.id %}">Volver</a></div>
     <br><br>
 

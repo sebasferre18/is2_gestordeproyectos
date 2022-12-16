@@ -4,7 +4,7 @@
     {% if "Visualizar US" in permisos %}
         <h2>Product Backlog</h2>
         <div class="enlace">
-            {% if "Crear US" in permisos %}
+            {% if "Crear US" in permisos and not proyecto.estado == "Finalizado" %}
                 <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
             {% endif %}
             {% if "Visualizar Tipo US" in permisos %}
@@ -44,7 +44,7 @@
                                 No
                             {% endif %}
                         </p>
-                        {% if "Modificar US" in permisos %}
+                        {% if "Modificar US" in permisos and not proyecto.estado == "Finalizado" and not us.aprobado == True %}
                             <div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div>
                             <br><br>
                         {% endif %}

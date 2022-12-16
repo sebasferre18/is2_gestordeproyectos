@@ -4,13 +4,17 @@
     <h2>Sprint: {{ sprint.nombre }}</h2>
 {% endblock sprint %}
 {% block cuerpo %}
-        <h2>Asignar US al desarrollador {{ desarrollador.miembro.usuario.user.username }}</h2>
-        <form action="" method="POST">
-            {% csrf_token %}
-            <table>{{ form }}</table><br>
-            <div class="enlace">
-            <input class="boton" type="submit" name="OK" value="Confirmar">
-            <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Cancelar</a>
-            </div>
-        </form><br>
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h1>Asignar US al desarrollador {{ desarrollador.miembro.usuario.user.username }}</h1>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.userstory }}<br>
+                <div class="enlace">
+                    <input class="boton" style="font-size: inherit" type="submit" name="OK" value="Confirmar">
+                </div>
+                <div class="enlace">
+                    <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Cancelar</a>
+                </div>
+            </form>
+        </div>
 {% endblock cuerpo %}

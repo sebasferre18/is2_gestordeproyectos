@@ -1,0 +1,22 @@
+{% extends 'base/home.html' %}
+{% block titulo %}Notificaciones{% endblock titulo %}
+{% block cuerpo %}
+    <h1>Notificaciones</h1>
+    <h3>Posees {{cantidad}} notificaciones</h3>
+    <div class="contenido" style="display: block; padding: 18px">
+        <div style="max-height: 320px; overflow: scroll">
+            <table>
+                <tr>
+                    <th style="width: 100px">Fecha</th>
+                    <th style="width: 750px">Mensaje</th>
+                </tr>
+                {% for n in notificacion %}
+                    <tr>
+                        <td>{{ n.fecha }}</td>
+                        <td>{{ n.informacion }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div><br>
+{% endblock cuerpo %}

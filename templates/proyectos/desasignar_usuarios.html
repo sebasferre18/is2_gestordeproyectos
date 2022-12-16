@@ -2,19 +2,22 @@
 {% block titulo %}Desasignar Miembros{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Desasignar Miembros' in permisos %}
-        <h1>Desasignar Miembros</h1>
-        {% if miembros %}
-            <table>
-                {% for m in miembros %}
-                <tr>
-                    <td>{{ m.usuario.user.username }}</td>
-                    <td><div class="enlace"><a href="{% url 'proyectos:eliminar_miembro' proyecto_id m.id %}">Desasignar</a></div></td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>No hay usuarios que desasignar al proyecto.</p>
-        {% endif %}
+        <div class="contenido" style="display: block; padding-bottom: 18px">
+            <h1>Desasignar Miembros</h1>
+            {% if miembros %}
+                <table>
+                    <th>Usuario</th>
+                    {% for m in miembros %}
+                    <tr>
+                        <td style="width: 100%">{{ m.usuario.user.username }}</td>
+                        <td style="padding: 0px"><div class="enlace"><a href="{% url 'proyectos:eliminar_miembro' proyecto_id m.id %}">Desasignar</a></div></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No hay usuarios que desasignar al proyecto.</p>
+            {% endif %}
+        </div>
         <br>
         <div class="enlace">
         <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>

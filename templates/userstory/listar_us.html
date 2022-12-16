@@ -3,56 +3,60 @@
 {% block cuerpo %}
     {% if "Visualizar US" in permisos %}
         <h2>Product Backlog</h2>
+        <div class="enlace">
+            {% if "Crear US" in permisos %}
+                <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
+            {% endif %}
+            {% if "Visualizar Tipo US" in permisos %}
+                <a href="/tipo_us/{{ proyecto_id }}">Administrar Tipo US</a>
+            {% endif %}
+        </div><br><br>
         {% if UserStory %}
-            {% for us in UserStory %}
-                <button type="button" class="cortina">
-                    <p>{{ us.nombre }}</p>
-                </button>
-                <div class="contenido">
-                    <h3>Descripcion</h3>
-                    <p>{{ us.descripcion }}</p>
-                    <h3>Tipo de US</h3>
-                    <p>{{ us.tipo_us }}</p>
-                    <h3>Horas estimadas</h3>
-                    <p>{{ us.horas_estimadas }} horas</p>
-                    <h3>Prioridad tecnica</h3>
-                    <p>{{ us.user_point }}</p>
-                    <h3>Prioridad de negocio</h3>
-                    <p>{{ us.business_value }}</p>
-                    <h3>Trabajo previo en Sprint</h3>
-                    <p>{{ us.sprint_previo }}</p>
-                    <h3>Prioridad general</h3>
-                    <p>{{ us.prioridad }}</p>
-                    <h3>Fecha de creacion</h3>
-                    <p>{{ us.fecha_creacion }}</p>
-                    <h3>Autor</h3>
-                    <p>{{ us.autor }}</p>
-                    <h3>Aprobado</h3>
-                    <p>
-                        {% if us.aprobado %}
-                            Si
-                        {% else %}
-                            No
+            <div style="max-height: 320px; overflow: scroll">
+                {% for us in UserStory %}
+                    <button type="button" class="cortina">
+                        <p>{{ us.nombre }}</p>
+                    </button>
+                    <div class="contenido">
+                        <h3>Descripcion</h3>
+                        <p>{{ us.descripcion }}</p>
+                        <h3>Tipo de US</h3>
+                        <p>{{ us.tipo_us }}</p>
+                        <h3>Horas estimadas</h3>
+                        <p>{{ us.horas_estimadas }} horas</p>
+                        <h3>Prioridad tecnica</h3>
+                        <p>{{ us.user_point }}</p>
+                        <h3>Prioridad de negocio</h3>
+                        <p>{{ us.business_value }}</p>
+                        <h3>Trabajo previo en Sprint</h3>
+                        <p>{{ us.sprint_previo }}</p>
+                        <h3>Prioridad general</h3>
+                        <p>{{ us.prioridad }}</p>
+                        <h3>Fecha de creacion</h3>
+                        <p>{{ us.fecha_creacion }}</p>
+                        <h3>Autor</h3>
+                        <p>{{ us.autor }}</p>
+                        <h3>Aprobado</h3>
+                        <p>
+                            {% if us.aprobado %}
+                                Si
+                            {% else %}
+                                No
+                            {% endif %}
+                        </p>
+                        {% if "Modificar US" in permisos %}
+                            <div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div>
+                            <br><br>
                         {% endif %}
-                    </p>
-                    {% if "Modificar US" in permisos %}
-                        <div class="enlace"><a href="{% url 'userstory:modificar_us' proyecto_id us.id %}">Modificar</a></div>
-                        <br><br>
-                    {% endif %}
-                </div>
-            {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
         {% else %}
             <h1>No existen User Story</h1>
         {% endif %}
-        <br><br>
+        <br>
         <div class="enlace">
-        {% if "Crear US" in permisos %}
-            <a href="/userstory/crear_us/{{ proyecto_id }}">Crear US</a>
-        {% endif %}
-        {% if "Visualizar Tipo US" in permisos %}
-            <a href="/tipo_us/{{ proyecto_id }}">Administrar Tipo US</a>
-        {% endif %}
-        <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
+            <a href="{% url 'proyectos:ver_detalles' proyecto_id %}">Volver</a>
         </div>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>

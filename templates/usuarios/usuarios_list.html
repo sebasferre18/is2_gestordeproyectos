@@ -6,30 +6,32 @@
         <div class="enlace">
         <a href="{% url 'usuarios:nuevo_usuario' %}">Crear Usuario</a>
         </div><br><br>
+        <div class="contenido" style="display: block; padding: 18px">
         {% if usuarios %}
             <table>
             <tr>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Nombre de usuario</th>
+                <th style="width: 30%">Nombre</th>
+                <th style="width: 30%">Apellido</th>
+                <th style="width: 100%">Nombre de usuario</th>
             <tr>
             {% for usuario in usuarios %}
             <tr>
-                <td>{{ usuario.user.last_name }}</td>
                 <td>{{ usuario.user.first_name }}</td>
+                <td>{{ usuario.user.last_name }}</td>
                 <td>{{ usuario.user.username }}</td>
-                <td><div class="enlace"><a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a></div></td>
-                <td><div class="enlace"><a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a></div></td>
+                <td style="padding: 0px"><div class="enlace"><a href="{% url 'usuarios:modificar_usuario' usuario.user.id %}">Modificar</a></div></td>
+                <td style="padding: 0px"><div class="enlace"><a href="{% url 'usuarios:eliminar_usuario' usuario.user.id %}">Eliminar</a></div></td>
             </tr>
             {% endfor %}
             </table>
         {% else %}
             <h1>No hay usuarios</h1>
         {% endif %}
-        <br><br>
-        <div class="enlace">
-        <a href="{% url 'home' %}">Home</a><br>
         </div>
+        <br>
+        <div class="enlace">
+            <a href="{% url 'home' %}">Home</a><br>
+        </div><br><br>
     {% else %}
         <h1>No tienes los permisos para visualizar esta pagina</h1>
         <a href="{% url 'home' %}">Home</a><br>

@@ -4,15 +4,14 @@
     <h2>Sprint Backlog</h2>
     {% if messages %}
     {% for message in messages %}
-        <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+        <div style="background-color: darkred; padding: 10px; color: white" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    {% endfor %}
-{% endif %}
+        {% endfor %}
+    {% endif %}
     {% if sprint.estado == "Planificacion" %}
         <h3>Capacidad de trabajo: {{ sprint.capacidad }} horas. Dias restantes: {{ sprint.duracion }} dias. Tiempo estimado restante: {{ tiempo_restante }}</h3>
-    {% else %}
+    {% elif sprint.estado == "En ejecucion" %}
         <h3>Capacidad restante: {{ capacidad_restante }} horas. Dias restantes: {{ sprint.duracion }} dias.</h3>
     {% endif %}
     {% if UserStory %}

@@ -107,11 +107,15 @@ def tablero_us_detalles(request, tablero_id, sprint_id, proyecto_id, us_id):
     for t in tareas:
         horas_restantes -= t.horas_trabajadas
 
-    tareas_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day)
+    tareas_desarrollador_dia = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day,
+                                                    fecha__month=datetime.now().month, fecha__year=datetime.now().year)
     capacidad_dia_desarrollador = desarrollador.capacidad_por_dia
-    capacidad_desarrollador = desarrollador.capacidad_total
-    for t in tareas_desarrollador:
+    for t in tareas_desarrollador_dia:
         capacidad_dia_desarrollador -= t.horas_trabajadas
+
+    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro)
+    capacidad_desarrollador = desarrollador.capacidad_total
+    for t in tarea_desarrollador:
         capacidad_desarrollador -= t.horas_trabajadas
 
     context = {
@@ -212,11 +216,14 @@ def registrar_tarea(request, tablero_id, sprint_id, proyecto_id, us_id):
     for t in tareas:
         horas_restantes -= t.horas_trabajadas
 
-    tareas_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day)
+    tareas_desarrollador_dia = Tarea.objects.filter(creador=desarrollador.miembro, fecha__day=datetime.now().day, fecha__month=datetime.now().month, fecha__year=datetime.now().year)
     capacidad_dia_desarrollador = desarrollador.capacidad_por_dia
-    capacidad_desarrollador = desarrollador.capacidad_total
-    for t in tareas_desarrollador:
+    for t in tareas_desarrollador_dia:
         capacidad_dia_desarrollador -= t.horas_trabajadas
+
+    tarea_desarrollador = Tarea.objects.filter(creador=desarrollador.miembro)
+    capacidad_desarrollador = desarrollador.capacidad_total
+    for t in tarea_desarrollador:
         capacidad_desarrollador -= t.horas_trabajadas
 
     if request.method == 'POST':

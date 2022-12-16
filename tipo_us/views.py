@@ -4,12 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from datetime import date
+from datetime import date, datetime
 
 from tableros.models import Tablero
 from tipo_us.models import Tipo_US, MiembroTipoUs
 from tipo_us.forms import Tipo_usForm
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial
 from usuarios.models import Usuario
 from funciones import obtener_permisos, obtener_permisos_usuario
 
@@ -68,6 +68,8 @@ def crear_tipo_us(request, proyecto_id):
     Clase de la vista para la creacion de tipos de User Stories
     """
     #proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro = MiembroTipoUs()
     tablero = Tablero()
@@ -85,6 +87,12 @@ def crear_tipo_us(request, proyecto_id):
             if miembro.tipo_us.campos:
                 tablero.campos += "," + miembro.tipo_us.campos
             tablero.save()
+
+            informacion = "ID: " + str(tipo_us.id) + "; Nombre: " + tipo_us.nombre + "; Descripcion: " + \
+                          tipo_us.descripcion + "; Campos: " + tipo_us.campos
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Creacion',
+                                  elemento='Tipo de US', informacion=informacion)
+            historial.save()
             return HttpResponseRedirect('/tipo_us/' + str(proyecto_id) + '/')
 
 
@@ -100,6 +108,8 @@ def modificar_tipo_us(request, proyecto_id, tipo_us_id):
     """
     Clase de la vista para la creacion de tipos de User Stories
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
     tipo_us = miembro_tipo_us.tipo_us
@@ -123,6 +133,12 @@ def modificar_tipo_us(request, proyecto_id, tipo_us_id):
                 tablero.campos += "," + aux.campos
             aux.save()
             tablero.save()
+
+            informacion = "ID: " + str(aux.id) + "; Nombre: " + aux.nombre + "; Descripcion: " + \
+                          aux.descripcion + "; Campos: " + aux.campos
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Tipo de US', informacion=informacion)
+            historial.save()
             return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
     context = {
@@ -137,11 +153,19 @@ def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
     """
     Clase de la vista para la creacion de tipos de User Stories
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
     tipo_us = get_object_or_404(Tipo_US, id=miembro_tipo_us.tipo_us.id)
 
     if request.method == 'POST':
+        informacion = "ID: " + str(tipo_us.id) + "; Nombre: " + tipo_us.nombre + "; Descripcion: " + \
+                      tipo_us.descripcion + "; Campos: " + tipo_us.campos
+        historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Eliminacion',
+                              elemento='Tipo de US', informacion=informacion)
+        historial.save()
+
         miembro_tipo_us.delete()
         tipo_us.delete()
         return redirect('/tipo_us/' + str(proyecto_id) + '/')
@@ -193,11 +217,15 @@ def agregar_tipo_us(request, proyecto_id, tipo_us_id):
     """
     Clase de la vista para agregar un tipo de US a un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
-    tipo_us = get_object_or_404(Tipo_US, id=tipo_us_id)
+    tipo_us = get_object_or_404(MiembroTipoUs, id=tipo_us_id)
     tablero = Tablero()
+    tablero_aux = Tablero.objects.get(tipo_us__tipo_us=tipo_us.tipo_us)
 
-    tipo_us_aux = Tipo_US(nombre=tipo_us.nombre, fecha_creacion=tipo_us.fecha_creacion, descripcion=tipo_us.descripcion)
+    tipo_us_aux = Tipo_US(nombre=tipo_us.tipo_us.nombre, fecha_creacion=tipo_us.tipo_us.fecha_creacion,
+                          descripcion=tipo_us.tipo_us.descripcion, campos=tipo_us.tipo_us.campos)
     tipo_us_aux.save()
 
     miembro = MiembroTipoUs(proyecto=proyecto, tipo_us=tipo_us_aux)
@@ -205,8 +233,14 @@ def agregar_tipo_us(request, proyecto_id, tipo_us_id):
 
     tablero.tipo_us = miembro
     if miembro.tipo_us.campos:
-        tablero.campos += "," + miembro.tipo_us.campos
+        tablero.campos = tablero_aux.campos
     tablero.save()
+
+    informacion = "Se ha importado el tipo de US: '" + tipo_us.tipo_us.nombre + "' del proyecto '" + \
+                  tipo_us.proyecto.nombre + "'"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Importacion',
+                          elemento='Tipo de US', informacion=informacion)
+    historial.save()
     return redirect('tipo_us:importar_tipo_us', proyecto_id)
 
 @login_required

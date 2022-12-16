@@ -1,14 +1,22 @@
 {% extends 'proyectos/proyecto_detalles.html' %}
 {% block titulo %}Modificar Tipo de US{% endblock titulo %}
 {% block cuerpo %}
-    <h2>Modificar Tipo de US</h2>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <table>{{ form }}</table>
-        <br>
-        <div class="enlace">
-        <input class="boton" type="submit" value="Modificar">
-        <a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">Cancelar</a>
-        </div>
-    </form>
+    <div class="contenido" style="display: block; padding-bottom: 18px">
+        <h1>Modificar Tipo de US</h1>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <h3>Nombre</h3>
+            <p>{{ form.nombre }}</p>
+            <h3>Descripcion</h3>
+            <p>{{ form.descripcion }}</p>
+            <h3>Campos</h3>
+            <p>{{ form.campos }}</p>
+            <div class="enlace">
+                <input class="boton" style="font-size: inherit" type="submit" value="Modificar">
+            </div>
+            <div class="enlace">
+                <a href="{% url 'tipo_us:listar_tipo_us' proyecto.id %}">Cancelar</a>
+            </div>
+        </form>
+    </div>
 {% endblock cuerpo %}

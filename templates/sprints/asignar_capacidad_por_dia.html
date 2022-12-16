@@ -1,12 +1,14 @@
 {% extends 'sprints/sprint_detalles.html' %}
 {% block titulo %}Gestionar Roles{% endblock titulo %}
 {% block cuerpo %}
-    <h2>Introduzca la capacidad laboral por dia del usuario: {{ miembro.usuario.user.username }}</h2>
-    <form action="" method="POST">
-        {% csrf_token %}
-        <table>{{ form }}</table><br>
-        <div class="enlace">
-            <input class="boton" type="submit" value="Asignar usuario como desarrollador">
-        </div>
-    </form><br>
+    <div class="contenido" style="display: block; padding-bottom: 18px">
+        <h2>Introduzca la capacidad laboral por dia del usuario: {{ miembro.usuario.user.username }}</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <table>{{ form }}</table><br>
+            <div class="enlace">
+                <input class="boton" type="submit" value="Asignar usuario como desarrollador">
+            </div>
+        </form>
+    </div><br>
 {% endblock cuerpo %}

@@ -2,16 +2,17 @@
 {% block titulo %}Asignar Miembros{% endblock titulo %}
 {% block cuerpo %}
     {% if 'Asignar Desarrolladores' in permisos %}
+        <div class="contenido" style="display: block; padding-bottom: 18px">
         <h1>Asignar Desarrolladores</h1>
         {% if miembros %}
             <table>
-                <th>Nombre de usuario</th>
+                <th style="width: 100%">Nombre de usuario</th>
                 {% for m in miembros %}
                     <tr>
                         <td>
                             {{ m.usuario }}
                         </td>
-                        <td><div class="enlace">
+                        <td style="padding: 0px"><div class="enlace">
                             <button class="boton" onclick="location.href='{% url 'sprints:asignar_capacidad_por_dia' sprint.id proyecto.id m.id %}'">Asignar</button>
                         </div></td>
                     </tr>
@@ -20,6 +21,7 @@
         {% else %}
             <p>No hay miembros que asignar al sprint.</p>
         {% endif %}
+        </div>
         <br>
         <div class="enlace">
         <a href="{% url 'sprints:listar_desarrolladores' sprint.id proyecto.id %}">Volver</a>

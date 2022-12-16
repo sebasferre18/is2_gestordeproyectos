@@ -27,28 +27,34 @@
         </p>
     </div>
     <h3>Miembros</h3>
-    <table>
-        <tr>
-            <th>Usuario</th>
-            <th>Rol</th>
-        </tr>
-        {% for m in miembros %}
+    <div class="contenido" style="display: block; padding: 18px">
+        <table>
             <tr>
-                <td>{{ m.usuario }}</td>
-                <td>
-                    {% if m.rol.get_queryset %}
-                        {% for r in m.rol.get_queryset %}
-                            {{ r }}<br>
-                        {% endfor %}
-                    {% else %}
-                        Sin roles
-                    {% endif %}</td>
-                {% if 'Gestionar Roles De Un Usuario' in permisos %}
-                    <td class="enlace"><a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a></td>
-                {% endif %}
+                <th>Usuario</th>
+                <th>Rol</th>
             </tr>
-        {% endfor %}
-    </table><br>
+            {% for m in miembros %}
+                <tr>
+                    <td>{{ m.usuario }}</td>
+                    <td style="width: 100%">
+                        {% if m.rol.get_queryset %}
+                            {% for r in m.rol.get_queryset %}
+                                {{ r }}<br>
+                            {% endfor %}
+                        {% else %}
+                            Sin roles
+                        {% endif %}</td>
+                    {% if 'Gestionar Roles De Un Usuario' in permisos %}
+                        <td style="padding: 0px">
+                            <div class="enlace">
+                                <a href="{% url 'proyectos:gestionar_roles' proyecto.id m.id %}">Gestionar Roles</a>
+                            </div>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div><br>
     <div class="enlace">
     {% if proyecto.estado == 'Planificacion' %}
         {% if "Iniciar Proyecto" in permisos %}
@@ -76,9 +82,10 @@
     {% if "Visualizar US" in permisos %}
         <a href="{%  url 'userstory:listar_us' proyecto.id %}">Product Backlog</a>
     {% endif %}
-    {% if "Visualizar Sprints" in permisos and not proyecto.estado == 'Planificacion' %}
+    {% if "Visualizar Sprints" in permisos %}
         <a href="{%  url 'sprints:index' proyecto.id %}">Sprints</a>
     {% endif %}
+    <a href="{%  url 'proyectos:historial_modificaciones' proyecto.id %}">Historial</a>
     <a href="{% url 'proyectos:listar_proyectos' %}">Volver</a>
     </div><br><br>
 {% endblock cuerpo %}

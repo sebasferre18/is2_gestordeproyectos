@@ -13,26 +13,35 @@
         </div>
         <br><br>
         {% if miembro_tipo_us %}
-            <table>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
-                </tr>
-                {% for m in miembro_tipo_us %}
+            <div class="contenido" style="display: block; padding: 18px">
+                <table>
                     <tr>
-                        <td style="width:10%">{{ m.tipo_us }}</td>
-                        <td style="width:100%">{{ m.tipo_us.descripcion }}</td>
-                        {% if "Modificar Tipo US" in permisos %}
-                            <td><div class="enlace"><a href="{% url 'tipo_us:modificar_tipo_us' proyecto.id m.id %}">Modificar</a></div></td>
-                            <td><div class="enlace"><a href="{% url 'tipo_us:ordenar_campos' proyecto.id m.id %}">Ordenar</a></div></td>
-                        {% endif %}
-                        {% if "Eliminar Tipo US" in permisos %}
-                            <td><div class="enlace"><a href="{% url 'tipo_us:eliminar_tipo_us' proyecto.id m.id %}">Eliminar</a></div></td>
-                        {% endif %}
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Campos personalizados</th>
                     </tr>
-                {% endfor %}
-            </table>
-            <br>
+                    {% for m in miembro_tipo_us %}
+                        <tr>
+                            <td style="width:10%">{{ m.tipo_us }}</td>
+                            <td style="width:50%">{{ m.tipo_us.descripcion }}</td>
+                            <td style="width:100%">
+                                {% if m.tipo_us.campos %}
+                                    {{ m.tipo_us.campos }}
+                                {% else %}
+                                    No tiene
+                                {% endif %}
+                            </td>
+                            {% if "Modificar Tipo US" in permisos %}
+                                <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:modificar_tipo_us' proyecto.id m.id %}">Modificar</a></div></td>
+                                <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:ordenar_campos' proyecto.id m.id %}">Ordenar</a></div></td>
+                            {% endif %}
+                            {% if "Eliminar Tipo US" in permisos %}
+                                <td style="padding: 0px"><div class="enlace"><a href="{% url 'tipo_us:eliminar_tipo_us' proyecto.id m.id %}">Eliminar</a></div></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
         {% else %}
             <h1>No existen tipos de User Story</h1>
         {% endif %}

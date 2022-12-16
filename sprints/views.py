@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,12 +6,14 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
 from sprints.forms import AsignarUsForm
-from proyectos.models import Proyecto, Miembro
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from userstory.models import UserStory, Tarea
 from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
 from .models import Sprint, Desarrollador
+
 from django.contrib import messages
+
 
 @login_required
 def index(request, proyecto_id):
@@ -53,6 +55,8 @@ def ver_detalles(request, sprint_id, proyecto_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint)
+    tareas = Tarea.objects.filter(userstory__sprint=sprint)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -62,11 +66,21 @@ def ver_detalles(request, sprint_id, proyecto_id):
     if "Visualizar Sprints" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    capacidad_trabajo = 0
+    for d in desarrolladores:
+        capacidad_trabajo += d.capacidad_total
+
+    capacidad_trabajo_restante = capacidad_trabajo
+    for t in tareas:
+        capacidad_trabajo_restante -= t.horas_trabajadas
+
     context = {
         'proyecto': proyecto,
         'miembros': miembros,
         'permisos': permisos,
         'sprint': sprint,
+        'capacidad_trabajo': capacidad_trabajo,
+        'capacidad_trabajo_restante': capacidad_trabajo_restante
     }
     return render(request, 'sprints/sprint_detalles.html', context)
 
@@ -118,6 +132,7 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     proyecto = Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).order_by('-prioridad')
     tareas = Tarea.objects.filter(userstory__sprint=sprint)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint=sprint)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -131,9 +146,15 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     for u in us:
         tiempo_restante -= u.horas_estimadas
 
-    capacidad_restante = sprint.capacidad
+    capacidad_restante = 0
+    for d in desarrolladores:
+        capacidad_restante += d.capacidad_total
+
     for t in tareas:
         capacidad_restante -= t.horas_trabajadas
+
+    if tiempo_restante < 0:
+        messages.warning(request, "Se sobrepaso la capacidad de trabajo.")
 
     context = {
         'proyecto': proyecto,
@@ -167,8 +188,6 @@ def agregar_us(request, sprint_id, proyecto_id):
     tiempo_restante = sprint.capacidad
     for u in sb:
         tiempo_restante -= u.horas_estimadas
-    if tiempo_restante < 0:
-        messages.warning(request, "Se sobrepaso la capacidad horaria de los desarrolladores!! ")
 
     context = {
         'proyecto': proyecto,
@@ -184,6 +203,9 @@ def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
     """
         Clase de la vista para agregar el User Story al Sprint Backlog
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -197,6 +219,12 @@ def agregar_us_sprintbacklog(request, sprint_id, proyecto_id, us_id):
 
     us.sprint = sprint
     us.save()
+
+    informacion = "Se ha agregado el User Story: '" + us.nombre + "' al Sprint Backlog del sprint '" + \
+                  sprint.nombre + "'"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:agregar_us', sprint_id, proyecto_id)
 
 @login_required
@@ -204,6 +232,9 @@ def quitar_us(request, sprint_id, proyecto_id, us_id):
     """
         Clase de la vista para quitar el User Story del Sprint Backlog
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     us = get_object_or_404(UserStory, pk=us_id)
 
@@ -217,6 +248,12 @@ def quitar_us(request, sprint_id, proyecto_id, us_id):
 
     us.sprint = None
     us.save()
+
+    informacion = "Se ha quitado el User Story: '" + us.nombre + "' del Sprint Backlog del sprint '" + \
+                  sprint.nombre + "'"
+    historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                          elemento='Sprints', informacion=informacion)
+    historial.save()
     return redirect('sprints:sprint_backlog', sprint_id, proyecto_id)
 
 
@@ -245,6 +282,12 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la inicializacion de un sprint
     """
+
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
@@ -258,6 +301,12 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     sprint.fecha_inicio = date.today()
     sprint.save()
 
+    for m in miembros:
+        informacion = "El sprint '" + sprint.nombre + \
+                      "' fue iniciado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
+
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -266,6 +315,11 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la finalizacion de un sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
@@ -278,6 +332,12 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     sprint.estado = 'Finalizado'
     sprint.fecha_fin = date.today()
     sprint.save()
+
+    for m in miembros:
+        informacion = "El sprint '" + sprint.nombre + \
+                      "' fue finalizado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
 
     us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
     for us in us_sinaprobar:
@@ -298,6 +358,11 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
     """
     Clase de la vista para la cancelacion de un sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
+
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
     except Miembro.DoesNotExist:
@@ -310,6 +375,12 @@ def cancelar_sprint(request, sprint_id, proyecto_id):
     sprint.estado = 'Cancelado'
     sprint.fecha_fin = date.today()
     sprint.save()
+
+    for m in miembros:
+        informacion = "El sprint '" + sprint.nombre + \
+                      "' fue cancelado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
 
     us_sinaprobar = UserStory.objects.all().filter(proyecto_id=proyecto_id, sprint_id=sprint_id).exclude(aprobado=True)
     for us in us_sinaprobar:
@@ -339,11 +410,16 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    capacidad_trabajo = 0
+    for d in desarrolladores:
+        capacidad_trabajo += d.capacidad_total
+
     context = {
         'proyecto': proyecto,
         'desarrolladores': desarrolladores,
         'permisos': permisos,
         'sprint': sprint,
+        'capacidad_trabajo': capacidad_trabajo
     }
     return render(request, 'sprints/listar_desarrolladores.html', context)
 
@@ -353,6 +429,8 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     """
         Clase de la vista para la confirmacion de la asignacion de User Stories a los desarrolladores
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     desarrollador = Desarrollador.objects.get(id=desarrollador_id)
@@ -361,7 +439,29 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     if request.method == 'POST':
         form = AsignarUsForm(request.POST, instance=desarrollador, sprint_id=sprint_id)
         if form.is_valid():
+            us = recolectar_us(form.cleaned_data['userstory'])
             form.save()
+
+            if form.cleaned_data['userstory']:
+                informacion = "Al desarrollador '" + desarrollador.miembro.usuario.user.username + "' del sprint '" + \
+                              sprint.nombre + "' se le fue asignado los siguientes US: " + us
+            else:
+                informacion = "El desarrollador '" + desarrollador.miembro.usuario.user.username + "' del sprint '" + \
+                              sprint.nombre + "' ya no tiene US asignados"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
+
+            if form.cleaned_data['userstory']:
+                informacion = " Del sprint '" + \
+                              sprint.nombre + "' le fueron asignados los siguientes US: " + us
+            else:
+                informacion = " Del sprint '" + \
+                              sprint.nombre + "' ya no tienes US asignados"
+
+            notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=desarrollador.miembro.usuario, visto=False)
+            notificacion.save()
+
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -401,6 +501,11 @@ def asignar_desarrolladores(request, sprint_id, proyecto_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    for m in miembros:
+        informacion = "Fuiste designado como desarrollador en el sprint " + sprint.nombre
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
+
     context = {
         'miembros': miembros,
         'permisos': permisos,
@@ -415,6 +520,8 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
     """
     Clase de la vista para la asignacion de desarrolladores en un Sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = Miembro.objects.get(id=miembro_id)
@@ -430,6 +537,13 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
             aux.save()
             sprint.capacidad += aux.capacidad_total
             sprint.save()
+
+            informacion = "El miembro '" + miembro.usuario.user.username + \
+                          "' fue asignado como Desarrollador en el sprint '" + sprint.nombre + \
+                          "' con una capacidad por dia de " + str(aux.capacidad_por_dia) + " horas"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
             return redirect('sprints:asignar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -451,6 +565,8 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
     """
     Clase de la vista para la modificacion de la capacidad de horas por dia de los desarrolladores en un Sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = Desarrollador.objects.get(id=desarrollador_id)
@@ -465,6 +581,12 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
             aux.save()
             sprint.capacidad += aux.capacidad_total
             sprint.save()
+
+            informacion = "La capacidad por dia del Desarrollador '" + miembro.miembro.usuario.user.username + \
+                          "' del sprint '" + sprint.nombre + "' ahora es de " + str(aux.capacidad_por_dia) + " horas"
+            historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
+                                  elemento='Sprints', informacion=informacion)
+            historial.save()
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -491,3 +613,28 @@ def acceso_denegado(request, sprint_id, proyecto_id):
         'proyecto_id': proyecto_id
     }
     return render(request, 'sprints/acceso_denegado.html', context)
+
+@login_required
+def burndown_chart(request, proyecto_id):
+    """
+        Clase de la vista del Burndown Chart de los sprints
+    """
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+
+    context = {
+        'proyecto': proyecto
+    }
+    return render(request, 'sprints/burndown_chart.html', context)
+
+
+def recolectar_us(usquery):
+    us = ""
+    if usquery:
+        for i, p in enumerate(usquery, start=1):
+            us += p.nombre
+            if i < len(usquery):
+                us += ", "
+    else:
+        us = "No tiene US asignado"
+
+    return us

@@ -28,11 +28,15 @@
         <h3>Duracion</h3>
         <p>{{ sprint.duracion }} dias</p>
         <h3>Capacidad de trabajo</h3>
-        <p>{{ sprint.capacidad }} horas</p>
+        <p>{{ capacidad_trabajo }} horas</p>
+        <h3>Dias restantes</h3>
+        <p>{{ sprint.duracion }} dias</p>
+        <h3>Capacidad restante</h3>
+        <p>{{ capacidad_trabajo_restante }} horas</p>
     </div><br>
     <div class="enlace">
         {% if sprint.estado == 'Planificacion' %}
-            {% if "Iniciar Sprint" in permisos %}
+            {% if "Iniciar Sprint" in permisos and not proyecto.estado == "Planificacion" %}
                 <button class="boton" onclick="location.href='{% url 'sprints:iniciar_proyecto' sprint.id proyecto.id %}'">Iniciar</button>
             {% endif %}
         {% elif sprint.estado == 'En ejecucion' %}

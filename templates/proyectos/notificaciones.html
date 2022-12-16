@@ -10,8 +10,13 @@
                 <table>
                     {% for n in notificacion %}
                         <tr>
-                            <td style="width: 15%">{{ n.fecha }}</td>
-                            <td style="width: 100%">{{ n.informacion }}</td>
+                            {% if not n.visto %}
+                                <td style="width: 15%">{{ n.fecha }}</td>
+                                <td style="width: 100%">{{ n.informacion }}</td>
+                            {% else %}
+                                <td style="width: 15%; color: dimgray">{{ n.fecha }}</td>
+                                <td style="width: 100%; color: dimgray">{{ n.informacion }}</td>
+                            {% endif %}
                             <td style="padding: 0px; height: 40px"><div class="enlace">
                                 {% if not n.visto %}
                                     <a href="{% url 'proyectos:visto' n.id %}">Visto</a>

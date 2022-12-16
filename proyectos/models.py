@@ -73,3 +73,16 @@ class Historial(models.Model):
     elemento = models.CharField(max_length=25, choices=ELEMENTOS, null=True)
     informacion = models.TextField(null=True)
     userstory = models.ForeignKey('userstory.UserStory', on_delete=models.CASCADE, null=True, blank=True)
+
+
+class Notificacion(models.Model):
+    #proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, null=True, blank=True)
+    #responsable = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, null=True, blank=True)
+    fecha = models.DateTimeField(blank=True, null=True)
+    #accion = models.CharField(max_length=25, choices=ACCION_HISTORIAL, null=True)
+    #elemento = models.CharField(max_length=25, choices=ELEMENTOS, null=True)
+    informacion = models.TextField(null=True)
+    destinatario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT, null=True, blank=True)
+    visto = models.BooleanField(default=False)
+
+

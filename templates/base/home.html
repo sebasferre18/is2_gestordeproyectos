@@ -216,7 +216,7 @@
                     <a href="/accounts/logout/">Cerrar sesion</a>
                 </div>
             </div>
-            <a style="float: right;" href="{% url 'proyectos:notificaciones' %}">Notificaciones</a>
+            <a style="float: right;" href="{% url 'proyectos:notificaciones' %}">Notificaciones ({{ cantidad }})</a>
         {% else %}
             <div style="float: right;"><a href="/accounts/login/">Iniciar sesion</a></div>
         {% endif %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from usuarios.models import Usuario
 from .models import Rol, Permiso
 from .forms import RolForm, PermisoForm
-from proyectos.models import Proyecto, Miembro, Historial
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from funciones import obtener_permisos
 from django.contrib import messages
 """
@@ -32,11 +32,17 @@ def index(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'role_list': roles,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'roles/index.html', context)
 
@@ -76,11 +82,17 @@ def crear_rol(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'roles/crear_rol.html', context)
 
@@ -118,11 +130,17 @@ def modificar_rol(request, rol_id, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'roles/modificar_rol.html', context)
 
@@ -154,11 +172,17 @@ def eliminar_rol(request, rol_id, proyecto_id):
         historial.save()
         return redirect('roles:index', proyecto_id)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'rol': rol,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'roles/eliminar_rol.html', context)
 
@@ -177,9 +201,15 @@ def permiso_index(request):
 
     p = obtener_permisos(rol)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'permiso_list': permisos,
-        'permisos': p
+        'permisos': p,
+        'cantidad': cantidad
     }
     return render(request, 'roles/permiso_index.html', context)
 
@@ -206,9 +236,15 @@ def crear_permiso(request):
 
     p = obtener_permisos(rol)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
-        'permisos': p
+        'permisos': p,
+        'cantidad': cantidad
     }
     return render(request, 'roles/permiso_form.html', context)
 

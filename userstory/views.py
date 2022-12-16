@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from datetime import date, datetime
 
-from proyectos.models import Proyecto, Miembro, Historial
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from usuarios.models import Usuario
 from userstory.models import UserStory, Tarea
 from userstory.forms import US_Form
@@ -26,11 +26,18 @@ def listar_us(request, proyecto_id):
         permisos = []
 
     proyecto = Proyecto.objects.get(id=proyecto_id)
+
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'UserStory': us,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
+        'cantidad': cantidad
     }
 
     return render(request, 'userstory/listar_us.html', context)
@@ -73,11 +80,17 @@ def crear_us(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'userstory/crear_us.html', context)
 
@@ -119,10 +132,16 @@ def modificar_us(request,proyecto_id, us_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'userstory/modificar_us.html', context)

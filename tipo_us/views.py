@@ -9,7 +9,7 @@ from datetime import date, datetime
 from tableros.models import Tablero
 from tipo_us.models import Tipo_US, MiembroTipoUs
 from tipo_us.forms import Tipo_usForm
-from proyectos.models import Proyecto, Miembro, Historial
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from usuarios.models import Usuario
 from funciones import obtener_permisos, obtener_permisos_usuario
 
@@ -45,11 +45,17 @@ def listar_tipo_us(request, proyecto_id):
         else:
             permisos = []'''
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         #'tipo_us': tipo_us,
         'permisos': permisos,
         'proyecto': proyecto,
         'miembro_tipo_us': miembro_tipo_us,
+        'cantidad': cantidad
     }
 
     '''form = Tipo_usForm()
@@ -95,10 +101,15 @@ def crear_tipo_us(request, proyecto_id):
             historial.save()
             return HttpResponseRedirect('/tipo_us/' + str(proyecto_id) + '/')
 
-
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'tipo_us/crear_tipo_us.html', context)
 
@@ -141,9 +152,15 @@ def modificar_tipo_us(request, proyecto_id, tipo_us_id):
             historial.save()
             return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'tipo_us/modificar_tipo_us.html', context)
 
@@ -170,9 +187,15 @@ def eliminar_tipo_us(request, proyecto_id, tipo_us_id):
         tipo_us.delete()
         return redirect('/tipo_us/' + str(proyecto_id) + '/')
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'miembro_tipo_us': miembro_tipo_us,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'tipo_us/eliminar_tipo_us.html', context)
 
@@ -203,12 +226,18 @@ def importar_tipo_us(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tipos_us': tipos_us,
         'miembros_tipos_us': miembros_tipo_us,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, "tipo_us/importar_tipo_us.html", context)
 
@@ -248,6 +277,8 @@ def ordenar_campos(request, proyecto_id, tipo_us_id):
     """
     Clase de la vista para agregar un tipo de US a un proyecto
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro_tipo_us = get_object_or_404(MiembroTipoUs, pk=tipo_us_id)
     tablero = Tablero.objects.get(tipo_us=miembro_tipo_us)
@@ -260,13 +291,19 @@ def ordenar_campos(request, proyecto_id, tipo_us_id):
     if "Modificar Tipo US" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tipo_us': miembro_tipo_us,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
         'campos': tablero.campos.split(','),
-        'len': len(tablero.campos.split(','))
+        'len': len(tablero.campos.split(',')),
+        'cantidad': cantidad
     }
     return render(request, "tipo_us/ordenar_campos_tipo_us.html", context)
 

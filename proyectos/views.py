@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from datetime import date, datetime
 
-from proyectos.models import Proyecto, Miembro, Historial
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from proyectos.forms import ProyectoForm, MiembroForm, MiembroFormSet
 from userstory.models import UserStory
 from usuarios.models import Usuario
@@ -46,7 +46,8 @@ permisos_sm = [
     'Iniciar Sprint',
     'Finalizar Sprint',
     'Cancelar Sprint',
-    'Adjuntar Notas'
+    'Adjuntar Notas',
+    'Modificar Capacidad Por Dia'
 ]
 
 permisos_de = [
@@ -81,7 +82,12 @@ def listar_proyectos(request):
     else:
         proyecto = Proyecto.objects.filter(miembro__usuario__user=request.user).order_by('id')
 
-    contexto = {'proyectos': proyecto, 'permisos': permisos}
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
+    contexto = {'proyectos': proyecto, 'permisos': permisos, 'cantidad': cantidad}
     return render(request, 'proyectos/proyectos_list.html', contexto)
 
 
@@ -94,6 +100,12 @@ def crear_proyecto(request):
     usuario = Usuario.objects.get(user_id=user.id)
     miembro = Miembro()
     miembro.usuario = usuario
+
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
 
     rol = usuario.rol.all()
     permisos = obtener_permisos(rol)
@@ -118,11 +130,16 @@ def crear_proyecto(request):
                 up.proyecto = form
                 up.save()
                 up.rol.set([sm])
+
+                informacion = "Eres el Scrum Master del proyecto '" + form.nombre + "'"
+                notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                            destinatario=up.usuario, visto=False)
+                notificacion.save()
             return HttpResponseRedirect('/proyectos/')
     else:
         formulario = ProyectoForm()
         formulario_miembro = MiembroFormSet()
-    return render(request, 'proyectos/crear_proyecto.html', {'formulario':formulario, 'formulario_miembro':formulario_miembro, 'permisos':permisos})
+    return render(request, 'proyectos/crear_proyecto.html', {'formulario':formulario, 'formulario_miembro':formulario_miembro, 'permisos':permisos, 'cantidad': cantidad})
 
 
 @login_required
@@ -150,11 +167,17 @@ def asignar_usuarios(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'usuarios': usuarios,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, "proyectos/asignar_usuarios.html", context)
 
@@ -177,11 +200,17 @@ def desasignar_usuarios(request, proyecto_id):
     else:
         permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'miembros': miembros,
         'permisos': permisos,
         'proyecto_id': proyecto_id,
-        'proyecto': proyecto
+        'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'proyectos/desasignar_usuarios.html', context)
 
@@ -210,6 +239,14 @@ def gestionar_roles(request, proyecto_id, miembro_id):
             historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                                   elemento='Proyectos', informacion=informacion)
             historial.save()
+
+            if form.cleaned_data['rol']:
+                informacion = proyecto.nombre + ": Se le fueron asignados los siguientes roles: " + roles
+            else:
+                informacion = proyecto.nombre + ": Ya no posee roles asignados"
+            notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=miembro.usuario,
+                                        visto=False)
+            notificacion.save()
             return redirect('proyectos:ver_detalles', proyecto_id)
 
     miembros = Miembro.objects.filter(proyecto=proyecto)
@@ -229,12 +266,18 @@ def gestionar_roles(request, proyecto_id, miembro_id):
         else:
             permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'miembro': miembro,
         'proyecto_id': proyecto_id,
         'proyecto': proyecto,
+        'cantidad': cantidad
     }
     return render(request, 'proyectos/gestionar_roles.html', context)
 
@@ -256,6 +299,10 @@ def agregar_miembro(request, proyecto_id, user_id):
     historial = Historial(proyecto=proyecto, responsable=usuario_aux, fecha=datetime.now(), accion='Modificacion',
                           elemento='Proyectos', informacion=informacion)
     historial.save()
+
+    informacion = "Fuiste asignado como Miembro del proyecto " + proyecto.nombre
+    notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=usuario, visto=False)
+    notificacion.save()
     return redirect('proyectos:asignar_usuarios', proyecto_id)
 
 @login_required
@@ -267,13 +314,18 @@ def eliminar_miembro(request, proyecto_id, miembro_id):
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
     miembro = get_object_or_404(Miembro, id=miembro_id)
-    miembro.delete()
 
     informacion = "El usuario '" + miembro.usuario.user.username + \
                   "' fue desasignado como Miembro de este proyecto"
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Proyectos', informacion=informacion)
     historial.save()
+
+    informacion = "Fuiste desasignado como Miembro del proyecto " + proyecto.nombre
+    notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=miembro.usuario,
+                                visto=False)
+    notificacion.save()
+    miembro.delete()
     return redirect('proyectos:desasignar_usuarios', proyecto_id)
 
 
@@ -303,10 +355,16 @@ def ver_detalles(request, proyecto_id):
         else:
             permisos = []
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'miembros': miembros,
-        'permisos': permisos
+        'permisos': permisos,
+        'cantidad': cantidad
     }
     return render(request, 'proyectos/proyecto_detalles.html', context)
 
@@ -318,6 +376,7 @@ def iniciar_proyecto(request, proyecto_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
     proyecto.estado = 'En ejecucion'
     proyecto.fecha_inicio = date.today()
 
@@ -333,6 +392,12 @@ def iniciar_proyecto(request, proyecto_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Proyectos', informacion=informacion)
     historial.save()
+
+    for m in miembros:
+        informacion = "El proyecto '" + proyecto.nombre + \
+                      "' fue iniciado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 
@@ -344,6 +409,7 @@ def finalizar_proyecto(request, proyecto_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
     proyecto.estado = 'Finalizado'
     proyecto.fecha_fin = date.today()
     proyecto.save()
@@ -352,6 +418,12 @@ def finalizar_proyecto(request, proyecto_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Proyectos', informacion=informacion)
     historial.save()
+
+    for m in miembros:
+        informacion = "El proyecto '" + proyecto.nombre + \
+                      "' fue finalizado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 
@@ -363,6 +435,7 @@ def cancelar_proyecto(request, proyecto_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto).order_by('id')
     proyecto.estado = 'Cancelado'
     proyecto.fecha_fin = date.today()
     proyecto.save()
@@ -371,6 +444,12 @@ def cancelar_proyecto(request, proyecto_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Proyectos', informacion=informacion)
     historial.save()
+
+    for m in miembros:
+        informacion = "El proyecto '" + proyecto.nombre + \
+                      "' fue cancelado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.usuario, visto=False)
+        notificacion.save()
     return redirect('proyectos:ver_detalles', proyecto_id)
 
 @login_required
@@ -402,10 +481,26 @@ def notificaciones(request):
 
     permisos = obtener_permisos(rol)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
-        'permisos': permisos
+        'permisos': permisos,
+        'notificacion': notificacion,
+        'cantidad': cantidad
     }
     return render(request, 'proyectos/notificaciones.html', context)
+
+
+@login_required
+def visto(request, notificacion_id):
+    notificacion = Notificacion.objects.get(id=notificacion_id)
+    notificacion.visto = True
+    notificacion.save()
+    return redirect('proyectos:notificaciones')
+
 
 @login_required
 def historial_modificaciones(request, proyecto_id):
@@ -422,10 +517,17 @@ def historial_modificaciones(request, proyecto_id):
 
     permisos = obtener_permisos(rol)
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
+
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
-        'historial': historial
+        'historial': historial,
+        'cantidad': cantidad
     }
     return render(request, 'proyectos/historial_modificaciones.html', context)
 

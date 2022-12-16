@@ -4,8 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 # Create your views here.
 from datetime import datetime
 
-from funciones import obtener_permisos_usuario
-from proyectos.models import Proyecto, Miembro, Historial
+from funciones import obtener_permisos_usuario, obtener_permisos
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from sprints.models import Sprint, Desarrollador
 from tipo_us.models import MiembroTipoUs
 from userstory.models import UserStory, Tarea, Nota, TareaAux
@@ -32,11 +32,19 @@ def index(request, sprint_id, proyecto_id):
     if "Visualizar Tablero" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tableros': tableros,
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
+        'cantidad': cantidad
     }
 
     return render(request, 'tableros/listar_tableros.html', context)
@@ -67,6 +75,13 @@ def tablero_detalles(request, tablero_id, sprint_id, proyecto_id):
 
     campos = tablero.campos
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tablero': tablero,
         'permisos': permisos,
@@ -74,7 +89,8 @@ def tablero_detalles(request, tablero_id, sprint_id, proyecto_id):
         'sprint': sprint,
         'campos': campos.split(','),
         'desarrollador': desarrollador,
-        'us': us
+        'us': us,
+        'cantidad': cantidad
     }
     return render(request, 'tableros/tablero_detalles.html', context)
 
@@ -119,6 +135,13 @@ def tablero_us_detalles(request, tablero_id, sprint_id, proyecto_id, us_id):
     for t in tarea_desarrollador:
         capacidad_desarrollador -= t.horas_trabajadas
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tablero': tablero,
         'permisos': permisos,
@@ -131,7 +154,8 @@ def tablero_us_detalles(request, tablero_id, sprint_id, proyecto_id, us_id):
         'tareas': tareas,
         'notas': notas,
         'capacidad_dia_desarrollador': capacidad_dia_desarrollador,
-        'capacidad_desarrollador': capacidad_desarrollador
+        'capacidad_desarrollador': capacidad_desarrollador,
+        'cantidad': cantidad
     }
     return render(request, 'tableros/tablero_us_detalles.html', context)
 
@@ -144,6 +168,7 @@ def actualizar_estado(request, tablero_id, sprint_id, proyecto_id, us_id):
     sprint = get_object_or_404(Sprint, pk=sprint_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     tablero = Tablero.objects.get(id=tablero_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     us = UserStory.objects.get(id=us_id)
     campos = tablero.campos.split(',')
     indice = campos.index(us.estado)
@@ -173,8 +198,28 @@ def actualizar_estado(request, tablero_id, sprint_id, proyecto_id, us_id):
         form = ActualizarEstadoForm(request.POST, instance=us, estados_siguientes=estados_siguientes)
         if form.is_valid():
             form.save()
+
+            if form.cleaned_data['estado'] == "Terminado":
+                informacion = proyecto.nombre + ": El US '" + us.nombre + "' ha sido terminado en el sprint '" + sprint.nombre + "'"
+                for m in miembros:
+                    rol = m.rol.get_queryset()
+                    if rol:
+                        permisos = obtener_permisos(rol)
+                    else:
+                        permisos = []
+                    if "Aprobar US" in permisos:
+                        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                                    destinatario=m.usuario, visto=False)
+                        notificacion.save()
             return redirect('tableros:tablero_detalles', tablero_id, sprint_id, proyecto_id)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tablero': tablero,
         'permisos': permisos,
@@ -182,7 +227,8 @@ def actualizar_estado(request, tablero_id, sprint_id, proyecto_id, us_id):
         'sprint': sprint,
         'us': us,
         'form': form,
-        'estados_siguientes': estados_siguientes
+        'estados_siguientes': estados_siguientes,
+        'cantidad': cantidad
     }
     return render(request, 'tableros/actualizar_estado.html', context)
 
@@ -246,6 +292,13 @@ def registrar_tarea(request, tablero_id, sprint_id, proyecto_id, us_id):
                 aux.save()
                 return redirect('tableros:tablero_us_detalles', tablero_id, sprint_id, proyecto_id, us_id)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tablero': tablero,
         'permisos': permisos,
@@ -255,7 +308,8 @@ def registrar_tarea(request, tablero_id, sprint_id, proyecto_id, us_id):
         'form': form,
         'mensaje': mensaje,
         'capacidad_dia_desarrollador': capacidad_dia_desarrollador,
-        'capacidad_desarrollador': capacidad_desarrollador
+        'capacidad_desarrollador': capacidad_desarrollador,
+        'cantidad': cantidad
     }
     return render(request, 'tableros/registrar_tarea.html', context)
 
@@ -294,6 +348,13 @@ def adjuntar_nota(request, tablero_id, sprint_id, proyecto_id, us_id):
             aux.save()
             return redirect('tableros:tablero_us_detalles', tablero_id, sprint_id, proyecto_id, us_id)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'tablero': tablero,
         'permisos': permisos,
@@ -301,7 +362,8 @@ def adjuntar_nota(request, tablero_id, sprint_id, proyecto_id, us_id):
         'sprint': sprint,
         'us': us,
         'desarrollador': desarrollador,
-        'form': form
+        'form': form,
+        'cantidad': cantidad
     }
     return render(request, 'tableros/adjuntar_nota.html', context)
 
@@ -314,6 +376,7 @@ def aprobar_us(request, tablero_id, sprint_id, proyecto_id, us_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    miembros = Miembro.objects.filter(proyecto=proyecto)
     us = get_object_or_404(UserStory, pk=us_id)
 
     try:
@@ -331,4 +394,9 @@ def aprobar_us(request, tablero_id, sprint_id, proyecto_id, us_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='US', informacion=informacion)
     historial.save()
+    informacion = proyecto.nombre + ": El US '" + us.nombre + "' fue aprobado"
+    for m in miembros:
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                        destinatario=m.usuario, visto=False)
+        notificacion.save()
     return redirect('tableros:tablero_us_detalles', tablero_id, sprint_id, proyecto_id, us_id)

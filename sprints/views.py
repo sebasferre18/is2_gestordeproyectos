@@ -7,7 +7,7 @@ from funciones import obtener_permisos, obtener_permisos_usuario
 
 # Create your views here.
 from sprints.forms import AsignarUsForm
-from proyectos.models import Proyecto, Miembro, Historial
+from proyectos.models import Proyecto, Miembro, Historial, Notificacion
 from userstory.models import UserStory, Tarea, TareaAux
 from usuarios.models import Usuario
 from .forms import SprintForm, DesarrolladorForm
@@ -21,6 +21,8 @@ def index(request, proyecto_id):
     """
     Clase de la vista de la lista de Sprints
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
     sprints = Sprint.objects.all().filter(proyecto_id=proyecto_id).order_by('-id')
 
     try:
@@ -38,11 +40,17 @@ def index(request, proyecto_id):
     except Sprint.DoesNotExist:
         estado = ""
 
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'sprints': sprints,
         'permisos': permisos,
         'proyecto': proyecto,
-        'estado': estado
+        'estado': estado,
+        'cantidad': cantidad
     }
 
     return render(request, 'sprints/listar_sprints.html', context)
@@ -76,13 +84,21 @@ def ver_detalles(request, sprint_id, proyecto_id):
     for t in tareas:
         capacidad_trabajo_restante -= t.horas_trabajadas
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'miembros': miembros,
         'permisos': permisos,
         'sprint': sprint,
         'capacidad_trabajo': capacidad_trabajo,
-        'capacidad_trabajo_restante': capacidad_trabajo_restante
+        'capacidad_trabajo_restante': capacidad_trabajo_restante,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/sprint_detalles.html', context)
 
@@ -117,11 +133,19 @@ def crear_sprint(request, proyecto_id):
     except Sprint.DoesNotExist:
         estado = ""
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'proyecto': proyecto,
-        'estado': estado
+        'estado': estado,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/crear_sprint.html', context)
 
@@ -158,13 +182,22 @@ def sprint_backlog(request, sprint_id, proyecto_id):
     if tiempo_restante < 0:
         messages.warning(request, "Se sobrepaso la capacidad de trabajo.")
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
+
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
         'sprint': sprint,
         'UserStory': us,
         'tiempo_restante': tiempo_restante,
-        'capacidad_restante': capacidad_restante
+        'capacidad_restante': capacidad_restante,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/sprint_backlog.html', context)
 
@@ -191,12 +224,20 @@ def agregar_us(request, sprint_id, proyecto_id):
     for u in sb:
         tiempo_restante -= u.horas_estimadas
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'permisos': permisos,
         'sprint': sprint,
         'UserStory': us,
-        'tiempo_restante': tiempo_restante
+        'tiempo_restante': tiempo_restante,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/agregar_us.html', context)
 
@@ -287,6 +328,7 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint_id=sprint_id)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -316,6 +358,12 @@ def iniciar_sprint(request, sprint_id, proyecto_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Sprints', informacion=informacion)
     historial.save()
+
+    for m in desarrolladores:
+        informacion = "El sprint '" + sprint.nombre + "' del proyecto '" + proyecto.nombre + \
+                      "' fue iniciado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.miembro.usuario, visto=False)
+        notificacion.save()
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -327,6 +375,7 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     user = request.user
     usuario = Usuario.objects.get(user_id=user.id)
     proyecto = get_object_or_404(Proyecto, pk=proyecto_id)
+    desarrolladores = Desarrollador.objects.filter(miembro__proyecto=proyecto, sprint_id=sprint_id)
 
     try:
         permisos = obtener_permisos_usuario(request.user, proyecto_id)
@@ -381,6 +430,12 @@ def finalizar_sprint(request, sprint_id, proyecto_id):
     historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                           elemento='Sprints', informacion=informacion)
     historial.save()
+
+    for m in desarrolladores:
+        informacion = "El sprint '" + sprint.nombre + "' del proyecto '" + proyecto.nombre + \
+                      "' fue finalizado"
+        notificacion = Notificacion(fecha=datetime.now(), informacion=informacion, destinatario=m.miembro.usuario, visto=False)
+        notificacion.save()
     return redirect('sprints:ver_detalles', sprint_id, proyecto_id)
 
 
@@ -434,12 +489,20 @@ def listar_desarrolladores(request, sprint_id, proyecto_id):
     for d in desarrolladores:
         capacidad_trabajo += d.capacidad_total
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'desarrolladores': desarrolladores,
         'permisos': permisos,
         'sprint': sprint,
-        'capacidad_trabajo': capacidad_trabajo
+        'capacidad_trabajo': capacidad_trabajo,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/listar_desarrolladores.html', context)
 
@@ -471,6 +534,17 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
             historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                                   elemento='Sprints', informacion=informacion)
             historial.save()
+
+            if form.cleaned_data['userstory']:
+                informacion = proyecto.nombre + ": Del sprint '" + \
+                              sprint.nombre + "' le fueron asignados los siguientes US: " + us
+            else:
+                informacion = proyecto.nombre + ": Del sprint '" + \
+                              sprint.nombre + "' ya no tienes US asignados"
+
+            notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                        destinatario=desarrollador.miembro.usuario, visto=False)
+            notificacion.save()
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -481,12 +555,20 @@ def asignar_us(request, sprint_id, proyecto_id, desarrollador_id):
     if "Asignar US A Usuario" not in permisos:
         return redirect('proyectos:falta_de_permisos', proyecto_id)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'form': form,
         'permisos': permisos,
         'desarrollador': desarrollador,
         'proyecto': proyecto,
         'sprint': sprint,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/confirm_asignar_us.html', context)
 
@@ -510,11 +592,19 @@ def asignar_desarrolladores(request, sprint_id, proyecto_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'miembros': miembros,
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
+        'cantidad': cantidad
     }
     return render(request, "sprints/asignar_desarrolladores.html", context)
 
@@ -548,6 +638,11 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
             historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                                   elemento='Sprints', informacion=informacion)
             historial.save()
+
+            informacion = proyecto.nombre + ": usted fue asignado como Desarrollador en el Sprint '" + sprint.nombre + "' con capacidad por dia de " + str(aux.capacidad_por_dia) + " horas"
+            notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                        destinatario=aux.miembro.usuario, visto=False)
+            notificacion.save()
             return redirect('sprints:asignar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -555,12 +650,20 @@ def asignar_capacidad_por_dia(request, sprint_id, proyecto_id, miembro_id):
     except Miembro.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'miembro': miembro,
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
-        'form': form
+        'form': form,
+        'cantidad': cantidad
     }
     return render(request, "sprints/asignar_capacidad_por_dia.html", context)
 
@@ -591,6 +694,11 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
             historial = Historial(proyecto=proyecto, responsable=usuario, fecha=datetime.now(), accion='Modificacion',
                                   elemento='Sprints', informacion=informacion)
             historial.save()
+
+            informacion = proyecto.nombre + ": en el sprint '" + sprint.nombre + "' su capacidad por dia ahora es de " + str(aux.capacidad_por_dia) + " horas"
+            notificacion = Notificacion(fecha=datetime.now(), informacion=informacion,
+                                        destinatario=aux.miembro.usuario, visto=False)
+            notificacion.save()
             return redirect('sprints:listar_desarrolladores', sprint_id, proyecto_id)
 
     try:
@@ -598,12 +706,20 @@ def modificar_capacidad_dia(request, sprint_id, proyecto_id, desarrollador_id):
     except Desarrollador.DoesNotExist:
         return redirect('proyectos:acceso_denegado')
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'miembro': miembro,
         'permisos': permisos,
         'proyecto': proyecto,
         'sprint': sprint,
-        'form': form
+        'form': form,
+        'cantidad': cantidad
     }
     return render(request, "sprints/modificar_capacidad_dia.html", context)
 
@@ -612,9 +728,17 @@ def acceso_denegado(request, sprint_id, proyecto_id):
     """
     Clase de la vista de acceso denegado a un sprint
     """
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'sprint_id': sprint_id,
-        'proyecto_id': proyecto_id
+        'proyecto_id': proyecto_id,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/acceso_denegado.html', context)
 
@@ -637,10 +761,18 @@ def burndown_chart(request, proyecto_id):
 
     x_data.append(" ")
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'x_data': json.dumps(x_data),
-        'y_data': y_data
+        'y_data': y_data,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/burndown_chart.html', context)
 
@@ -688,12 +820,20 @@ def burndown_chart_redux(request, sprint_id, proyecto_id):
     x_data.append(" ")
     y_data_ideal.append(0)
 
+    user = request.user
+    usuario = Usuario.objects.get(user_id=user.id)
+    notificacion = Notificacion.objects.filter(destinatario=usuario).order_by('-id')
+    cantidad = 0
+    for n in notificacion:
+        if not n.visto:
+            cantidad += 1
     context = {
         'proyecto': proyecto,
         'sprint': sprint,
         'x_data': json.dumps(x_data),
         'y_data': y_data,
-        'y_data_ideal': y_data_ideal
+        'y_data_ideal': y_data_ideal,
+        'cantidad': cantidad
     }
     return render(request, 'sprints/burndown_chart_redux.html', context)
 

@@ -16,6 +16,7 @@ do
             echo
             chmod +x desarrolloconf.sh
             sudo -u postgres ./desarrolloconf.sh
+            python manage.py migrate
             echo "El ambiente de desarrollo fue desplegado correctamente."
             break
             ;;
